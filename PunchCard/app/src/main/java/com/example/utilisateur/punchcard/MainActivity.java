@@ -1,15 +1,19 @@
 package com.example.utilisateur.punchcard;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -61,6 +65,7 @@ public class MainActivity extends ListActivity {
     }
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,14 +73,45 @@ public class MainActivity extends ListActivity {
         setListAdapter(new MyAdapter());
     }
 
+
+
     // event click sur une job
     public void onClickJob(View view) {
         startActivity(new Intent("PunchCard.History"));
 
     }
 
+    // event click sur une job
+    public void onClickAdd(View view) {
 
-    /*
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_add);
+        dialog.setTitle("Add job");
+
+        // button SAVE
+        Button btnSave = (Button)dialog.findViewById(R.id.btn_add_save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent("PunchCard.History"));
+            }
+        });
+
+        // button SET PARAMETERS
+        Button btnParameters = (Button)dialog.findViewById(R.id.btn_add_set_parameters);
+        btnParameters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent("PunchCard.History"));
+            }
+        });
+
+        dialog.show();
+    }
+
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -97,5 +133,5 @@ public class MainActivity extends ListActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    */
+
 }

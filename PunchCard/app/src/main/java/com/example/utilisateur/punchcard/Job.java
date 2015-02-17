@@ -5,7 +5,7 @@ package com.example.utilisateur.punchcard;
  */
 public class Job {
     public static final String[] JOBS = {
-            "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance", "Ackawi",
+            "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abondance"};/*, "Ackawi",
             "Acorn", "Adelost", "Affidelice au Chablis", "Afuega'l Pitu", "Airag", "Airedale",
             "Aisy Cendre", "Allgauer Emmentaler", "Alverca", "Ambert", "American Cheese",
             "Ami du Chambertin", "Anejo Enchilado", "Anneau du Vic-Bilh", "Anthoriro", "Appenzell",
@@ -25,5 +25,5 @@ public class Job {
             "Brin", "Brin d' Amour", "Brin d'Amour", "Brinza (Burduf Brinza)",
             "Briquette de Brebis", "Briquette du Forez", "Broccio", "Broccio Demi-Affine",
             "Brousse du Rove", "Bruder Basil", "Brusselae Kaas (Fromage de Bruxelles)", "Bryndza"
-    };
+    };*/
 }
