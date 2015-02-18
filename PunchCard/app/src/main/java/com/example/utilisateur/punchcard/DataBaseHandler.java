@@ -83,9 +83,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                         COL_ID + " INTEGER PRIMARY KEY, " +
                         COL_OCC_ID + " INTEGER, " +
                         COL_RESET_DAY + " INTEGER, " +
-                        COL_NB_DAY_BEFORE_RESET + " INTEGER," +
-                        COL_ROUND_TYPE + " INTEGER" +
-                        COL_ROUND_MIN_VALUE + " INTEGER" +
+                        COL_NB_DAY_BEFORE_RESET + " INTEGER, " +
+                        COL_ROUND_TYPE + " INTEGER, " +
+                        COL_ROUND_MIN_VALUE + " INTEGER, " +
                         "FOREIGN KEY(" + COL_OCC_ID + ")" +
                         "REFERENCES " + TABLE_OCCUPATION + "(" + COL_ID + ")" +
                         ");";
