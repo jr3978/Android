@@ -34,6 +34,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     //---------Occupation columns---------
     private static final String COL_NAME = "Name";
     private static final String COL_STATUS = "Status";
+    private static final String COL_SELECTED = "Selected";
 
     //---------Parameters columns---------
     private static final String COL_RESET_DAY = "ResetDay";
@@ -65,7 +66,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "CREATE TABLE " + TABLE_OCCUPATION + "( " +
                         COL_ID + " INTEGER PRIMARY KEY, " +
                         COL_NAME + " TEXT, " +
-                        COL_STATUS + " NUMERIC" +
+                        COL_STATUS + " NUMERIC, " +
+                        COL_SELECTED + " NUMERIC" +
                         ");";
 
         String createHistoryTable =
@@ -125,7 +127,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_OCCUPATION,
-                new String[] { COL_ID ,COL_NAME, COL_STATUS }, COL_ID + "=?",
+                new String[] { COL_ID ,COL_NAME, COL_STATUS, COL_SELECTED }, COL_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
 
         if (cursor != null)
@@ -135,6 +137,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         occupation.setId(Integer.parseInt(cursor.getString(0)));
         occupation.setName(cursor.getString(1));
         occupation.isIn(Boolean.parseBoolean(cursor.getString(2)));
+        occupation.isSelected(Boolean.parseBoolean(cursor.getString(3)));
 
 
         return occupation;
@@ -160,6 +163,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 occupation.setId(Integer.parseInt(cursor.getString(0)));
                 occupation.setName(cursor.getString(1));
                 occupation.isIn(Boolean.parseBoolean(cursor.getString(2)));
+                occupation.isSelected(Boolean.parseBoolean(cursor.getString(3)));
 
                 listOcc.add(occupation);
             }
@@ -185,6 +189,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COL_NAME, occ.getName());
         values.put(COL_STATUS, occ.isIn());
+        values.put(COL_SELECTED, occ.isSelected());
 
         db.insert(TABLE_OCCUPATION, null, values);
         db.close();
@@ -240,6 +245,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COL_NAME, occ.getName());
         values.put(COL_STATUS, occ.isIn());
+        values.put(COL_SELECTED, occ.isSelected());
 
         db.update(TABLE_OCCUPATION, values, COL_ID + " = " + id, null);
 
