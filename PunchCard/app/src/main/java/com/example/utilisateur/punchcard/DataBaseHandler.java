@@ -113,12 +113,36 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
 
-    //************************** CRUD Occupation********************************
+    //region ************************** CRUD Occupation********************************
+
+    /**
+     * Obtient l'occupation avec le ID specifique
+      * @param id
+     * @return
+     */
+    public Occupation getOccupation(int id)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_OCCUPATION,
+                new String[] { COL_ID ,COL_NAME, COL_STATUS }, COL_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Occupation occupation = new Occupation();
+        occupation.setId(Integer.parseInt(cursor.getString(0)));
+        occupation.setName(cursor.getString(1));
+        occupation.isIn(Boolean.parseBoolean(cursor.getString(2)));
+
+
+        return occupation;
+    }
 
 
     /**
      * Obtient toutes les occupations de la bd
-     * SELECT * FROM OCCUPATION
      *
      * @return
      */
@@ -166,6 +190,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+
     /**
      * Suppression de l'occupation de la bd
      *
@@ -186,6 +211,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+
+    /**
+     * Supprime toutes les occupations
+     */
     public void deleteAllOccupations() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM " + TABLE_OCCUPATION;
@@ -195,6 +224,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
 
+    /**
+     * Update l'occupation envoyer en parametre dans la BD
+     * @param occ
+     */
     public void updateOccupation(Occupation occ) {
         if (occ == null) {
             return;
@@ -219,10 +252,34 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    //endregion
 
-    //************************** CRUD PARAMETERS ********************************
+    //region 1************************** CRUD PARAMETERS ********************************
 
 
+    /**
+     * Obtient un dictionnaire de key value d'un parameters utiliser pour les requetes
+     * @param parameters
+     * @return
+     */
+    private ContentValues getParametersValue(OccupationParameters parameters)
+    {
+        ContentValues values = new ContentValues();
+
+        values.put(COL_NB_DAY_BEFORE_RESET, parameters.getNbDayBeforeReset());
+        values.put(COL_RESET_DAY, parameters.getResetDay().getValue());
+        values.put(COL_ROUND_TYPE, parameters.getRoundType().getValue());
+        values.put(COL_OCC_ID, parameters.getOccupationId());
+        values.put(COL_ROUND_MIN_VALUE, parameters.getRoundMinuteValue());
+
+        return values;
+    }
+
+
+    /**
+     * Ajouter un parameters a la BD
+     * @param parameters
+     */
     public void addParameters(OccupationParameters parameters)
     {
         if (parameters == null) {
@@ -244,6 +301,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
 
+    /**
+     * Update le parameters passer en parametre dans la BD
+     * @param parameters
+     */
     public void updateParameters(OccupationParameters parameters)
     {
         if (parameters == null) {
@@ -268,20 +329,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
 
-    private ContentValues getParametersValue(OccupationParameters parameters)
-    {
-        ContentValues values = new ContentValues();
 
-        values.put(COL_NB_DAY_BEFORE_RESET, parameters.getNbDayBeforeReset());
-        values.put(COL_RESET_DAY, parameters.getResetDay().getValue());
-        values.put(COL_ROUND_TYPE, parameters.getRoundType().getValue());
-        values.put(COL_OCC_ID, parameters.getOccupationId());
-        values.put(COL_ROUND_MIN_VALUE, parameters.getRoundMinuteValue());
 
-        return values;
-    }
+    // endregion
 
-    //************************** CRUD HISTORY ********************************
+    //region 2************************** CRUD HISTORY ********************************
 
     public void addHistory(OccupationHistory history)
     {
@@ -306,4 +358,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         }
         //--------------------
     }
+
+    //endregion
 }

@@ -57,7 +57,7 @@ public class MainActivity extends ListActivity {
         @Override
         public long getItemId(int position)
         {
-            DataBaseHandler db = new DataBaseHandler(_context);
+            //DataBaseHandler db = new DataBaseHandler(_context);
             return 0;
         }
 
@@ -79,7 +79,7 @@ public class MainActivity extends ListActivity {
                     .setText(getItem(position).getName());
 
             ((TextView) convertView.findViewById(R.id.act_status))
-                    .setText("5h 57min");
+                    .setText(new Integer(getItem(position).getId()).toString());
 
             return convertView;
         }
@@ -88,7 +88,7 @@ public class MainActivity extends ListActivity {
 
 
     //### true en mode test #####
-    public static final boolean TEST = true;
+    public static final boolean TEST = false;
     //###########################
 
     private final String TAG = "jeanrene";
@@ -191,10 +191,12 @@ public class MainActivity extends ListActivity {
             return;
 
         DataBaseHandler db = new DataBaseHandler(this);
-/*
+        Log.d("JRRRR" , db.getOccupation(7).getName());
+
         db.deleteAllOccupations();
         return;
-*/
+
+        /*
         List<Occupation> occ = db.getAllOccupations();
 
         String size  = new Integer(occ.size()).toString();
@@ -205,6 +207,6 @@ public class MainActivity extends ListActivity {
         {
             Log.d("Occupation: " + c, occu.getName());
             c++;
-        }
+        }*/
     }
 }
