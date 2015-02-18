@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Camera;
+import android.media.RemoteController;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,48 +17,76 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.List;
 
 
 public class MainActivity extends ListActivity {
+
+    //############################## true en mode test ######################################
+
+    public static final boolean TEST = true;
+
+    //#######################################################################################
 
     private final String TAG = "jeanrene";
 
 
 
+    //////////////////////////////////////////////////////////////////////////////////////////
     /**
      * A simple array adapter that creates a list of cheeses.
      */
-    private class MyAdapter extends BaseAdapter {
-        @Override
-        public int getCount() {
-            return Job.JOBS.length;
+    private class MyAdapter extends BaseAdapter
+    {
+        private List<Occupation> _occupations;
+        private Context _context;
+
+        public MyAdapter(Context context)
+        {
+            _context = context;
+            DataBaseHandler db = new DataBaseHandler(context);
+
+            _occupations = db.getAllOccupations();
         }
 
         @Override
-        public String getItem(int position) {
-            return Job.JOBS[position];
+        public int getCount()
+        {
+            return _occupations.size();
         }
 
         @Override
-        public long getItemId(int position) {
-            return Job.JOBS[position].hashCode();
+        public Occupation getItem(int position)
+        {
+            return _occupations.get(position);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup container) {
+        public long getItemId(int position)
+        {
+            DataBaseHandler db = new DataBaseHandler(_context);
+            return 0;
+        }
 
-            if (convertView == null) {
+        @Override
+        public View getView(int position, View convertView, ViewGroup container)
+        {
+            if (convertView == null)
+            {
                 convertView = getLayoutInflater().inflate(R.layout.list_item, container, false);
             }
 
-            if (convertView == null) {
+            if (convertView == null)
+            {
                 Log.d(TAG, "getView()");
             }
 
 
             ((TextView) convertView.findViewById(R.id.act_name))
-                    .setText(getItem(position));
+                    .setText(getItem(position).getName());
 
             ((TextView) convertView.findViewById(R.id.act_status))
                     .setText("5h 57min");
@@ -63,17 +94,45 @@ public class MainActivity extends ListActivity {
             return convertView;
         }
     }
+    //////////////////////////////////////////////////////////////////////////////////////////
 
 
 
+    ///////////////////////////////  OVERRIDE  /////////////////////////////////////////
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setListAdapter(new MyAdapter());
+        setListAdapter(new MyAdapter(this));
+
+        //--------- Test ---------
+        TestBd();
+        //------------------------
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+
+    ///////////////////////////////////// EVENT ///////////////////////////////////////////////
 
     // event click sur une job
     public void onClickJob(View view) {
@@ -84,7 +143,7 @@ public class MainActivity extends ListActivity {
     // event click sur une job
     public void onClickAdd(View view) {
 
-        Dialog dialog = new Dialog(this);
+        final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add);
         dialog.setTitle("Add job");
 
@@ -93,7 +152,7 @@ public class MainActivity extends ListActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent("PunchCard.History"));
+                addOccupation(dialog);
             }
         });
 
@@ -110,28 +169,52 @@ public class MainActivity extends ListActivity {
     }
 
 
+    private void addOccupation(Dialog dialog)
+    {
+        DataBaseHandler db = new DataBaseHandler(this);
 
+        Occupation occupation = new Occupation();
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        EditText txtBox = (EditText)dialog.findViewById(R.id.edit_name);
+
+        String name = txtBox.getText().toString();
+
+        Log.d("NAME Occupation: ", name);
+
+        occupation.setName(name);
+        occupation.isIn(false);
+
+        db.addOccupation(occupation);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private void TestBd()
+    {
+        if (!TEST)
+            return;
+
+
+
+        DataBaseHandler db = new DataBaseHandler(this);
+/*
+        db.deleteAllOccupations();
+        return;
+*/
+        List<Occupation> occ = db.getAllOccupations();
+
+        String size  = new Integer(occ.size()).toString();
+        Log.d("Total Occupation: ", size);
+
+        int c  = 0;
+        for(Occupation occu : occ)
+        {
+            Log.d("Occupation: " + c , occu.getName());
+            c++;
         }
 
-        return super.onOptionsItemSelected(item);
     }
+
+
+
 
 }

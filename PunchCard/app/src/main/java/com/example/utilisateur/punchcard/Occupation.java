@@ -41,14 +41,20 @@ public class Occupation
     }
 
     //-------- setter -----
+    public void setId(int id)
+    {
+        _id = id;
+    }
+
     public void setName(String name)
     {
         _name = name;
     }
 
-    public void isIm(boolean isIn)
+    public void isIn(boolean isIn)
     {
         _isIn = isIn;
     }
+
 
 }
