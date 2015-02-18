@@ -25,16 +25,6 @@ import java.util.List;
 
 public class MainActivity extends ListActivity {
 
-    //############################## true en mode test ######################################
-
-    public static final boolean TEST = true;
-
-    //#######################################################################################
-
-    private final String TAG = "jeanrene";
-
-
-
     //////////////////////////////////////////////////////////////////////////////////////////
     /**
      * A simple array adapter that creates a list of cheeses.
@@ -97,14 +87,22 @@ public class MainActivity extends ListActivity {
     //////////////////////////////////////////////////////////////////////////////////////////
 
 
+    //### true en mode test #####
+    public static final boolean TEST = true;
+    //###########################
 
-    ///////////////////////////////  OVERRIDE  /////////////////////////////////////////
+    private final String TAG = "jeanrene";
+    private MyAdapter _adapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setListAdapter(new MyAdapter(this));
+        _adapter = new MyAdapter(this);
+
+        setListAdapter(_adapter);
 
         //--------- Test ---------
         TestBd();
@@ -123,26 +121,25 @@ public class MainActivity extends ListActivity {
     {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-    //////////////////////////////////////////////////////////////////////////////////////////
 
-
-    ///////////////////////////////////// EVENT ///////////////////////////////////////////////
 
     // event click sur une job
-    public void onClickJob(View view) {
+    public void onClickJob(View view)
+    {
         startActivity(new Intent("PunchCard.History"));
-
     }
 
-    // event click sur une job
-    public void onClickAdd(View view) {
 
+    // event click sur une job
+    public void onClickAdd(View view)
+    {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add);
         dialog.setTitle("Add job");
@@ -151,8 +148,12 @@ public class MainActivity extends ListActivity {
         Button btnSave = (Button)dialog.findViewById(R.id.btn_add_save);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 addOccupation(dialog);
+                dialog.dismiss();
+                _adapter.notifyDataSetChanged();
+                setListAdapter(_adapter);
             }
         });
 
@@ -160,7 +161,8 @@ public class MainActivity extends ListActivity {
         Button btnParameters = (Button)dialog.findViewById(R.id.btn_add_set_parameters);
         btnParameters.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 startActivity(new Intent("PunchCard.History"));
             }
         });
@@ -173,15 +175,10 @@ public class MainActivity extends ListActivity {
     {
         DataBaseHandler db = new DataBaseHandler(this);
 
-        Occupation occupation = new Occupation();
-
         EditText txtBox = (EditText)dialog.findViewById(R.id.edit_name);
 
-        String name = txtBox.getText().toString();
-
-        Log.d("NAME Occupation: ", name);
-
-        occupation.setName(name);
+        Occupation occupation = new Occupation();
+        occupation.setName(txtBox.getText().toString());
         occupation.isIn(false);
 
         db.addOccupation(occupation);
@@ -192,8 +189,6 @@ public class MainActivity extends ListActivity {
     {
         if (!TEST)
             return;
-
-
 
         DataBaseHandler db = new DataBaseHandler(this);
 /*
@@ -208,13 +203,8 @@ public class MainActivity extends ListActivity {
         int c  = 0;
         for(Occupation occu : occ)
         {
-            Log.d("Occupation: " + c , occu.getName());
+            Log.d("Occupation: " + c, occu.getName());
             c++;
         }
-
     }
-
-
-
-
 }
