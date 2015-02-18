@@ -4,6 +4,8 @@
     <string name="app_name">PunchCard</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="RightArrow">--&#62;</string>
+    <string name="LeftArrow">&#60;--</string>
     <string name="title_activity_history">History</string>
 
 </resources>

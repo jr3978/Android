@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="136dp"
+    android:columnCount="5"
+    android:rowCount="3"
+    android:useDefaultMargins="true"
+    android:background="@drawable/background">
+
+    <Button
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"
+        android:layout_gravity="left"
+        android:id="@+id/buttonLeft"
+        android:text="@string/LeftArrow"/>
+
+    <TextView
+        android:layout_columnSpan="3"
+        android:layout_rowSpan="1"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:id="@+id/stackWidgetView"
+        android:textSize="19dp"
+        android:text="PlaceHolderActivity"/>
+
+    <Button
+        android:layout_columnSpan="1"
+        android:layout_rowSpan="1"
+        android:layout_gravity="clip_horizontal"
+        android:id="@+id/buttonRight"
+        android:text="@string/RightArrow"/>
+
+    <TextView
+        android:layout_columnSpan="5"
+        android:layout_rowSpan="1"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/txtTime"
+        android:text="PlaceHolderTime"
+        android:textSize="13dp"/>
+
+    <Button
+        android:layout_columnSpan="5"
+        android:layout_rowSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:id="@+id/buttonStart"
+        android:text="Start"/>
+
+</GridLayout>
