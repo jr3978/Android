@@ -12,6 +12,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -20,38 +22,113 @@ import java.util.Random;
 public class UpdateService  extends Service
 {
     private static final String LOG = "utilisateur.android.widget.example";
-    private static final String BUTTON_ONE_CLICKED = "com.yourpackage.BUTTON_ONE_CLICKED";
-    private static final String BUTTON_TWO_CLICKED = "com.yourpackage.BUTTON_TWO_CLICKED";
-    private static final String BUTTON_THREE_CLICKED = "com.yourpackage.BUTTON_THREE_CLICKED";
-    private static final String BUTTON_FOUR_CLICKED = "com.yourpackage.BUTTON_FOUR_CLICKED";
+    private static final String BUTTON_LEFT_CLICKED = "punchapp.BUTTON_LEFT_CLICKED";
+    private static final String BUTTON_RIGHT_CLICKED = "punchapp.BUTTON_RIGHT_CLICKED";
+    private static final String BUTTON_START_CLICKED = "punchapp.BUTTON_START_CLICKED";
+    private static final String BUTTON_VIEW_CLICKED = "punchapp.BUTTON_VIEW_CLICKED";
 
     public void onStart(Intent intent, int startId)
     {
         Log.i(LOG, "Called");
+        DataBaseHandler db = new DataBaseHandler(this);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
         RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widgetpunch);
+        List<Occupation> lstjob = new ArrayList<>();
+        lstjob = db.getAllOccupations();
 
-        if(BUTTON_ONE_CLICKED.equals(intent.getAction()))
+        if(BUTTON_LEFT_CLICKED.equals(intent.getAction()))
         {
-            Log.i(LOG, "BUTTON ONE");
+            Log.i(LOG, "BUTTON LEFT");
+            int jobcount = lstjob.size();
+            boolean bfound = false;
+            for(int i = 0; i < jobcount ; i++)
+            {
+                if(lstjob.get(i).isSelected())
+                {
+                    bfound = true;
+                    lstjob.get(i).isSelected(false);
+                    db.updateOccupation(lstjob.get(i));
+                    if(i != 0)
+                    {
+                        Log.i(LOG, lstjob.get(i-1).getName());
+                        remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(i - 1).getName());
+                        lstjob.get(i-1).isSelected(true);
+                        db.updateOccupation(lstjob.get(i-1));
+                        break;
+                    }
+                    else
+                    {
+                        Log.i(LOG, lstjob.get(jobcount -1).getName());
+                        remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(jobcount - 1).getName());
+                        lstjob.get(jobcount -1).isSelected(true);
+                        db.updateOccupation(lstjob.get(jobcount -1));
+                        break;
 
-            remoteViews.setTextViewText(R.id.stackWidgetView,"testLeft");
+                    }
+
+
+                }
+
+
+            }
+            if(!bfound && jobcount != 0)
+            {
+                remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
+                lstjob.get(0).isSelected(true);
+                db.updateOccupation(lstjob.get(0));
+            }
             Bundle extras = intent.getExtras();
             int id = extras.getInt("test");
             appWidgetManager.updateAppWidget(id, remoteViews);
             return;
         }
-        if(BUTTON_TWO_CLICKED.equals(intent.getAction()))
+        if(BUTTON_RIGHT_CLICKED.equals(intent.getAction()))
         {
-            Log.i(LOG, "BUTTON TWO");
+            Log.i(LOG, "BUTTON RIGHT");
+            int jobcount = lstjob.size();
+            boolean bfound = false;
+            for(int i = 0; i < jobcount ; i++)
+            {
+                if(lstjob.get(i).isSelected())
+                {
+                    bfound = true;
+                    lstjob.get(i).isSelected(false);
+                    db.updateOccupation(lstjob.get(i));
+                    if(i != (jobcount-1))
+                    {
+                        Log.i(LOG, lstjob.get(i+1).getName());
+                        remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(i - 1).getName());
+                        lstjob.get(i-1).isSelected(true);
+                        db.updateOccupation(lstjob.get(i-1));
+                        break;
+                    }
+                    else
+                    {
+                        Log.i(LOG, lstjob.get(jobcount -1).getName());
+                        remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(jobcount - 1).getName());
+                        lstjob.get(jobcount -1).isSelected(true);
+                        db.updateOccupation(lstjob.get(jobcount -1));
+                        break;
 
-            remoteViews.setTextViewText(R.id.stackWidgetView,"testRight");
+                    }
+
+
+                }
+
+
+            }
+            if(!bfound && jobcount != 0)
+            {
+                remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
+                lstjob.get(0).isSelected(true);
+                db.updateOccupation(lstjob.get(0));
+            }
             Bundle extras = intent.getExtras();
             int id = extras.getInt("test");
             appWidgetManager.updateAppWidget(id, remoteViews);
             return;
         }
-        if(BUTTON_THREE_CLICKED.equals(intent.getAction()))
+        if(BUTTON_START_CLICKED.equals(intent.getAction()))
         {
             Log.i(LOG, "BUTTON THREE");
             remoteViews.setTextViewText(R.id.buttonStart,"Stop");
@@ -60,7 +137,7 @@ public class UpdateService  extends Service
             appWidgetManager.updateAppWidget(id, remoteViews);
             return;
         }
-        if(BUTTON_FOUR_CLICKED.equals(intent.getAction()))
+        if(BUTTON_VIEW_CLICKED.equals(intent.getAction()))
         {
             Log.i(LOG, "BUTTON FOUR");
             remoteViews.setTextViewText(R.id.stackWidgetView,"ViewClicked");
@@ -85,8 +162,6 @@ public class UpdateService  extends Service
 
 
             Log.w("WidgetExample", String.valueOf(number));
-            // Set the text
-            remoteViews.setTextViewText(R.id.stackWidgetView, "Random: " + String.valueOf(number));
 
             Context context = getApplicationContext();
 
@@ -96,11 +171,11 @@ public class UpdateService  extends Service
             Intent buttonFourIntent = new Intent(context, UpdateService.class);
 
             // set action
-            buttonOneIntent.setAction(BUTTON_ONE_CLICKED);
-            buttonTwoIntent.setAction(BUTTON_TWO_CLICKED);
-            buttonThreeIntent.setAction(BUTTON_THREE_CLICKED);
-            buttonFourIntent.setAction(BUTTON_FOUR_CLICKED);
-            Log.w("VLALEXTRA", String.valueOf(widgetId));
+            buttonOneIntent.setAction(BUTTON_LEFT_CLICKED);
+            buttonTwoIntent.setAction(BUTTON_RIGHT_CLICKED);
+            buttonThreeIntent.setAction(BUTTON_START_CLICKED);
+            buttonFourIntent.setAction(BUTTON_VIEW_CLICKED);
+
             // put widgetId
             buttonOneIntent.putExtra("test", widgetId);
             buttonTwoIntent.putExtra("test", widgetId);
@@ -108,10 +183,10 @@ public class UpdateService  extends Service
             buttonFourIntent.putExtra("test", widgetId);
 
             // make these intents unique to avoid collisions
-            buttonOneIntent.setData(Uri.withAppendedPath(Uri.parse("webcall_widget://buttonone/widgetid"), String.valueOf(widgetId)));
-            buttonTwoIntent.setData(Uri.withAppendedPath(Uri.parse("webcall_widget://buttontwo/widgetid"), String.valueOf(widgetId)));
-            buttonThreeIntent.setData(Uri.withAppendedPath(Uri.parse("webcall_widget://buttonthree/widgetid"), String.valueOf(widgetId)));
-            buttonFourIntent.setData(Uri.withAppendedPath(Uri.parse("webcall_widget://buttonfour/widgetid"), String.valueOf(widgetId)));
+            buttonOneIntent.setData(Uri.withAppendedPath(Uri.parse("widget://buttonleft/widgetid"), String.valueOf(widgetId)));
+            buttonTwoIntent.setData(Uri.withAppendedPath(Uri.parse("widget://buttonright/widgetid"), String.valueOf(widgetId)));
+            buttonThreeIntent.setData(Uri.withAppendedPath(Uri.parse("widget://buttonstart/widgetid"), String.valueOf(widgetId)));
+            buttonFourIntent.setData(Uri.withAppendedPath(Uri.parse("widget://buttonView/widgetid"), String.valueOf(widgetId)));
 
             // pending intents
             PendingIntent buttonOnePendingIntent = PendingIntent.getService(context, 0, buttonOneIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -124,7 +199,6 @@ public class UpdateService  extends Service
             remoteViews.setOnClickPendingIntent(R.id.buttonRight, buttonTwoPendingIntent);
             remoteViews.setOnClickPendingIntent(R.id.buttonStart, buttonThreePendingIntent);
             remoteViews.setOnClickPendingIntent(R.id.stackWidgetView, buttonFourPendingIntent);
-            // my changes - part 3 - end
 
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }

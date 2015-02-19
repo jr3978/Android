@@ -71,7 +71,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                         COL_ID + " INTEGER PRIMARY KEY, " +
                         COL_NAME + " TEXT, " +
                         COL_STATUS + " NUMERIC, " +
-                        COL_SELECTED + " NUMERIC" +
+                        COL_SELECTED + " INTEGER" +
                         ");";
 
         String createHistoryTable =
@@ -167,7 +167,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 occupation.setId(Integer.parseInt(cursor.getString(0)));
                 occupation.setName(cursor.getString(1));
                 occupation.isIn(Boolean.parseBoolean(cursor.getString(2)));
-                occupation.isSelected(Boolean.parseBoolean(cursor.getString(3)));
+                if(Integer.parseInt(cursor.getString(3)) == 1)
+                    occupation.isSelected(true);
+                else
+                    occupation.isSelected(false);
+
 
                 listOcc.add(occupation);
             }
@@ -193,7 +197,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COL_NAME, occ.getName());
         values.put(COL_STATUS, occ.isIn());
-        values.put(COL_SELECTED, occ.isSelected());
+        if(occ.isSelected())
+            values.put(COL_SELECTED, 1);
+        else
+            values.put(COL_SELECTED, 0);
 
         db.insert(TABLE_OCCUPATION, null, values);
         db.close();
@@ -249,7 +256,14 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COL_NAME, occ.getName());
         values.put(COL_STATUS, occ.isIn());
-        values.put(COL_SELECTED, occ.isSelected());
+        if(occ.isSelected()) {
+            values.put(COL_SELECTED, 1);
+        }
+        else{
+            values.put(COL_SELECTED, 0);
+        }
+        Log.d("updateOccupation", occ.isSelected().toString());
+
 
         db.update(TABLE_OCCUPATION, values, COL_ID + " = " + id, null);
 
