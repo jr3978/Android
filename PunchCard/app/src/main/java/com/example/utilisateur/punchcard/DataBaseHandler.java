@@ -70,7 +70,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "CREATE TABLE " + TABLE_OCCUPATION + "( " +
                         COL_ID + " INTEGER PRIMARY KEY, " +
                         COL_NAME + " TEXT, " +
-                        COL_STATUS + " NUMERIC, " +
+                        COL_STATUS + " INTEGER, " +
                         COL_SELECTED + " INTEGER" +
                         ");";
 
@@ -140,8 +140,15 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Occupation occupation = new Occupation();
         occupation.setId(Integer.parseInt(cursor.getString(0)));
         occupation.setName(cursor.getString(1));
-        occupation.isIn(Boolean.parseBoolean(cursor.getString(2)));
-        occupation.isSelected(Boolean.parseBoolean(cursor.getString(3)));
+        if(Integer.parseInt(cursor.getString(2)) == 1)
+            occupation.isIn(true);
+        else
+            occupation.isIn(false);
+
+        if(Integer.parseInt(cursor.getString(3)) == 1)
+            occupation.isSelected(true);
+        else
+            occupation.isSelected(false);
 
 
         return occupation;
@@ -166,7 +173,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 Occupation occupation = new Occupation();
                 occupation.setId(Integer.parseInt(cursor.getString(0)));
                 occupation.setName(cursor.getString(1));
-                occupation.isIn(Boolean.parseBoolean(cursor.getString(2)));
+                if(Integer.parseInt(cursor.getString(2)) == 1)
+                occupation.isIn(true);
+                else
+                occupation.isIn(false);
+
                 if(Integer.parseInt(cursor.getString(3)) == 1)
                     occupation.isSelected(true);
                 else
@@ -196,7 +207,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COL_NAME, occ.getName());
-        values.put(COL_STATUS, occ.isIn());
+
+        if(occ.isIn())
+            values.put(COL_STATUS,1);
+        else
+            values.put(COL_STATUS,0);
+
+
         if(occ.isSelected())
             values.put(COL_SELECTED, 1);
         else
@@ -453,22 +470,28 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         if (history == null) {
             return;
         }
-
+        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        String in;
+        String out;
 
-        Date in = history.getDateTimeIn();
-        Date out = history.getDateTimeOut();
+        in = parserSDF.format(history.getDateTimeIn());
 
-        values.put(COL_DATE_IN, history.getDateTimeIn().toString());
 
-        if (out != null) {
-            values.put(COL_DATE_OUT, history.getDateTimeOut().toString());
+        values.put(COL_OCC_ID, history.getOccupationId());
+        if (history.getDateTimeOut() != null) {
+            out = parserSDF.format(history.getDateTimeOut());
+            values.put(COL_DATE_OUT, out);
+        }
+        else
+        {
+            values.put(COL_DATE_OUT, "-");
         }
 
         if (in != null) {
-            values.put(COL_OCC_ID, history.getOccupationId());
+            values.put(COL_DATE_IN, in);
         }
 
         db.insert(TABLE_HISTORY, null, values);
@@ -501,6 +524,35 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateOccupationHistory(OccupationHistory history)
+    {
+        if (history == null) {
+            return;
+        }
+
+        String id = new Integer(history.getId()).toString();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL_DATE_IN, history.getDateTimeIn().toString());
+        values.put(COL_DATE_OUT, history.getDateTimeOut().toString());
+
+        values.put(COL_OCC_ID, history.getOccupationId());
+        values.put(COL_ID, history.getId());
+
+
+
+        db.update(TABLE_HISTORY, values, COL_ID + " = " + id, null);
+
+        //------- TEST -------
+        if (MainActivity.TEST) {
+            Log.d("updateHistory", "test");
+        }
+        //--------------------
+
+        db.close();
+    }
 
     /**
      * Supprime toutes les historiques
@@ -534,7 +586,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
      */
     private Date parseDate(String strDate)
     {
-        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
         Date date = null;
         try
         {
