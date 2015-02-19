@@ -51,6 +51,10 @@ public class DataBaseTest
         db.deleteAllOccupationHistory();
     }
 
+    /**
+     * BUG quand on entre une date null
+     * @param context
+     */
     public static void addRandomHistory(Context context) {
         DataBaseHandler db = new DataBaseHandler(context);
         Occupation o;
@@ -60,10 +64,10 @@ public class DataBaseTest
         if (occ.size() > 0) {
             o = occ.get(0);
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 1; i++) {
                 OccupationHistory h = new OccupationHistory();
                 h.setDateTimeOut(new Date());
-                h.setDateTimeIn(new Date());
+                //h.setDateTimeIn(null);
                 h.setOccupationId(o.getId());
                 db.addOccupationHistory(h);
             }

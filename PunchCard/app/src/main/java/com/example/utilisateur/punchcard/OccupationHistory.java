@@ -44,7 +44,7 @@ public class OccupationHistory
         return  _dateTimeIn;
     }
 
-    public Date get_dateTimeOut()
+    public Date getDateTimeOut()
     {
         return _dateTimeOut;
     }

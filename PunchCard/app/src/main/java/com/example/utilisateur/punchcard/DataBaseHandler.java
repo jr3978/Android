@@ -444,9 +444,18 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
 
+        Date in = history.getDateTimeIn();
+        Date out = history.getDateTimeOut();
+
         values.put(COL_DATE_IN, history.getDateTimeIn().toString());
-        values.put(COL_DATE_OUT, history.get_dateTimeOut().toString());
-        values.put(COL_OCC_ID, history.getOccupationId());
+
+        if (out != null) {
+            values.put(COL_DATE_OUT, history.getDateTimeOut().toString());
+        }
+
+        if (in != null) {
+            values.put(COL_OCC_ID, history.getOccupationId());
+        }
 
         db.insert(TABLE_HISTORY, null, values);
         db.close();
