@@ -533,10 +533,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         String id = new Integer(history.getId()).toString();
 
         SQLiteDatabase db = this.getWritableDatabase();
+        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
 
         ContentValues values = new ContentValues();
-        values.put(COL_DATE_IN, history.getDateTimeIn().toString());
-        values.put(COL_DATE_OUT, history.getDateTimeOut().toString());
+        values.put(COL_DATE_IN, parserSDF.format(history.getDateTimeIn()));
+        values.put(COL_DATE_OUT, parserSDF.format(history.getDateTimeOut()));
 
         values.put(COL_OCC_ID, history.getOccupationId());
         values.put(COL_ID, history.getId());
@@ -586,6 +587,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
      */
     private Date parseDate(String strDate)
     {
+        if(strDate.equals("-"))
+            return null;
         SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
         Date date = null;
         try
