@@ -191,11 +191,13 @@ public class MainActivity extends ListActivity {
             return;
 
         DataBaseHandler db = new DataBaseHandler(this);
+        /*
         Log.d("JRRRR" , db.getOccupation(7).getName());
+
 
         db.deleteAllOccupations();
         return;
-
+*/
         /*
         List<Occupation> occ = db.getAllOccupations();
 
