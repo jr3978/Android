@@ -115,7 +115,7 @@ public class MainActivity extends ListActivity {
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent("PunchCard.History"));
+                startActivity(new Intent("PunchCard.Parameters"));
             }
         });
 
