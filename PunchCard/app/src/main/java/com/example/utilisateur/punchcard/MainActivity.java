@@ -180,6 +180,7 @@ public class MainActivity extends ListActivity {
         Occupation occupation = new Occupation();
         occupation.setName(txtBox.getText().toString());
         occupation.isIn(false);
+        occupation.isSelected(false);
 
         db.addOccupation(occupation);
     }

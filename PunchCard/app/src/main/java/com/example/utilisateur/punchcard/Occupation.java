@@ -9,6 +9,7 @@ public class Occupation
     private int _id;
     private String _name;
     private Boolean _isIn;
+    private Boolean _isSelected;
 
 
     //------ constructor -----
@@ -21,6 +22,7 @@ public class Occupation
     {
         _name = name;
         _isIn = isIn;
+        _isSelected = false;
     }
 
 
@@ -40,6 +42,8 @@ public class Occupation
         return _isIn;
     }
 
+    public Boolean isSelected() {return _isSelected;}
+
     //-------- setter -----
     public void setId(int id)
     {
@@ -54,6 +58,11 @@ public class Occupation
     public void isIn(boolean isIn)
     {
         _isIn = isIn;
+    }
+
+    public void isSelected(boolean isSelected)
+    {
+        _isSelected = isSelected;
     }
 
 
