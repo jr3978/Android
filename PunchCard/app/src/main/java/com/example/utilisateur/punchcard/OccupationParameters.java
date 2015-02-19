@@ -7,6 +7,34 @@ import java.util.PriorityQueue;
  */
 public class OccupationParameters
 {
+    public enum Parameters {
+        NB_WEEK_RESET("How many week before reset ?"),
+        RESET_DAY("Set reset day"),
+        ROUND_TYPE("Round type (up, down, normal)"),
+        ROUND_MINUTE("Round for every x minutes");
+
+        private String _value;
+
+        Parameters(String value) {
+            _value = value;
+        }
+
+        public String getValue() {
+            return _value;
+        }
+
+        public static Parameters fromString(String text) {
+            if (text != null) {
+                for (Parameters b : Parameters.values()) {
+                    if (text.equalsIgnoreCase(b.getValue())) {
+                        return b;
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
     // Round Type
     public enum RoundType
     {
