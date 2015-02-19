@@ -1,35 +1,51 @@
 package com.example.utilisateur.punchcard;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 
-public class History extends Activity {
+public class History extends ListActivity {
+
+    private AdapterHistory _adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+
+
+        ////// data from MainActivity nom et id de celle cliquer dans la liste
+        int id = getIntent().getIntExtra("id", 0);
+        String name = getIntent().getStringExtra("name");
+
+        setTitle(name);
+
+        //call historique dans bd avec le id de l'occupation
+        ////////////////////////////////////////////////////////////////////
+
+        _adapter = new AdapterHistory(this, id);
+
+        setListAdapter(_adapter);
+
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_history, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }

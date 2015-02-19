@@ -9,7 +9,11 @@ import android.hardware.Camera;
 import android.util.Log;
 
 import java.lang.reflect.ParameterizedType;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -341,7 +345,96 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     //region 2************************** CRUD HISTORY ********************************
 
-    public void addHistory(OccupationHistory history)
+    /**
+     * Retourne un object OccupationHistory avec le data du cursor passer en parametre
+     * @param cursor
+     * @return
+     */
+    private OccupationHistory cursorToOccupationHystory(Cursor cursor)
+    {
+        OccupationHistory history = new OccupationHistory();
+
+        try
+        {
+            history.setId(Integer.parseInt(cursor.getString(0)));
+            history.setOccupationId(Integer.parseInt(cursor.getString(1)));
+            history.setDateTimeIn(parseDate(cursor.getString(2)));
+            history.setDateTimeOut(parseDate(cursor.getString(3)));
+        }
+        catch (Exception e)
+        {
+            Log.d("ERROR IN getHistory", e.getMessage());
+        }
+
+        return history;
+    }
+
+
+    /**
+     * execute une requete SELECT sur la table History et retourne le resultat
+     * @param rawQuery
+     * @return
+     */
+    private List<OccupationHistory> executeRawQueryOnHistoryTable(String rawQuery)
+    {
+        List<OccupationHistory> listHistory = new ArrayList<>();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(rawQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do
+            {
+                listHistory.add(cursorToOccupationHystory(cursor));
+            }
+            while (cursor.moveToNext());
+        }
+
+        return listHistory;
+    }
+
+
+    /**
+     * Obtient un historique specifique a son id
+     * @param id
+     * @return
+     */
+    public OccupationHistory getOccupationHistory(int id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.query(TABLE_HISTORY,
+                new String[] { COL_ID , COL_OCC_ID, COL_DATE_IN, COL_DATE_OUT }, COL_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursorToOccupationHystory(cursor);
+    }
+
+
+    /**
+     * Obtient tout l'historique d'un Occupation
+     * @param occupationId
+     * @return
+     */
+    public List<OccupationHistory> getOccupationHistoryFromOccId(int occupationId)
+    {
+        String query = "SELECT * FROM " + TABLE_HISTORY +
+                       " WHERE " + COL_OCC_ID + " = " + occupationId;
+
+        return executeRawQueryOnHistoryTable(query);
+    }
+
+
+
+    /**
+     * Ajoute un historique
+     * @param history
+     */
+    public void addOccupationHistory(OccupationHistory history)
     {
         if (history == null) {
             return;
@@ -359,11 +452,77 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
 
         //------- TEST -------
-        if (MainActivity.TEST) {
+        if (MainActivity.TEST)
+        {
             Log.d("addHistory", "test");
         }
         //--------------------
     }
 
+
+    /**
+     * Delete l'historique passe en parametre
+     * @param history
+     */
+    public void deleteOccupationHistory(OccupationHistory history)
+    {
+        if (history == null)
+        {
+            return;
+        }
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String id = new Integer(history.getId()).toString();
+
+        db.delete(TABLE_HISTORY, COL_ID + " = " + id, null);
+        db.close();
+    }
+
+
+    /**
+     * Supprime toutes les historiques
+     */
+    public void deleteAllOccupationHistory()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM " + TABLE_HISTORY;
+
+        db.delete(TABLE_HISTORY, null, null);
+        db.close();
+    }
+
+
+    public void deleteHistoryFromOccId(int occupationId)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(TABLE_HISTORY, COL_OCC_ID + " = " + occupationId, null);
+        db.close();
+    }
+
+    //endregion
+
+
+    //region Helper
+    /**
+     * Permet de parser une date selon le String format specifique enregistrer dans la BD
+     * @param strDate
+     * @return
+     */
+    private Date parseDate(String strDate)
+    {
+        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+        Date date = null;
+        try
+        {
+            date = parserSDF.parse(strDate);
+        }
+        catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+
+        return date;
+    }
     //endregion
 }

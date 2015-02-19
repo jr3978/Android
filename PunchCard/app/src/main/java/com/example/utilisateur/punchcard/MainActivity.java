@@ -20,79 +20,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 
 
 public class MainActivity extends ListActivity {
 
-    //////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * A simple array adapter that creates a list of cheeses.
-     */
-    private class MyAdapter extends BaseAdapter
-    {
-        private List<Occupation> _occupations;
-        private Context _context;
-
-        public MyAdapter(Context context)
-        {
-            _context = context;
-            DataBaseHandler db = new DataBaseHandler(context);
-
-            _occupations = db.getAllOccupations();
-        }
-
-        @Override
-        public int getCount()
-        {
-            return _occupations.size();
-        }
-
-        @Override
-        public Occupation getItem(int position)
-        {
-            return _occupations.get(position);
-        }
-
-        @Override
-        public long getItemId(int position)
-        {
-            //DataBaseHandler db = new DataBaseHandler(_context);
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup container)
-        {
-            if (convertView == null)
-            {
-                convertView = getLayoutInflater().inflate(R.layout.list_item, container, false);
-            }
-
-            if (convertView == null)
-            {
-                Log.d(TAG, "getView()");
-            }
-
-
-            ((TextView) convertView.findViewById(R.id.act_name))
-                    .setText(getItem(position).getName());
-
-            ((TextView) convertView.findViewById(R.id.act_status))
-                    .setText(new Integer(getItem(position).getId()).toString());
-
-            return convertView;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////////////////////
-
 
     //### true en mode test #####
-    public static final boolean TEST = false;
+    public static final boolean TEST = true;
     //###########################
 
-    private final String TAG = "jeanrene";
-    private MyAdapter _adapter;
+    private AdapterOccupation _adapter;
 
 
     @Override
@@ -100,7 +39,7 @@ public class MainActivity extends ListActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        _adapter = new MyAdapter(this);
+        _adapter = new AdapterOccupation(this);
 
         setListAdapter(_adapter);
 
@@ -109,12 +48,14 @@ public class MainActivity extends ListActivity {
         //------------------------
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -130,10 +71,21 @@ public class MainActivity extends ListActivity {
     }
 
 
-    // event click sur une job
+    // event click sur une job de la liste
     public void onClickJob(View view)
     {
-        startActivity(new Intent("PunchCard.History"));
+        Intent intent = new Intent("PunchCard.History");
+
+        int id = Integer.parseInt(
+                ((TextView)view.findViewById(R.id.act_status)).getText().toString()
+        );
+
+        String name = ((TextView)view.findViewById(R.id.act_name)).getText().toString();
+
+        intent.putExtra("id", id);
+        intent.putExtra("name", name);
+
+        startActivityForResult(intent, 1);
     }
 
 
@@ -186,30 +138,18 @@ public class MainActivity extends ListActivity {
     }
 
 
+    /**
+     * Methode pour appeler les tests
+     */
     private void TestBd()
     {
         if (!TEST)
             return;
 
-        DataBaseHandler db = new DataBaseHandler(this);
-        /*
-        Log.d("JRRRR" , db.getOccupation(7).getName());
-
-
-        db.deleteAllOccupations();
-        return;
-*/
-        /*
-        List<Occupation> occ = db.getAllOccupations();
-
-        String size  = new Integer(occ.size()).toString();
-        Log.d("Total Occupation: ", size);
-
-        int c  = 0;
-        for(Occupation occu : occ)
-        {
-            Log.d("Occupation: " + c, occu.getName());
-            c++;
-        }*/
+       // DataBaseTest.allOccupation(this);
+       // DataBaseTest.clearOccupation(this);
+       // DataBaseTest.allHistoryFromOccupation(this);
+       // DataBaseTest.clearHistoryTable(this);
+       // DataBaseTest.addRandomHistory(this);
     }
 }

@@ -51,6 +51,11 @@ public class OccupationHistory
 
 
     //------ setter ---------
+    public void setId(int id)
+    {
+        _id = id;
+    }
+
     public void setOccupationId(int occupationId)
     {
         _occupationId = occupationId;
@@ -58,10 +63,10 @@ public class OccupationHistory
 
     public void setDateTimeIn(Date dateTimeIn)
     {
-        _dateTimeIn = _dateTimeIn;
+        _dateTimeIn = dateTimeIn;
     }
 
-    public void set_dateTimeOut(Date dateTimeOut)
+    public void setDateTimeOut(Date dateTimeOut)
     {
         _dateTimeOut = dateTimeOut;
     }
