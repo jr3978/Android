@@ -31,6 +31,7 @@
     android:minHeight="?android:listPreferredItemHeight"
     android:gravity="center_vertical"
     android:onClick="onClickJob"
+    android:id="@+id/list_item_job"
     >
 
 

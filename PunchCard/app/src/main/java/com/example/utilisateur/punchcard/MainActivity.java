@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.media.RemoteController;
@@ -15,9 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.Date;
@@ -32,22 +35,42 @@ public class MainActivity extends ListActivity {
     //###########################
 
     private AdapterOccupation _adapter;
-
+    private OccupationParameters _tempParam = new OccupationParameters();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         _adapter = new AdapterOccupation(this);
 
         setListAdapter(_adapter);
 
+
+        //initListView();
         //--------- Test ---------
         TestBd();
         //------------------------
+
     }
 
+
+    private void initListView()
+    {
+        View v = findViewById(R.id.list_item_job);
+
+        if (v == null)
+        {
+            int stoip = 0;
+        }
+        v.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -71,6 +94,7 @@ public class MainActivity extends ListActivity {
     }
 
 
+
     // event click sur une job de la liste
     public void onClickJob(View view)
     {
@@ -88,39 +112,56 @@ public class MainActivity extends ListActivity {
         startActivityForResult(intent, 1);
     }
 
-
     // event click sur une job
     public void onClickAdd(View view)
     {
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_add);
-        dialog.setTitle("Add job");
+        // devrait etre un fragment au lieu d'un alert Dialog
+
+        // ????????????
+        //
+        // add new Occupation
+        // add new Parameters avec OccId
+        // quand click sur btn save fait update sur Occupation
+        //
+        // ????????????
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(R.layout.dialog_add);
+        builder.setTitle("Add job");
+
+        final AlertDialog alertDialog = builder.create();
+        final Activity act = this;
+
+        alertDialog.show();
 
         // button SAVE
-        Button btnSave = (Button)dialog.findViewById(R.id.btn_add_save);
+        Button btnSave = (Button)alertDialog.findViewById(R.id.btn_add_save);
+
+
         btnSave.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                EditText txtBox = (EditText)dialog.findViewById(R.id.edit_name);
+                EditText txtBox = (EditText)alertDialog.findViewById(R.id.edit_name);
 
                 Occupation occupation = new Occupation();
                 occupation.setName(txtBox.getText().toString());
                 occupation.isIn(false);
                 occupation.isSelected(false);
 
-                _tempParam = new OccupationParameters();
                 addOccupation(occupation, _tempParam);
 
-                dialog.dismiss();
-                _adapter.notifyDataSetChanged();
+                _adapter = new AdapterOccupation(act);
+
+                alertDialog.dismiss();
+                _adapter.notifyDataSetInvalidated();
                 setListAdapter(_adapter);
             }
         });
 
         // button SET PARAMETERS
-        Button btnParameters = (Button)dialog.findViewById(R.id.btn_add_set_parameters);
+        Button btnParameters = (Button)alertDialog.findViewById(R.id.btn_add_set_parameters);
         btnParameters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -146,10 +187,10 @@ public class MainActivity extends ListActivity {
             }
         });
 
-        dialog.show();
+
     }
 
-    private OccupationParameters _tempParam = new OccupationParameters();
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)

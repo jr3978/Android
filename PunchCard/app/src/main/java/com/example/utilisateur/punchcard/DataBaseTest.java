@@ -18,7 +18,7 @@ public class DataBaseTest
     {
         DataBaseHandler db = new DataBaseHandler(context);
 
-        OccupationParameters parameters = db.getParametersByOccupationId(3);
+        OccupationParameters parameters = db.getParametersByOccupationId(1);
 
         int stop = 0;
     }

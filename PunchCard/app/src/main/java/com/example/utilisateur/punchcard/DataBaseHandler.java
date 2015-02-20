@@ -86,8 +86,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         String createParametersTable =
                 "CREATE TABLE " + TABLE_PARAMETERS + " ( " +
-                        COL_ID + " INTEGER PRIMARY KEY, " +
-                        COL_OCC_ID + " INTEGER, " +
+                        //COL_ID + " INTEGER PRIMARY KEY, " +
+                        COL_OCC_ID + " INTEGER PRIMARY KEY, " +
                         COL_RESET_DAY + " INTEGER, " +
                         COL_NB_DAY_BEFORE_RESET + " INTEGER, " +
                         COL_ROUND_TYPE + " INTEGER, " +
@@ -329,7 +329,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_PARAMETERS,
                 new String[]
                         {
-                            COL_ID ,
                             COL_OCC_ID,
                             COL_ROUND_MIN_VALUE,
                             COL_NB_DAY_BEFORE_RESET ,
@@ -344,15 +343,14 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         OccupationParameters parameters = new OccupationParameters();
 
-        parameters.setId(Integer.parseInt(cursor.getString(0)));
-        parameters.setOccupationId(Integer.parseInt(cursor.getString(1)));
-        parameters.setRoundMinuteValue(Integer.parseInt(cursor.getString(2)));
-        parameters.setNbDayBeforeReset(Integer.parseInt(cursor.getString(3)));
+        parameters.setOccupationId(Integer.parseInt(cursor.getString(0)));
+        parameters.setRoundMinuteValue(Integer.parseInt(cursor.getString(1)));
+        parameters.setNbDayBeforeReset(Integer.parseInt(cursor.getString(2)));
         parameters.setResetDay(
-                OccupationParameters.DayOfWeek.values()[Integer.parseInt(cursor.getString(4))]
+                OccupationParameters.DayOfWeek.values()[Integer.parseInt(cursor.getString(3))]
         );
         parameters.setRoundType(
-                OccupationParameters.RoundType.values()[Integer.parseInt(cursor.getString(5))]
+                OccupationParameters.RoundType.values()[Integer.parseInt(cursor.getString(4))]
         );
 
         return parameters;

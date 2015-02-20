@@ -1,7 +1,9 @@
 package com.example.utilisateur.punchcard;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -61,6 +63,8 @@ public class AdapterOccupation extends BaseAdapter
             convertView = _activity.getLayoutInflater().inflate(R.layout.list_item, container, false);
         }
 
+        initItemListener(convertView);
+
         ((TextView) convertView.findViewById(R.id.act_name))
                 .setText(getItem(position).getName());
 
@@ -69,4 +73,41 @@ public class AdapterOccupation extends BaseAdapter
 
         return convertView;
     }
+
+    /**
+     * Abonne les items aux listener
+     * @param convertView
+     */
+    private void initItemListener(View convertView)
+    {
+        View v = convertView.findViewById(R.id.list_item_job);
+
+        v.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View v) {
+                //***********
+
+                // devrait etre un fragment au lieu d'un AlertDialgo
+                // voir exemple googleSheet
+
+                //************
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+                builder.setCancelable(true);
+                builder.setNeutralButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // affiche un message d'avertissement voulez-vous vraiment...
+                    }
+                });
+
+                // builder
+                return false;
+            }
+        });
+
+    }
+
+
 }
