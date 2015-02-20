@@ -121,22 +121,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     //region ************************** CRUD Occupation********************************
 
-    /**
-     * Obtient l'occupation avec le ID specifique
-      * @param id
-     * @return
-     */
-    public Occupation getOccupation(int id)
+
+    private Occupation cursorToOccupation(Cursor cursor)
     {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_OCCUPATION,
-                new String[] { COL_ID ,COL_NAME, COL_STATUS, COL_SELECTED }, COL_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
-
-        if (cursor != null)
-            cursor.moveToFirst();
-
         Occupation occupation = new Occupation();
         occupation.setId(Integer.parseInt(cursor.getString(0)));
         occupation.setName(cursor.getString(1));
@@ -153,7 +140,44 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         return occupation;
     }
+    /**
+     * Obtient l'occupation avec le ID specifique
+      * @param id
+     * @return
+     */
+    public Occupation getOccupation(int id)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
 
+        Cursor cursor = db.query(TABLE_OCCUPATION,
+                new String[] { COL_ID ,COL_NAME, COL_STATUS, COL_SELECTED }, COL_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursorToOccupation(cursor);
+    }
+
+
+    /**
+     * retourne la premiere l'occupation avec le nom specifie
+     * @param name
+     * @return
+     */
+    public Occupation getOccupation(String name)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_OCCUPATION,
+                new String[] { COL_ID ,COL_NAME, COL_STATUS, COL_SELECTED }, COL_NAME + "=?",
+                new String[] { String.valueOf(name) }, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+         return cursorToOccupation(cursor);
+    }
 
     /**
      * Obtient toutes les occupations de la bd
@@ -191,6 +215,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         return listOcc;
     }
+
 
 
     /**
@@ -296,6 +321,42 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     //endregion
 
     //region 1************************** CRUD PARAMETERS ********************************
+
+    public OccupationParameters getParametersByOccupationId(int occupationId)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_PARAMETERS,
+                new String[]
+                        {
+                            COL_ID ,
+                            COL_OCC_ID,
+                            COL_ROUND_MIN_VALUE,
+                            COL_NB_DAY_BEFORE_RESET ,
+                            COL_RESET_DAY,
+                            COL_ROUND_TYPE
+                        },
+                COL_OCC_ID + "=?",
+                new String[] { String.valueOf(occupationId) }, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        OccupationParameters parameters = new OccupationParameters();
+
+        parameters.setId(Integer.parseInt(cursor.getString(0)));
+        parameters.setOccupationId(Integer.parseInt(cursor.getString(1)));
+        parameters.setRoundMinuteValue(Integer.parseInt(cursor.getString(2)));
+        parameters.setNbDayBeforeReset(Integer.parseInt(cursor.getString(3)));
+        parameters.setResetDay(
+                OccupationParameters.DayOfWeek.values()[Integer.parseInt(cursor.getString(4))]
+        );
+        parameters.setRoundType(
+                OccupationParameters.RoundType.values()[Integer.parseInt(cursor.getString(5))]
+        );
+
+        return parameters;
+    }
 
 
     /**

@@ -98,11 +98,21 @@ public class MainActivity extends ListActivity {
 
         // button SAVE
         Button btnSave = (Button)dialog.findViewById(R.id.btn_add_save);
-        btnSave.setOnClickListener(new View.OnClickListener() {
+        btnSave.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v)
             {
-                addOccupation(dialog);
+                EditText txtBox = (EditText)dialog.findViewById(R.id.edit_name);
+
+                Occupation occupation = new Occupation();
+                occupation.setName(txtBox.getText().toString());
+                occupation.isIn(false);
+                occupation.isSelected(false);
+
+                _tempParam = new OccupationParameters();
+                addOccupation(occupation, _tempParam);
+
                 dialog.dismiss();
                 _adapter.notifyDataSetChanged();
                 setListAdapter(_adapter);
@@ -115,26 +125,60 @@ public class MainActivity extends ListActivity {
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent("PunchCard.Parameters"));
+
+                Intent intent = new Intent("PunchCard.Parameters");
+
+                intent.putExtra(OccupationParameters.Parameters.NB_WEEK_RESET.getValue(),
+                        _tempParam.getNbDayBeforeReset()
+                );
+                intent.putExtra(OccupationParameters.Parameters.RESET_DAY.getValue(),
+                        _tempParam.getResetDay().getValue()
+                );
+                intent.putExtra(OccupationParameters.Parameters.ROUND_MINUTE.getValue(),
+                        _tempParam.getRoundMinuteValue()
+                );
+                intent.putExtra(OccupationParameters.Parameters.ROUND_TYPE.getValue(),
+                        _tempParam.getRoundType()
+                );
+
+                startActivityForResult(intent, 3);
+                startActivity(intent);
             }
         });
 
         dialog.show();
     }
 
+    private OccupationParameters _tempParam = new OccupationParameters();
 
-    private void addOccupation(Dialog dialog)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // retour ActivityParameters
+        if (requestCode == 3)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                int test = data.getIntExtra(
+                        OccupationParameters.Parameters.NB_WEEK_RESET.getValue(),
+                        0
+                );
+
+                _tempParam.setNbDayBeforeReset(test);
+            }
+        }
+    }
+
+
+    private void addOccupation(Occupation occupation, OccupationParameters parameters)
     {
         DataBaseHandler db = new DataBaseHandler(this);
-
-        EditText txtBox = (EditText)dialog.findViewById(R.id.edit_name);
-
-        Occupation occupation = new Occupation();
-        occupation.setName(txtBox.getText().toString());
-        occupation.isIn(false);
-        occupation.isSelected(false);
-
         db.addOccupation(occupation);
+
+        Occupation occ = db.getOccupation(occupation.getName());
+        parameters.setOccupationId(occ.getId());
+
+        db.addParameters(parameters);
     }
 
 
@@ -146,6 +190,7 @@ public class MainActivity extends ListActivity {
         if (!TEST)
             return;
 
+        DataBaseTest.getFirstParameter(this);
        // DataBaseTest.allOccupation(this);
        // DataBaseTest.clearOccupation(this);
        // DataBaseTest.allHistoryFromOccupation(this);

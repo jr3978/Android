@@ -14,6 +14,15 @@ import java.util.List;
  */
 public class DataBaseTest
 {
+    public  static void getFirstParameter(Context context)
+    {
+        DataBaseHandler db = new DataBaseHandler(context);
+
+        OccupationParameters parameters = db.getParametersByOccupationId(3);
+
+        int stop = 0;
+    }
+
     public static void allOccupation(Context context)
     {
         DataBaseHandler db = new DataBaseHandler(context);

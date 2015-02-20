@@ -82,29 +82,29 @@ public class OccupationParameters
     //----- private field -----
     private int _id;
     private int _occupationId;
-    private int _resetDay;
+    private DayOfWeek _resetDay;
     private int _nbDayBeforeReset;
     private int _roundMinuteValue;
-    private int _roundType;
+    private RoundType _roundType;
 
 
     //----- constructor ----
     public OccupationParameters()
     {
-        _resetDay = DayOfWeek.SUNDAY.getValue();
+        _resetDay = DayOfWeek.SUNDAY;
         _nbDayBeforeReset = 7;
         _roundMinuteValue = 1;
-        _roundType = RoundType.ROUND_NORMAL.getValue();
+        _roundType = RoundType.ROUND_NORMAL;
     }
 
     public  OccupationParameters(int occupationId ,DayOfWeek resetDay, int nbDayBeforeReset,
                                  int roundMinuteValue, RoundType roundType)
     {
         _occupationId = occupationId;
-        _resetDay = resetDay.getValue();
+        _resetDay = resetDay;
         _nbDayBeforeReset = nbDayBeforeReset;
         _roundMinuteValue = roundMinuteValue;
-        _roundType = roundType.getValue();
+        _roundType = roundType;
     }
 
 
@@ -121,7 +121,7 @@ public class OccupationParameters
 
     public DayOfWeek getResetDay()
     {
-        return DayOfWeek.values()[_resetDay];
+        return _resetDay;
     }
 
     public int getNbDayBeforeReset()
@@ -136,11 +136,16 @@ public class OccupationParameters
 
     public RoundType getRoundType()
     {
-        return RoundType.values()[_roundType];
+        return _roundType;
     }
 
 
     //------ setter ----------
+    public void setId(int id)
+    {
+        _id = id;
+    }
+
     public void setOccupationId(int occupationId)
     {
         _occupationId = occupationId;
@@ -148,7 +153,7 @@ public class OccupationParameters
 
     public void setResetDay(DayOfWeek resetDay)
     {
-        _resetDay = resetDay.getValue();
+        _resetDay = resetDay;
     }
 
     public void setNbDayBeforeReset(int nbDayBeforeReset)
@@ -163,7 +168,7 @@ public class OccupationParameters
 
     public void setRoundType(RoundType roundType)
     {
-        _roundType = roundType.getValue();
+        _roundType = roundType;
     }
 
 

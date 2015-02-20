@@ -24,12 +24,14 @@
         >
 
         <Button
+            android:id="@+id/btn_ok_nb_week"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:text="OK"
             android:onClick="onClickOkNbWeek"
             />
         <Button
+            android:id="@+id/btn_cancel_nb_week"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:text="Cancel"
