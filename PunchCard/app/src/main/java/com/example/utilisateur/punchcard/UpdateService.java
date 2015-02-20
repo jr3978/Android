@@ -13,7 +13,9 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -29,224 +31,56 @@ public class UpdateService  extends Service
     private static final String BUTTON_START_CLICKED = "punchapp.BUTTON_START_CLICKED";
     private static final String BUTTON_VIEW_CLICKED = "punchapp.BUTTON_VIEW_CLICKED";
     private static final String ALARM_TICK = "punchapp.ALARM_TICK";
+    DataBaseHandler db = new DataBaseHandler(this);
+    AppWidgetManager appWidgetManager;
+    RemoteViews remoteViews;
+    List<Occupation> lstjob;
     private AlarmManager alarmMgr;
 
-    public void onStart(Intent intent, int startId)
+    @Override
+    public int onStartCommand(Intent intent,int flag, int startId)
     {
+        appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
+        remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widgetpunch);
 
-
+        lstjob = db.getAllOccupations();
         Log.i(LOG, "Called");
 
         if(intent == null)
-            return;
+            return 1;
 
-        DataBaseHandler db = new DataBaseHandler(this);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
-        RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widgetpunch);
-        List<Occupation> lstjob;
-        lstjob = db.getAllOccupations();
+
 
         //region ButtonLeft
         if(BUTTON_LEFT_CLICKED.equals(intent.getAction()))
         {
-            Log.i(LOG, "BUTTON LEFT");
-            int jobcount = lstjob.size();
-            boolean bfound = false;
-
-            for(int i = 0 ; i < jobcount ; i++)
-            {
-                if(lstjob.get(i).isIn())
-                    return;
-            }
-
-            for(int i = 0; i < jobcount ; i++)
-            {
-                if(lstjob.get(i).isSelected())
-                {
-                    bfound = true;
-                    lstjob.get(i).isSelected(false);
-                    db.updateOccupation(lstjob.get(i));
-                    if(i != 0)
-                    {
-                        Log.i(LOG, lstjob.get(i-1).getName());
-                        remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(i - 1).getName());
-                        lstjob.get(i-1).isSelected(true);
-                        db.updateOccupation(lstjob.get(i-1));
-                        db.close();
-                        break;
-                    }
-                    else
-                    {
-                        Log.i(LOG, lstjob.get(jobcount -1).getName());
-                        remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(jobcount - 1).getName());
-                        lstjob.get(jobcount -1).isSelected(true);
-                        db.updateOccupation(lstjob.get(jobcount -1));
-                        db.close();
-                        break;
-
-                    }
-
-
-                }
-
-
-            }
-            if(!bfound && jobcount != 0)
-            {
-                remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
-                lstjob.get(0).isSelected(true);
-                db.updateOccupation(lstjob.get(0));
-            }
-            Bundle extras = intent.getExtras();
-            int id = extras.getInt("widgetId");
-            appWidgetManager.updateAppWidget(id, remoteViews);
-            return;
+           LeftButtonClick(intent);
+            return 1;
         }
-        //endregion
-        //region ButtonRight
+
         if(BUTTON_RIGHT_CLICKED.equals(intent.getAction()))
         {
-            Log.i(LOG, "BUTTON RIGHT");
-            int jobcount = lstjob.size();
-            boolean bfound = false;
-
-            for(int i = 0 ; i < jobcount ; i++)
-            {
-                if(lstjob.get(i).isIn())
-                    return;
-            }
-
-            for(int i = 0; i < jobcount ; i++)
-            {
-                if(lstjob.get(i).isSelected())
-                {
-                    bfound = true;
-                    lstjob.get(i).isSelected(false);
-                    db.updateOccupation(lstjob.get(i));
-                    if(i != (jobcount-1))
-                    {
-                        Log.i(LOG, lstjob.get(i+1).getName());
-                        remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(i + 1).getName());
-                        lstjob.get(i+1).isSelected(true);
-                        db.updateOccupation(lstjob.get(i+1));
-                        db.close();
-
-                        break;
-                    }
-                    else
-                    {
-                        Log.i(LOG, lstjob.get(0).getName());
-                        remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
-                        lstjob.get(0).isSelected(true);
-                        db.updateOccupation(lstjob.get(0));
-                        db.close();
-
-                        break;
-
-                    }
-
-
-                }
-
-
-            }
-            if(!bfound && jobcount != 0)
-            {
-                remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
-                lstjob.get(0).isSelected(true);
-                db.updateOccupation(lstjob.get(0));
-                db.getOccupationHistoryFromOccId(lstjob.get(0).getId());
-            }
-            Bundle extras = intent.getExtras();
-            int id = extras.getInt("widgetId");
-            appWidgetManager.updateAppWidget(id, remoteViews);
-            return;
+            RightButtonClick(intent);
+            return 1;
         }
-//endregion
 
-        //region ButtonStart
+
         if(BUTTON_START_CLICKED.equals(intent.getAction()))
         {
-            Log.i(LOG, "BUTTON Start");
-            int jobcount = lstjob.size();
-            boolean OccIn = false;
-            List<OccupationHistory> lstHisto = new ArrayList<>();
-            for(int i = 0 ; i < jobcount ; i++)
-            {
-                //Find a activity already in
-                if(lstjob.get(i).isIn())
-                {
-                    lstHisto = db.getOccupationHistoryFromOccId(lstjob.get(i).getId());
-                    int HistoCount = lstHisto.size();
-
-                    for(int i2 = 0; i2 < HistoCount ; i2++)
-                    {
-                        if(lstHisto.get(i2).getDateTimeOut() == null)
-                        {
-                            OccupationHistory h = lstHisto.get(i2);
-                            lstHisto.get(i2).setDateTimeOut(new Date());
-                            db.updateOccupationHistory(lstHisto.get(i2));
-                            remoteViews.setTextViewText(R.id.buttonStart,"Start");
-
-                            OccIn = true;
-
-                            lstjob.get(i).isIn(false);
-                            db.updateOccupation(lstjob.get(i));
-                            db.close();
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if(!OccIn)
-            {
-                for(int i = 0 ; i < jobcount ; i++)
-                {
-                    if(lstjob.get(i).isSelected())
-                    {
-                        remoteViews.setTextViewText(R.id.buttonStart,"Stop");
-                        OccupationHistory Histo = new OccupationHistory();
-                        Histo.setOccupationId(lstjob.get(i).getId());
-                        Histo.setDateTimeOut(null);
-                        Histo.setDateTimeIn(new Date());
-                        db.addOccupationHistory(Histo);
-                        lstjob.get(i).isIn(true);
-                        db.updateOccupation(lstjob.get(i));
-                        db.close();
-                        break;
-                    }
-                }
-            }
-
-            Bundle extras = intent.getExtras();
-            int id = extras.getInt("widgetId");
-            appWidgetManager.updateAppWidget(id, remoteViews);
-            return;
+           ButtonStartClick(lstjob,intent);
+            return 1;
         }
-        //endregion
 
         if(BUTTON_VIEW_CLICKED.equals(intent.getAction()))
         {
-            Log.d("ONSERVICE","VIEWCLICKED");
-            Intent i = new Intent();
-            i.setClass(this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-            return;
+            WidgetClick();
+            return 1;
         }
 
         if(ALARM_TICK.equals(intent.getAction()))
         {
-            Log.d("ONSERVICE","ALARMTICK");
-            Random r = new Random();
-            int i1 = r.nextInt(100);
-            String s = Integer.toString(i1);
-            remoteViews.setTextViewText(R.id.txtTime,s);
-            Bundle extras = intent.getExtras();
-            int id = extras.getInt("widgetId");
-            appWidgetManager.updateAppWidget(id, remoteViews);
-            return;
+           AlarmTick(intent);
+            return 1;
         }
 
 
@@ -278,7 +112,7 @@ public class UpdateService  extends Service
                 lstjob.get(0).isSelected(true);
                 db.updateOccupation(lstjob.get(0));
             }
-
+            InitialUpdate(intent);
 
             Context context = getApplicationContext();
 
@@ -334,10 +168,346 @@ public class UpdateService  extends Service
         }
         stopSelf();
 
-        super.onStart(intent, startId);
-
+        super.onStartCommand(intent, flag,startId);
+        return 0;
     }
 
+
+    private void AlarmTick(Intent intent)
+    {
+        Log.d("ONSERVICE","ALARMTICK");
+
+        Log.i(LOG, "BUTTON Start");
+        int jobcount = lstjob.size();
+        List<OccupationHistory> lstHisto = new ArrayList<>();
+        boolean OccIn = false;
+
+        for(int i = 0 ; i < jobcount ; i++)
+        {
+            //Find a activity already in
+            if(lstjob.get(i).isIn())
+            {
+                lstHisto = db.getOccupationHistoryFromOccId(lstjob.get(i).getId());
+                int HistoCount = lstHisto.size();
+                for(int i2 = 0; i2 < HistoCount ; i2++)
+                {
+                    if (lstHisto.get(i2).getDateTimeOut() == null)
+                    {
+                        OccIn = true;
+                        Date current = new Date();
+                        Log.i(LOG, "DATE TICK : " + current);
+                        Date datein = lstHisto.get(i2).getDateTimeIn();
+                        Log.i(LOG, "DATEIN TICK : " + datein);
+                        long dif = (current.getTime() - datein.getTime());
+                        Log.i(LOG, "DIFF TICK : " + dif);
+                        long diffHours = dif / (60 * 60 * 1000);
+                        long diffMinutes = dif / (60 * 1000) % 60;
+                        String txtheure = new String();
+                        if(diffHours < 10)
+                            txtheure += "0";
+                        txtheure += Long.toString(diffHours);
+                        txtheure += ":";
+                        if(diffMinutes < 10)
+                            txtheure += "0";
+                        txtheure += Long.toString(diffMinutes);
+                        remoteViews.setTextViewText(R.id.txtTime,txtheure);
+
+                        Log.i(LOG, "ALARM TICK " + txtheure);
+
+                    }
+                }
+
+            }
+        }
+
+        if(!OccIn)
+        {
+            remoteViews.setTextViewText(R.id.txtTime,"00:00");
+        }
+
+
+        Bundle extras = intent.getExtras();
+        int id = extras.getInt("widgetId");
+        appWidgetManager.updateAppWidget(id, remoteViews);
+    }
+
+    private void LeftButtonClick(Intent intent)
+    {
+        Log.i(LOG, "BUTTON LEFT");
+        int jobcount = lstjob.size();
+        boolean bfound = false;
+
+        for(int i = 0 ; i < jobcount ; i++)
+        {
+            if(lstjob.get(i).isIn())
+                return;
+        }
+
+        for(int i = 0; i < jobcount ; i++)
+        {
+            if(lstjob.get(i).isSelected())
+            {
+                bfound = true;
+                lstjob.get(i).isSelected(false);
+                db.updateOccupation(lstjob.get(i));
+                if(i != 0)
+                {
+                    Log.i(LOG, lstjob.get(i-1).getName());
+                    remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(i - 1).getName());
+                    lstjob.get(i-1).isSelected(true);
+                    db.updateOccupation(lstjob.get(i-1));
+                    db.close();
+                    break;
+                }
+                else
+                {
+                    Log.i(LOG, lstjob.get(jobcount -1).getName());
+                    remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(jobcount - 1).getName());
+                    lstjob.get(jobcount -1).isSelected(true);
+                    db.updateOccupation(lstjob.get(jobcount -1));
+                    db.close();
+                    break;
+
+                }
+
+
+            }
+
+
+        }
+        if(!bfound && jobcount != 0)
+        {
+            remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
+            lstjob.get(0).isSelected(true);
+            db.updateOccupation(lstjob.get(0));
+        }
+        Bundle extras = intent.getExtras();
+        int id = extras.getInt("widgetId");
+        appWidgetManager.updateAppWidget(id, remoteViews);
+    }
+
+    private void RightButtonClick(Intent intent)
+    {
+        Log.i(LOG, "BUTTON RIGHT");
+        int jobcount = lstjob.size();
+        boolean bfound = false;
+
+        for(int i = 0 ; i < jobcount ; i++)
+        {
+            if(lstjob.get(i).isIn())
+                return;
+        }
+
+        for(int i = 0; i < jobcount ; i++)
+        {
+            if(lstjob.get(i).isSelected())
+            {
+                bfound = true;
+                lstjob.get(i).isSelected(false);
+                db.updateOccupation(lstjob.get(i));
+                if(i != (jobcount-1))
+                {
+                    Log.i(LOG, lstjob.get(i+1).getName());
+                    remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(i + 1).getName());
+                    lstjob.get(i+1).isSelected(true);
+                    db.updateOccupation(lstjob.get(i+1));
+                    db.close();
+
+                    break;
+                }
+                else
+                {
+                    Log.i(LOG, lstjob.get(0).getName());
+                    remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
+                    lstjob.get(0).isSelected(true);
+                    db.updateOccupation(lstjob.get(0));
+                    db.close();
+
+                    break;
+
+                }
+
+
+            }
+
+
+        }
+        if(!bfound && jobcount != 0)
+        {
+            remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
+            lstjob.get(0).isSelected(true);
+            db.updateOccupation(lstjob.get(0));
+            db.getOccupationHistoryFromOccId(lstjob.get(0).getId());
+        }
+        Bundle extras = intent.getExtras();
+        int id = extras.getInt("widgetId");
+        appWidgetManager.updateAppWidget(id, remoteViews);
+    }
+
+    private void ButtonStartClick(List<Occupation> lstjob, Intent intent)
+    {
+        Log.i(LOG, "BUTTON Start");
+        int jobcount = lstjob.size();
+        boolean OccIn = false;
+        List<OccupationHistory> lstHisto = new ArrayList<>();
+        for(int i = 0 ; i < jobcount ; i++)
+        {
+            //Find a activity already in
+            if(lstjob.get(i).isIn())
+            {
+                Log.i(LOG, "BUTTON Start ISIN");
+                lstHisto = db.getOccupationHistoryFromOccId(lstjob.get(i).getId());
+                int HistoCount = lstHisto.size();
+                OccupationParameters params = db.getParametersByOccupationId(lstjob.get(i).getId());
+                OccupationParameters.RoundType rType = params.getRoundType();
+                int minutes = params.getRoundMinuteValue();
+
+                Date whateverDateYouWant = new Date();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(whateverDateYouWant);
+                int unroundedMinutes = calendar.get(Calendar.MINUTE);
+                int mod = unroundedMinutes % minutes;
+                switch (rType)
+                {
+                    case ROUND_DOWN:
+                    {
+                        calendar.add(Calendar.MINUTE, -mod);
+                    }
+                    case ROUND_NORMAL:
+                    {
+                        calendar.add(Calendar.MINUTE, mod <= minutes/2 ? -mod : (minutes-mod));
+                    }
+                    case ROUND_UP:
+                    {
+                        calendar.add(Calendar.MINUTE, mod);
+                    }
+                }
+
+
+                for(int i2 = 0; i2 < HistoCount ; i2++)
+                {
+                    if(lstHisto.get(i2).getDateTimeOut() == null)
+                    {
+                        Log.i(LOG, "DATEOUT STOP : " + calendar.getTime());
+                        lstHisto.get(i2).setDateTimeOut(calendar.getTime());
+                        db.updateOccupationHistory(lstHisto.get(i2));
+                        remoteViews.setTextViewText(R.id.buttonStart,"Start");
+
+
+                        OccIn = true;
+
+                        lstjob.get(i).isIn(false);
+                        db.updateOccupation(lstjob.get(i));
+                        db.close();
+                        break;
+                    }
+                }
+            }
+        }
+
+        if(!OccIn)
+        {
+            Log.i(LOG, "BUTTON Start NOT IN");
+            for(int i = 0 ; i < jobcount ; i++)
+            {
+                if(lstjob.get(i).isSelected())
+                {
+                    OccupationParameters params = db.getParametersByOccupationId(lstjob.get(i).getId());
+                    OccupationParameters.RoundType rType = params.getRoundType();
+                    int minutes = params.getRoundMinuteValue();
+
+
+                    //Round date with params
+                    Date whateverDateYouWant = new Date();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(whateverDateYouWant);
+                    int unroundedMinutes = calendar.get(Calendar.MINUTE);
+                    int mod = unroundedMinutes % minutes;
+                    switch (rType)
+                    {
+                        case ROUND_DOWN:
+                        {
+                            calendar.add(Calendar.MINUTE, -mod);
+                        }
+                        case ROUND_NORMAL:
+                        {
+                            calendar.add(Calendar.MINUTE, mod <= minutes/2 ? -mod : (minutes-mod));
+                        }
+                        case ROUND_UP:
+                        {
+                            calendar.add(Calendar.MINUTE, mod);
+                        }
+                    }
+
+                    remoteViews.setTextViewText(R.id.txtTime,"00:00");
+                    remoteViews.setTextViewText(R.id.buttonStart,"Stop");
+                    OccupationHistory Histo = new OccupationHistory();
+                    Histo.setOccupationId(lstjob.get(i).getId());
+                    Histo.setDateTimeOut(null);
+                        Log.i(LOG, "DATEIN START : " + calendar.getTime());
+                    Histo.setDateTimeIn(calendar.getTime());
+                    db.addOccupationHistory(Histo);
+                    lstjob.get(i).isIn(true);
+                    db.updateOccupation(lstjob.get(i));
+                    db.close();
+                    break;
+                }
+            }
+        }
+
+        Bundle extras = intent.getExtras();
+        int id = extras.getInt("widgetId");
+        appWidgetManager.updateAppWidget(id, remoteViews);
+        return;
+    }
+
+    private void WidgetClick()
+    {
+        Log.d("ONSERVICE","VIEWCLICKED");
+        Intent i = new Intent();
+        i.setClass(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
+
+    private void InitialUpdate(Intent intent)
+    {
+        Log.i(LOG, "InitialUpdate");
+        int jobcount = lstjob.size();
+        boolean OccIn = false;
+        for(int i = 0 ; i < jobcount ; i++)
+        {
+            //Find a activity already in
+            if(lstjob.get(i).isIn())
+            {
+
+                        remoteViews.setTextViewText(R.id.buttonStart,"Stop");
+                        remoteViews.setTextViewText(R.id.stackWidgetView,lstjob.get(i).getName());
+                        OccIn = true;
+                        break;
+
+
+            }
+        }
+
+        if(!OccIn)
+        {
+            for(int i = 0 ; i < jobcount ; i++)
+            {
+                if(lstjob.get(i).isSelected())
+                {
+                    remoteViews.setTextViewText(R.id.buttonStart,"Start");
+                    remoteViews.setTextViewText(R.id.stackWidgetView,lstjob.get(i).getName());
+                    break;
+                }
+            }
+        }
+
+        Bundle extras = intent.getExtras();
+        int id = extras.getInt("widgetId");
+        appWidgetManager.updateAppWidget(id, remoteViews);
+        return;
+    }
 
     @Override
     public IBinder onBind(Intent intent) {

@@ -99,7 +99,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
     // event click sur une job de la liste
     public void onClickJob(View view)
     {
-        Intent intent = new Intent("PunchCard.History");
+        Intent intent = new Intent("PunchCard.ActivityHistory");
 
         int id = Integer.parseInt(
                 ((TextView)view.findViewById(R.id.act_status)).getText().toString()
