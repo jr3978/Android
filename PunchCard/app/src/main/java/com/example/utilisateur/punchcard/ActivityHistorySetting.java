@@ -53,15 +53,14 @@ public class ActivityHistorySetting extends Activity
 
     private void UpdateTotal()
     {
-        ListView lv = (ListView)findViewById(R.id.list);
+        ListView lv = (ListView)findViewById(R.id.lstHistorySet);
         String[] values = new String[]
                 {
-                        "Time In", "Time out", "Total Time"
+                        "Time In", "Time out", "Total Time", Integer.toString(TotalHour)
                 };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.parameters_list_item, R.id.paramters_item, values);
-        adapter.add(Integer.toString(TotalHour));
         adapter.notifyDataSetInvalidated();
         lv.setAdapter(adapter);
 
@@ -79,7 +78,7 @@ public class ActivityHistorySetting extends Activity
 
             builder.setIcon(R.drawable.ic_launcher);
             builder.setTitle("Set Time in");
-            builder.setView(R.layout.custom_dialog_nb_week);
+            builder.setView(R.layout.dialog_timein);
 
             final AlertDialog alertDialog = builder.create();
 

@@ -392,6 +392,7 @@ public class UpdateService  extends Service
                         lstHisto.get(i2).setDateTimeOut(calendar.getTime());
                         db.updateOccupationHistory(lstHisto.get(i2));
                         remoteViews.setTextViewText(R.id.buttonStart,"Start");
+                        remoteViews.setTextViewText(R.id.txtTime,"00:00");
 
 
                         OccIn = true;

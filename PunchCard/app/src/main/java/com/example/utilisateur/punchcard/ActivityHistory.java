@@ -3,15 +3,18 @@ package com.example.utilisateur.punchcard;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 
 public class ActivityHistory extends ListActivity {
 
     private AdapterHistory _adapter;
+    private int Occid = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +23,7 @@ public class ActivityHistory extends ListActivity {
 
 
         ////// data from MainActivity nom et id de celle cliquer dans la liste
-        int id = getIntent().getIntExtra("id", 0);
+        Occid = getIntent().getIntExtra("id", 0);
         String name = getIntent().getStringExtra("name");
 
         setTitle(name);
@@ -28,11 +31,29 @@ public class ActivityHistory extends ListActivity {
         //call historique dans bd avec le id de l'occupation
         ////////////////////////////////////////////////////////////////////
 
-        _adapter = new AdapterHistory(this, id);
+        _adapter = new AdapterHistory(this, Occid);
 
         setListAdapter(_adapter);
 
 
+    }
+
+    public void onClickJob(View view)
+    {
+        Intent intent = new Intent("PunchCard.ActivityHistorySetting");
+
+        int id = Integer.parseInt(
+                ((TextView)view.findViewById(R.id.act_status)).getText().toString()
+        );
+
+        String name = ((TextView)view.findViewById(R.id.act_name)).getText().toString();
+
+
+        intent.putExtra("Occid", Occid);
+        intent.putExtra("id", id);
+        intent.putExtra("name", name);
+
+        startActivityForResult(intent, 1);
     }
 
 
