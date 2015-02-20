@@ -16,19 +16,21 @@
  />
 
  <Button
+     android:id="@+id/btn_add_save"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:text="Save"
+     android:textAppearance="?android:textAppearanceLarge"
+/>
+
+ <Button
      android:id="@+id/btn_add_set_parameters"
+     android:visibility="invisible"
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
      android:text="Set parameters"
      android:textAppearance="?android:textAppearanceLarge"
  />
 
- <Button
-     android:id="@+id/btn_add_save"
-     android:layout_width="match_parent"
-     android:layout_height="wrap_content"
-     android:text="Save"
-     android:textAppearance="?android:textAppearanceLarge"
-     />
 
 </LinearLayout>

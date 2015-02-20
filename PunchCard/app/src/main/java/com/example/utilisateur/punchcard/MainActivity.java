@@ -121,9 +121,11 @@ public class MainActivity extends ListActivity implements IListViewContainer
 
         // ????????????
         //
-        // add new Occupation
-        // add new Parameters avec OccId
-        // quand click sur btn save fait update sur Occupation
+        // Enter tour job name
+        // appuie sur OK, insert Occupation
+        // et la le bouton SetParameters est visible, le editText est disable
+        // et passe le idOccupation a la vue
+        // Ajout bouton Cancel
         //
         // ????????????
 
@@ -137,7 +139,8 @@ public class MainActivity extends ListActivity implements IListViewContainer
         alertDialog.show();
 
         // button SAVE
-        Button btnSave = (Button)alertDialog.findViewById(R.id.btn_add_save);
+        final Button btnSetParameters = (Button)alertDialog.findViewById(R.id.btn_add_set_parameters);
+        final Button btnSave = (Button)alertDialog.findViewById(R.id.btn_add_save);
 
 
         btnSave.setOnClickListener(new View.OnClickListener()
@@ -154,7 +157,9 @@ public class MainActivity extends ListActivity implements IListViewContainer
 
                 addOccupation(occupation, _tempParam);
                 refreshListView();
-                alertDialog.dismiss();
+
+                btnSetParameters.setVisibility(View.VISIBLE);
+               // alertDialog.dismiss();
             }
         });
 
@@ -232,7 +237,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
             return;
 
        // DataBaseTest.allHistory(this);
-        DataBaseTest.getFirstParameter(this);
+     //   DataBaseTest.getFirstParameter(this);
        // DataBaseTest.allOccupation(this);
        // DataBaseTest.clearOccupation(this);
        // DataBaseTest.allHistoryFromOccupation(this);

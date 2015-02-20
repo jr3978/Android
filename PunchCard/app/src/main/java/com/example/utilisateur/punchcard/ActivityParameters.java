@@ -51,25 +51,36 @@ public class ActivityParameters extends Activity
      */
     private void initParametersFromIntent()
     {
-        int nbWeek = getIntent()
-                .getIntExtra(OccupationParameters.Parameters.NB_WEEK_RESET.getValue(), 0);
+        int id = getIntent()
+                .getIntExtra("id", 0);
 
-        int resetDay = getIntent()
-                .getIntExtra(OccupationParameters.Parameters.RESET_DAY.getValue(), 0);
+        if (id == 0) {
+            int nbWeek = getIntent()
+                    .getIntExtra(OccupationParameters.Parameters.NB_WEEK_RESET.getValue(), 0);
 
-        int minuteValue = getIntent()
-                .getIntExtra(OccupationParameters.Parameters.ROUND_MINUTE.getValue(), 0);
+            int resetDay = getIntent()
+                    .getIntExtra(OccupationParameters.Parameters.RESET_DAY.getValue(), 0);
 
-        int roundType = getIntent()
-                .getIntExtra(OccupationParameters.Parameters.ROUND_TYPE.getValue(), 0);
+            int minuteValue = getIntent()
+                    .getIntExtra(OccupationParameters.Parameters.ROUND_MINUTE.getValue(), 0);
+
+            int roundType = getIntent()
+                    .getIntExtra(OccupationParameters.Parameters.ROUND_TYPE.getValue(), 0);
 
 
-        _parameters = new OccupationParameters();
+            _parameters = new OccupationParameters();
 
-        _parameters.setNbDayBeforeReset(nbWeek);
-        _parameters.setResetDay(OccupationParameters.DayOfWeek.values()[resetDay]);
-        _parameters.setRoundType(OccupationParameters.RoundType.values()[roundType]);
-        _parameters.setRoundMinuteValue(minuteValue);
+            _parameters.setNbDayBeforeReset(nbWeek);
+            _parameters.setResetDay(OccupationParameters.DayOfWeek.values()[resetDay]);
+            _parameters.setRoundType(OccupationParameters.RoundType.values()[roundType]);
+            _parameters.setRoundMinuteValue(minuteValue);
+        }
+
+        else
+        {
+            DataBaseHandler db = new DataBaseHandler(this);
+            _parameters = db.getParametersByOccupationId(id);
+        }
     }
 
     public void onClickItemParameter(View view)
