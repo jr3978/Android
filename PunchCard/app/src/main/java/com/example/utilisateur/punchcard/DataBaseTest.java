@@ -18,7 +18,7 @@ public class DataBaseTest
     {
         DataBaseHandler db = new DataBaseHandler(context);
 
-        OccupationParameters parameters = db.getParametersByOccupationId(1);
+        OccupationParameters parameters = db.getParametersByOccupationId(2);
 
         int stop = 0;
     }
@@ -51,6 +51,15 @@ public class DataBaseTest
 
             int stop = 0;
         }
+    }
+
+    public  static void allHistory(Context context)
+    {
+        DataBaseHandler db = new DataBaseHandler(context);
+
+        List<OccupationHistory> occ = db.getAllOccupationHistory();
+
+        int stop = 0;
     }
 
     public static void clearHistoryTable(Context context)
