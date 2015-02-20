@@ -14,6 +14,8 @@ public class OccupationHistory
     private Date _dateTimeOut;
 
 
+
+
     //------ constructor ------
     public OccupationHistory()
     {

@@ -16,10 +16,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".History"
+            android:name=".ActivityHistory"
             android:label="@string/title_activity_history" >
             <intent-filter>
-                <action android:name="PunchCard.History" />
+                <action android:name="PunchCard.ActivityHistory" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

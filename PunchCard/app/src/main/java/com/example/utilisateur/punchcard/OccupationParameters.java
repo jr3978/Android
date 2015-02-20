@@ -7,7 +7,8 @@ import java.util.PriorityQueue;
  */
 public class OccupationParameters
 {
-    public enum Parameters {
+    public enum Parameters
+    {
         NB_WEEK_RESET("How many week before reset ?"),
         RESET_DAY("Set reset day"),
         ROUND_TYPE("Round type (up, down, normal)"),

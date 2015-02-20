@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 
-public class History extends ListActivity {
+public class ActivityHistory extends ListActivity {
 
     private AdapterHistory _adapter;
 
