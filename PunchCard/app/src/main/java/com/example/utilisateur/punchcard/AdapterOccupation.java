@@ -4,10 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.NumberPicker;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -20,9 +25,11 @@ public class AdapterOccupation extends BaseAdapter
 
     private Context _context;
     private Activity _activity;
+    private IListViewContainer _iListViewContainer;
 
-    public AdapterOccupation(Activity activity)
+    public AdapterOccupation(Activity activity, IListViewContainer iListViewContainer)
     {
+        _iListViewContainer = iListViewContainer;
         _activity = activity;
         _context = _activity.getApplicationContext();
 
@@ -63,7 +70,7 @@ public class AdapterOccupation extends BaseAdapter
             convertView = _activity.getLayoutInflater().inflate(R.layout.list_item, container, false);
         }
 
-        initItemListener(convertView);
+        initItemListener(convertView, position);
 
         ((TextView) convertView.findViewById(R.id.act_name))
                 .setText(getItem(position).getName());
@@ -78,36 +85,106 @@ public class AdapterOccupation extends BaseAdapter
      * Abonne les items aux listener
      * @param convertView
      */
-    private void initItemListener(View convertView)
+    private void initItemListener(final View convertView, final int position)
     {
         View v = convertView.findViewById(R.id.list_item_job);
 
         v.setOnLongClickListener(new View.OnLongClickListener()
         {
             @Override
-            public boolean onLongClick(View v) {
-                //***********
+            public boolean onLongClick(View v)
+            {
+                showPopupMenu(convertView, position);
 
-                // devrait etre un fragment au lieu d'un AlertDialgo
-                // voir exemple googleSheet
-
-                //************
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
-                builder.setCancelable(true);
-                builder.setNeutralButton(R.string.delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // affiche un message d'avertissement voulez-vous vraiment...
-                    }
-                });
-
-                // builder
-                return false;
+                return true;
             }
         });
 
     }
 
+    private void showPopupMenu(final View convertView, final int position)
+    {
+        PopupMenu popupMenu = new PopupMenu(_activity, convertView);
+        popupMenu.inflate(R.menu.popup_menu_occupation);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+        {
+            @Override
+            public boolean onMenuItemClick(MenuItem item)
+            {
+                final DataBaseHandler db = new DataBaseHandler(_context);
+                final int id = getItem(position).getId();
+                final Occupation occupation = db.getOccupation(id);
+
+                switch (item.getItemId()) {
+                    case R.id.item_delete_occupation:
+                    {
+                        showDeleteAlertDialog(occupation);
+                    }
+                    return true;
+
+                    case R.id.item_send_mail:
+
+                        return true;
+
+
+                    case R.id.item_set_parameters:
+
+                        return true;
+
+
+                }
+
+                return false;
+            }
+        });
+
+        popupMenu.show();
+    }
+
+    AlertDialog alert;
+    private void showDeleteAlertDialog(final Occupation occupation)
+    {
+
+
+        final DataBaseHandler db = new DataBaseHandler(_context);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(_activity);
+        builder.setIcon(R.drawable.ic_launcher);
+        builder.setTitle(R.string.delete_advertise);
+
+
+        //button ok
+        builder.setPositiveButton(R.string.ok_button,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton)
+                    {
+                        String name = occupation.getName();
+                        db.deleteOccupation(occupation);
+
+                        _iListViewContainer.refreshListView();
+
+                        Toast.makeText(
+                                _context,
+                                name + R.string.occupation_deleted,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+        );
+
+        //button cancel
+        builder.setNegativeButton(R.string.cancel_button,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                       alert.dismiss();
+                    }
+                }
+        );
+
+
+        final AlertDialog al = builder.create();
+        alert = al;
+        al.show();
+    }
 
 }

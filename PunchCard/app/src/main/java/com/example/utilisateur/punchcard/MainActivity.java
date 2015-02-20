@@ -27,7 +27,8 @@ import java.util.Date;
 import java.util.List;
 
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements IListViewContainer
+{
 
 
     //### true en mode test #####
@@ -43,7 +44,7 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        _adapter = new AdapterOccupation(this);
+        _adapter = new AdapterOccupation(this, this);
 
         setListAdapter(_adapter);
 
@@ -112,6 +113,7 @@ public class MainActivity extends ListActivity {
         startActivityForResult(intent, 1);
     }
 
+
     // event click sur une job
     public void onClickAdd(View view)
     {
@@ -151,14 +153,12 @@ public class MainActivity extends ListActivity {
                 occupation.isSelected(false);
 
                 addOccupation(occupation, _tempParam);
-
-                _adapter = new AdapterOccupation(act);
-
+                refreshListView();
                 alertDialog.dismiss();
-                _adapter.notifyDataSetInvalidated();
-                setListAdapter(_adapter);
             }
         });
+
+
 
         // button SET PARAMETERS
         Button btnParameters = (Button)alertDialog.findViewById(R.id.btn_add_set_parameters);
@@ -231,11 +231,20 @@ public class MainActivity extends ListActivity {
         if (!TEST)
             return;
 
-        DataBaseTest.getFirstParameter(this);
+       // DataBaseTest.getFirstParameter(this);
        // DataBaseTest.allOccupation(this);
        // DataBaseTest.clearOccupation(this);
        // DataBaseTest.allHistoryFromOccupation(this);
        // DataBaseTest.clearHistoryTable(this);
        // DataBaseTest.addRandomHistory(this);
+    }
+
+    @Override
+    public void refreshListView()
+    {
+        _adapter = new AdapterOccupation(this, this);
+
+        _adapter.notifyDataSetInvalidated();
+        setListAdapter(_adapter);
     }
 }
