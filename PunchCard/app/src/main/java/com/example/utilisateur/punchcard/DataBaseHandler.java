@@ -82,6 +82,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                         COL_DATE_OUT + " NUMERIC," +
                         "FOREIGN KEY(" + COL_OCC_ID + ")" +
                         "REFERENCES " + TABLE_OCCUPATION + "(" + COL_ID + ")" +
+                        " ON DELETE CASCADE " +
                         ");";
 
         String createParametersTable =
@@ -94,6 +95,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                         COL_ROUND_MIN_VALUE + " INTEGER, " +
                         "FOREIGN KEY(" + COL_OCC_ID + ")" +
                         "REFERENCES " + TABLE_OCCUPATION + "(" + COL_ID + ")" +
+                        " ON DELETE CASCADE " +
                         ");";
 
         db.execSQL(createOccupationTable);
@@ -260,6 +262,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
+        if (!db.isReadOnly())
+        {
+            // Enable foreign key constraints
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
         String id = new Integer(occ.getId()).toString();
 
         String query = "DELETE FROM " + TABLE_OCCUPATION +
@@ -518,6 +525,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return executeRawQueryOnHistoryTable(query);
     }
 
+    public List<OccupationHistory> getAllOccupationHistory()
+    {
+        String query = "SELECT * FROM " + TABLE_HISTORY;
+
+        return executeRawQueryOnHistoryTable(query);
+    }
+
 
 
     /**
@@ -577,6 +591,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
+
         String id = new Integer(history.getId()).toString();
 
         db.delete(TABLE_HISTORY, COL_ID + " = " + id, null);

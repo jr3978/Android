@@ -158,15 +158,17 @@ public class AdapterOccupation extends BaseAdapter
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton)
                     {
-                        String name = occupation.getName();
+                        String message = occupation.getName() +  " " +
+                                _context.getString(R.string.occupation_deleted);
+
                         db.deleteOccupation(occupation);
 
                         _iListViewContainer.refreshListView();
 
                         Toast.makeText(
                                 _context,
-                                name + R.string.occupation_deleted,
-                                Toast.LENGTH_SHORT
+                                message,
+                                Toast.LENGTH_LONG
                         ).show();
                     }
                 }

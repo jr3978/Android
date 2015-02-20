@@ -10,7 +10,7 @@
     <string name="delete_advertise">Do you really what to delete this occupation?</string>
     <string name="ok_button">Ok</string>
     <string name="cancel_button">Cancel</string>
-    <string name="occupation_deleted">: occupation was deleted</string>
+    <string name="occupation_deleted">deleted</string>
 
 
 </resources>

@@ -183,7 +183,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
                 );
 
                 startActivityForResult(intent, 3);
-                startActivity(intent);
+                //startActivity(intent);
             }
         });
 
@@ -231,7 +231,8 @@ public class MainActivity extends ListActivity implements IListViewContainer
         if (!TEST)
             return;
 
-       // DataBaseTest.getFirstParameter(this);
+       // DataBaseTest.allHistory(this);
+        DataBaseTest.getFirstParameter(this);
        // DataBaseTest.allOccupation(this);
        // DataBaseTest.clearOccupation(this);
        // DataBaseTest.allHistoryFromOccupation(this);
