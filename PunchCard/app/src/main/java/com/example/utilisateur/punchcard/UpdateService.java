@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -228,7 +229,7 @@ public class UpdateService  extends Service
 
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
-        appWidgetManager.updateAppWidget(id, remoteViews);
+        appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
     }
 
     private void LeftButtonClick(Intent intent)
@@ -283,7 +284,7 @@ public class UpdateService  extends Service
         }
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
-        appWidgetManager.updateAppWidget(id, remoteViews);
+        appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
     }
 
     private void RightButtonClick(Intent intent)
@@ -341,7 +342,7 @@ public class UpdateService  extends Service
         }
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
-        appWidgetManager.updateAppWidget(id, remoteViews);
+        appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
     }
 
     private void ButtonStartClick(List<Occupation> lstjob, Intent intent)
@@ -458,7 +459,7 @@ public class UpdateService  extends Service
 
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
-        appWidgetManager.updateAppWidget(id, remoteViews);
+        appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
         return;
     }
 
@@ -506,8 +507,16 @@ public class UpdateService  extends Service
 
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
-        appWidgetManager.updateAppWidget(id, remoteViews);
+        appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
         return;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+
+        Log.i(LOG, "OnConfig change");
+        Log.i(LOG, Integer.toString(newConfig.orientation));
     }
 
     @Override
