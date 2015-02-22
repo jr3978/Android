@@ -1,5 +1,7 @@
 package com.example.utilisateur.punchcard;
 
+import android.content.Context;
+
 import java.util.PriorityQueue;
 
 /**
@@ -78,6 +80,13 @@ public class OccupationParameters
         {
             return _value;
         }
+
+        public String getStringValue(Context context)
+        {
+            String[] days = context.getResources().getStringArray(R.array.day_of_week);
+            return days[_value];
+        }
+
     }
 
     //----- private field -----

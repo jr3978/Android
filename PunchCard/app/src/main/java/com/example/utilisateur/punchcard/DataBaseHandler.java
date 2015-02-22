@@ -418,13 +418,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             return;
         }
 
-        String id = new Integer(parameters.getId()).toString();
+        String id = new Integer(parameters.getOccupationId()).toString();
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = getParametersValue(parameters);
 
-        db.update(TABLE_PARAMETERS, values, COL_ID + " = " + id, null);
+        db.update(TABLE_PARAMETERS, values, COL_OCC_ID + " = " + id, null);
 
         //------- TEST -------
         if (MainActivity.TEST) {

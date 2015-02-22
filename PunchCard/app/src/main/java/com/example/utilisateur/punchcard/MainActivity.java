@@ -237,7 +237,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
             return;
 
        // DataBaseTest.allHistory(this);
-     //   DataBaseTest.getFirstParameter(this);
+        DataBaseTest.getFirstParameter(this);
        // DataBaseTest.allOccupation(this);
        // DataBaseTest.clearOccupation(this);
        // DataBaseTest.allHistoryFromOccupation(this);
