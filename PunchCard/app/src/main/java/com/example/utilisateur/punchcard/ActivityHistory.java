@@ -10,11 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Date;
+
 
 public class ActivityHistory extends ListActivity {
 
     private AdapterHistory _adapter;
     private int Occid = 0;
+    OccupationHistory _temp;
+    DataBaseHandler db = new DataBaseHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,7 @@ public class ActivityHistory extends ListActivity {
         );
 
         String name = ((TextView)view.findViewById(R.id.act_name)).getText().toString();
-
+        _temp = db.getOccupationHistory(id);
 
         intent.putExtra("Occid", Occid);
         intent.putExtra("id", id);
@@ -56,6 +60,20 @@ public class ActivityHistory extends ListActivity {
         startActivityForResult(intent, 1);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // retour Modify
+        if (requestCode == 1)
+        {
+            if (resultCode == RESULT_OK)
+            {
+
+                //TODO MODIFIER
+
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
