@@ -4,12 +4,32 @@
     android:layout_height="match_parent">
 
     <DatePicker
+        android:calendarViewShown="false"
+        android:spinnersShown="true"
+        android:datePickerMode="spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/datePicker" />
 
     <TimePicker
         android:layout_width="wrap_content"
+        android:timePickerMode="spinner"
         android:layout_height="wrap_content"
         android:id="@+id/timePicker" />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:textAppearance="?android:textAppearanceLarge"
+        />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textAppearance="?android:textAppearanceLarge"
+        />
 </LinearLayout>
