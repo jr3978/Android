@@ -74,6 +74,7 @@ public class AdapterHistory extends BaseAdapter
         ((TextView) convertView.findViewById(R.id.act_status))
                 .setText(new Integer(getItem(position).getId()).toString());
 
+
         DataBaseHandler db = new DataBaseHandler(_context);
 
         long diff = 0;

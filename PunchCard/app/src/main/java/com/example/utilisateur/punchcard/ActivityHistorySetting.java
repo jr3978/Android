@@ -24,6 +24,8 @@ public class ActivityHistorySetting extends Activity
     private OccupationHistory _history;
     DataBaseHandler db = new DataBaseHandler(this);
     String TotalHour;
+    String Timein;
+    String TimeOut;
     DatePicker datepick;
     int Occid;
 
@@ -32,7 +34,6 @@ public class ActivityHistorySetting extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historysettings);
-
 
 
 
@@ -72,27 +73,18 @@ public class ActivityHistorySetting extends Activity
         }
         else {
             long dif = (timeout.getTime() - timein.getTime());
-            long diffHours = dif / (60 * 60 * 1000);
-            long diffMinutes = dif / (60 * 1000) % 60;
-            TotalHour = "";
-            if (diffHours < 10)
-                TotalHour += "0";
-            TotalHour += Long.toString(diffHours);
-            TotalHour += ":";
-            if (diffMinutes < 10)
-                TotalHour += "0";
-
-            TotalHour += Long.toString(diffMinutes);
+            TotalHour = ToShortDateString(dif);
         }
 
-
-
+        Timein= timein.toString();
+        TimeOut = timeout.toString();
 
         ListView lv = (ListView)findViewById(R.id.lstHistorySet);
         String[] values = new String[]
                 {
-                        "Time In", "Time out", "Total Time", TotalHour
+                        "Time In:        " + Timein, "Time out:      " + TimeOut, "Total Time : " + TotalHour
                 };
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 R.layout.parameters_list_item, R.id.paramters_item, values);
@@ -113,7 +105,7 @@ public class ActivityHistorySetting extends Activity
         final OccupationParameters params = db.getParametersByOccupationId(_history.getOccupationId());
         final OccupationParameters.RoundType rType = params.getRoundType();
 
-        if(value.equals("Time In"))
+        if(value.equals("Time In:        " + Timein))
         {
             AlertDialog.Builder builder =  new AlertDialog.Builder(this);
 
@@ -134,7 +126,7 @@ public class ActivityHistorySetting extends Activity
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH);
             int day = cal.get(Calendar.DAY_OF_MONTH);
-            int hour = cal.get(Calendar.HOUR);
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
             int minutes = cal.get(Calendar.MINUTE);
             tp.setCurrentMinute(minutes);
             tp.setCurrentHour(hour);
@@ -215,7 +207,7 @@ public class ActivityHistorySetting extends Activity
 
         }
 
-        if(value.equals("Time out"))
+        if(value.equals("Time out:      " + TimeOut))
         {
             AlertDialog.Builder builder =  new AlertDialog.Builder(this);
 
@@ -237,11 +229,12 @@ public class ActivityHistorySetting extends Activity
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH);
             int day = cal.get(Calendar.DAY_OF_MONTH);
-            int hour = cal.get(Calendar.HOUR);
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
             int minutes = cal.get(Calendar.MINUTE);
             dp.setMaxDate(new Date().getTime());
             dp.setMinDate(_history.getDateTimeIn().getTime());
             tp.setCurrentMinute(minutes);
+
             tp.setCurrentHour(hour);
             dp.updateDate(year,month,day);
 
@@ -346,5 +339,23 @@ public class ActivityHistorySetting extends Activity
         }
 
        this.finish();
+    }
+
+    private String ToShortDateString(long milli)
+    {
+        String ToString;
+
+        long diffHours = milli / (60 * 60 * 1000);
+        long diffMinutes = milli / (60 * 1000) % 60;
+        ToString = "";
+        if (diffHours < 10)
+            ToString += "0";
+        ToString += Long.toString(diffHours);
+        ToString += ":";
+        if (diffMinutes < 10)
+            ToString += "0";
+
+        ToString += Long.toString(diffMinutes);
+        return ToString;
     }
 }

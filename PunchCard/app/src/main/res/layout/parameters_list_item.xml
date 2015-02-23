@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:onClick="onClickItemParameter"
     >
 
 
-    <TextView
-
-        android:padding="20sp"
-        android:id="@+id/paramters_item"
+    <LinearLayout android:id="@+id/thumbnail"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:textSize="50dp"
-        />
+        android:padding="30dip"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dip">
 
-</LinearLayout>
+
+        <!-- Nom de l'activite -->
+        <TextView android:id="@+id/paramters_item"
+            android:duplicateParentState="true"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textSize="25dp"
+            />
+
+
+
+    </LinearLayout>
+
+
+
+
+
+</RelativeLayout>
