@@ -49,6 +49,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     //---------History columns---------
     private static final String COL_DATE_IN = "DateTimeIn";
     private static final String COL_DATE_OUT = "DateTimeOut";
+    private static final String COL_IS_PERIOD_END = "IsPeriodEnd";
 
     //--------- constructor ------------
     public DataBaseHandler(Context context)
@@ -79,7 +80,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                         COL_ID + " INTEGER PRIMARY KEY, " +
                         COL_OCC_ID + " INTEGER, " +
                         COL_DATE_IN + " NUMERIC, " +
-                        COL_DATE_OUT + " NUMERIC," +
+                        COL_DATE_OUT + " NUMERIC, " +
+                        COL_IS_PERIOD_END + " NUMERIC," +
                         "FOREIGN KEY(" + COL_OCC_ID + ")" +
                         "REFERENCES " + TABLE_OCCUPATION + "(" + COL_ID + ")" +
                         " ON DELETE CASCADE " +
@@ -459,6 +461,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             history.setOccupationId(Integer.parseInt(cursor.getString(1)));
             history.setDateTimeIn(parseDate(cursor.getString(2)));
             history.setDateTimeOut(parseDate(cursor.getString(3)));
+            if(Integer.parseInt(cursor.getString(4)) == 1)
+                history.isPeriodEnd(true);
+            else
+                history.isPeriodEnd(false);
         }
         catch (Exception e)
         {
@@ -504,7 +510,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.query(TABLE_HISTORY,
-                new String[] { COL_ID , COL_OCC_ID, COL_DATE_IN, COL_DATE_OUT }, COL_ID + "=?",
+                new String[] { COL_ID , COL_OCC_ID, COL_DATE_IN, COL_DATE_OUT,COL_IS_PERIOD_END }, COL_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
 
         if (cursor != null)
@@ -569,6 +575,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             values.put(COL_DATE_IN, in);
         }
 
+        if(history.isPeriodEnd())
+            values.put(COL_IS_PERIOD_END,true);
+        else
+            values.put(COL_IS_PERIOD_END,false);
+
         db.insert(TABLE_HISTORY, null, values);
         db.close();
 
@@ -618,7 +629,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(COL_OCC_ID, history.getOccupationId());
         values.put(COL_ID, history.getId());
 
-
+        if(history.isPeriodEnd())
+            values.put(COL_IS_PERIOD_END,true);
+        else
+            values.put(COL_IS_PERIOD_END,false);
 
         db.update(TABLE_HISTORY, values, COL_ID + " = " + id, null);
 

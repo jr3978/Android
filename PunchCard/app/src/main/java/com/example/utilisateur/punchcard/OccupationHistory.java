@@ -12,7 +12,7 @@ public class OccupationHistory
     private int _occupationId;
     private Date _dateTimeIn;
     private Date _dateTimeOut;
-
+    private boolean _isPeriodEnd;
 
 
 
@@ -26,7 +26,8 @@ public class OccupationHistory
     {
         _occupationId = occupationId;
         _dateTimeIn = dateTimeIn;
-        _dateTimeOut = _dateTimeOut;
+        _dateTimeOut = dateTimeOut;
+        _isPeriodEnd = false;
     }
 
 
@@ -51,6 +52,8 @@ public class OccupationHistory
         return _dateTimeOut;
     }
 
+    public  boolean isPeriodEnd(){ return _isPeriodEnd;}
+
 
     //------ setter ---------
     public void setId(int id)
@@ -71,6 +74,11 @@ public class OccupationHistory
     public void setDateTimeOut(Date dateTimeOut)
     {
         _dateTimeOut = dateTimeOut;
+    }
+
+    public void isPeriodEnd(boolean isEnd)
+    {
+        _isPeriodEnd = isEnd;
     }
 
 }
