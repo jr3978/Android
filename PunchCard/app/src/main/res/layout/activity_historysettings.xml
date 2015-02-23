@@ -15,8 +15,15 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onClickApplySettings"
+        android:onClick="onClickOk"
         android:text="Ok"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClickCancel"
+        android:text="Cancel"
         />
 
 </LinearLayout>

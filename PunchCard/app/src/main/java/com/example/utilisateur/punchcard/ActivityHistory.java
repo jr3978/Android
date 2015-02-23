@@ -17,7 +17,6 @@ public class ActivityHistory extends ListActivity {
 
     private AdapterHistory _adapter;
     private int Occid = 0;
-    OccupationHistory _temp;
     DataBaseHandler db = new DataBaseHandler(this);
 
     @Override
@@ -51,28 +50,36 @@ public class ActivityHistory extends ListActivity {
         );
 
         String name = ((TextView)view.findViewById(R.id.act_name)).getText().toString();
-        _temp = db.getOccupationHistory(id);
 
-        intent.putExtra("Occid", Occid);
+        intent.putExtra("Occid", 0);
         intent.putExtra("id", id);
         intent.putExtra("name", name);
 
         startActivityForResult(intent, 1);
     }
 
+    public void onClickAdd(View view)
+    {
+        Intent intent = new Intent("PunchCard.ActivityHistorySetting");
+
+
+        String name = "New History";
+
+
+        intent.putExtra("Occid", Occid);
+        intent.putExtra("id", 0);
+        intent.putExtra("name", name);
+
+        startActivityForResult(intent,2);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        // retour Modify
-        if (requestCode == 1)
-        {
-            if (resultCode == RESULT_OK)
-            {
+        _adapter = new AdapterHistory(this, Occid);
+        _adapter.notifyDataSetInvalidated();
+        setListAdapter(_adapter);
 
-                //TODO MODIFIER
-
-            }
-        }
     }
 
     @Override
