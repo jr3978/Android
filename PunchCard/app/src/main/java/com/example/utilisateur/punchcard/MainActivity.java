@@ -29,12 +29,6 @@ import java.util.List;
 
 public class MainActivity extends ListActivity implements IListViewContainer
 {
-
-
-    //### true en mode test #####
-    public static final boolean TEST = true;
-    //###########################
-
     private AdapterOccupation _adapter;
     private OccupationParameters _tempParam = new OccupationParameters();
 
@@ -47,13 +41,6 @@ public class MainActivity extends ListActivity implements IListViewContainer
         _adapter = new AdapterOccupation(this, this);
 
         setListAdapter(_adapter);
-
-
-        //initListView();
-        //--------- Test ---------
-        TestBd();
-        //------------------------
-
     }
 
 
@@ -84,12 +71,6 @@ public class MainActivity extends ListActivity implements IListViewContainer
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-       switch (item.getItemId()){
-           case R.id.action_settings:
-               startActivity(new Intent(this, ActivitySetting.class));
-               return true;
-       }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -116,18 +97,6 @@ public class MainActivity extends ListActivity implements IListViewContainer
     // event click sur une job
     public void onClickAdd(View view)
     {
-        // devrait etre un fragment au lieu d'un alert Dialog
-
-        // ????????????
-        //
-        // Enter tour job name
-        // appuie sur OK, insert Occupation
-        // et la le bouton SetParameters est visible, le editText est disable
-        // et passe le idOccupation a la vue
-        // Ajout bouton Cancel
-        //
-        // ????????????
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(R.layout.dialog_add);
         builder.setTitle("Add job");
@@ -137,8 +106,6 @@ public class MainActivity extends ListActivity implements IListViewContainer
 
         alertDialog.show();
 
-        // button SAVE
-      //  final Button btnSetParameters = (Button)alertDialog.findViewById(R.id.btn_add_set_parameters);
         final Button btnSave = (Button)alertDialog.findViewById(R.id.btn_add_save);
 
 
@@ -166,57 +133,6 @@ public class MainActivity extends ListActivity implements IListViewContainer
                 startActivityForResult(intent, 2);
             }
         });
-
-
-/*
-        // button SET PARAMETERS
-        Button btnParameters = (Button)alertDialog.findViewById(R.id.btn_add_set_parameters);
-        btnParameters.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-
-                Intent intent = new Intent("PunchCard.Parameters");
-
-                intent.putExtra(OccupationParameters.Parameters.NB_WEEK_RESET.getValue(),
-                        _tempParam.getNbDayBeforeReset()
-                );
-                intent.putExtra(OccupationParameters.Parameters.RESET_DAY.getValue(),
-                        _tempParam.getResetDay().getValue()
-                );
-                intent.putExtra(OccupationParameters.Parameters.ROUND_MINUTE.getValue(),
-                        _tempParam.getRoundMinuteValue()
-                );
-                intent.putExtra(OccupationParameters.Parameters.ROUND_TYPE.getValue(),
-                        _tempParam.getRoundType()
-                );
-
-                startActivityForResult(intent, 3);
-                //startActivity(intent);
-            }
-        });
-*/
-
-    }
-
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        // retour ActivityParameters
-        if (requestCode == 3)
-        {
-            if (resultCode == RESULT_OK)
-            {
-                int test = data.getIntExtra(
-                        OccupationParameters.Parameters.NB_WEEK_RESET.getValue(),
-                        0
-                );
-
-                _tempParam.setNbDayBeforeReset(test);
-            }
-        }
     }
 
 
@@ -231,24 +147,6 @@ public class MainActivity extends ListActivity implements IListViewContainer
         db.addParameters(parameters);
 
         return occ;
-    }
-
-
-    /**
-     * Methode pour appeler les tests
-     */
-    private void TestBd()
-    {
-        if (!TEST)
-            return;
-
-       // DataBaseTest.allHistory(this);
-       // DataBaseTest.getFirstParameter(this);
-       // DataBaseTest.allOccupation(this);
-       // DataBaseTest.clearOccupation(this);
-       // DataBaseTest.allHistoryFromOccupation(this);
-       // DataBaseTest.clearHistoryTable(this);
-       // DataBaseTest.addRandomHistory(this);
     }
 
     @Override

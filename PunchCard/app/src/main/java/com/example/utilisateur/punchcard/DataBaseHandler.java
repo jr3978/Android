@@ -41,8 +41,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String COL_SELECTED = "Selected";
 
     //---------Parameters columns---------
-    private static final String COL_RESET_DAY = "ResetDay";
-    private static final String COL_NB_DAY_BEFORE_RESET = "NbDayBeforeReset";
     private static final String COL_ROUND_TYPE = "RoundType";
     private static final String COL_ROUND_MIN_VALUE = "RoundMinuteValue";
 
@@ -91,8 +89,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 "CREATE TABLE " + TABLE_PARAMETERS + " ( " +
                         //COL_ID + " INTEGER PRIMARY KEY, " +
                         COL_OCC_ID + " INTEGER PRIMARY KEY, " +
-                        COL_RESET_DAY + " INTEGER, " +
-                        COL_NB_DAY_BEFORE_RESET + " INTEGER, " +
                         COL_ROUND_TYPE + " INTEGER, " +
                         COL_ROUND_MIN_VALUE + " INTEGER, " +
                         "FOREIGN KEY(" + COL_OCC_ID + ")" +
@@ -319,13 +315,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
 
         db.update(TABLE_OCCUPATION, values, COL_ID + " = " + id, null);
-
-        //------- TEST -------
-        if (MainActivity.TEST) {
-            Log.d("updateOccupation", "test");
-        }
-        //--------------------
-
         db.close();
     }
 
@@ -342,8 +331,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                         {
                             COL_OCC_ID,
                             COL_ROUND_MIN_VALUE,
-                            COL_NB_DAY_BEFORE_RESET ,
-                            COL_RESET_DAY,
                             COL_ROUND_TYPE
                         },
                 COL_OCC_ID + "=?",
@@ -356,12 +343,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         parameters.setOccupationId(Integer.parseInt(cursor.getString(0)));
         parameters.setRoundMinuteValue(Integer.parseInt(cursor.getString(1)));
-        parameters.setNbDayBeforeReset(Integer.parseInt(cursor.getString(2)));
-        parameters.setResetDay(
-                OccupationParameters.DayOfWeek.values()[Integer.parseInt(cursor.getString(3))]
-        );
         parameters.setRoundType(
-                OccupationParameters.RoundType.values()[Integer.parseInt(cursor.getString(4))]
+                OccupationParameters.RoundType.values()[Integer.parseInt(cursor.getString(2))]
         );
 
         return parameters;
@@ -377,8 +360,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         ContentValues values = new ContentValues();
 
-        values.put(COL_NB_DAY_BEFORE_RESET, parameters.getNbDayBeforeReset());
-        values.put(COL_RESET_DAY, parameters.getResetDay().getValue());
         values.put(COL_ROUND_TYPE, parameters.getRoundType().getValue());
         values.put(COL_OCC_ID, parameters.getOccupationId());
         values.put(COL_ROUND_MIN_VALUE, parameters.getRoundMinuteValue());
@@ -403,12 +384,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         db.insert(TABLE_PARAMETERS, null, values);
         db.close();
-
-        //------- TEST -------
-        if (MainActivity.TEST) {
-            Log.d("addParameters", "test");
-        }
-        //--------------------
     }
 
 
@@ -429,12 +404,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         ContentValues values = getParametersValue(parameters);
 
         db.update(TABLE_PARAMETERS, values, COL_OCC_ID + " = " + id, null);
-
-        //------- TEST -------
-        if (MainActivity.TEST) {
-            Log.d("updateParameters", "test");
-        }
-        //--------------------
 
         db.close();
     }
@@ -582,13 +551,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         db.insert(TABLE_HISTORY, null, values);
         db.close();
-
-        //------- TEST -------
-        if (MainActivity.TEST)
-        {
-            Log.d("addHistory", "test");
-        }
-        //--------------------
     }
 
 
@@ -635,12 +597,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             values.put(COL_IS_PERIOD_END,false);
 
         db.update(TABLE_HISTORY, values, COL_ID + " = " + id, null);
-
-        //------- TEST -------
-        if (MainActivity.TEST) {
-            Log.d("updateHistory", "test");
-        }
-        //--------------------
 
         db.close();
     }

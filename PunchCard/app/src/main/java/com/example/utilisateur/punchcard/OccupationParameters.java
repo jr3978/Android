@@ -11,8 +11,6 @@ public class OccupationParameters
 {
     public enum Parameters
     {
-        NB_WEEK_RESET("How many week before reset ?"),
-        RESET_DAY("Set reset day"),
         ROUND_TYPE("Round type (up, down, normal)"),
         ROUND_MINUTE("Round for every x minutes");
 
@@ -58,42 +56,11 @@ public class OccupationParameters
         }
     }
 
-    // DayOfWeek
-    public enum DayOfWeek
-    {
-        SUNDAY (0),
-        MONDAY (1),
-        TUESDAY (2),
-        WEDNESDAY (3),
-        THURSDAY (4),
-        FRIDAY (5),
-        SATURDAY (6);
 
-        private int _value;
-
-        DayOfWeek(int v)
-        {
-            _value = v;
-        }
-
-        public int getValue()
-        {
-            return _value;
-        }
-
-        public String getStringValue(Context context)
-        {
-            String[] days = context.getResources().getStringArray(R.array.day_of_week);
-            return days[_value];
-        }
-
-    }
 
     //----- private field -----
     private int _id;
     private int _occupationId;
-    private DayOfWeek _resetDay;
-    private int _nbDayBeforeReset;
     private int _roundMinuteValue;
     private RoundType _roundType;
 
@@ -101,20 +68,8 @@ public class OccupationParameters
     //----- constructor ----
     public OccupationParameters()
     {
-        _resetDay = DayOfWeek.SUNDAY;
-        _nbDayBeforeReset = 7;
         _roundMinuteValue = 1;
         _roundType = RoundType.ROUND_NORMAL;
-    }
-
-    public  OccupationParameters(int occupationId ,DayOfWeek resetDay, int nbDayBeforeReset,
-                                 int roundMinuteValue, RoundType roundType)
-    {
-        _occupationId = occupationId;
-        _resetDay = resetDay;
-        _nbDayBeforeReset = nbDayBeforeReset;
-        _roundMinuteValue = roundMinuteValue;
-        _roundType = roundType;
     }
 
 
@@ -127,16 +82,6 @@ public class OccupationParameters
     public int getOccupationId()
     {
         return _occupationId;
-    }
-
-    public DayOfWeek getResetDay()
-    {
-        return _resetDay;
-    }
-
-    public int getNbDayBeforeReset()
-    {
-        return _nbDayBeforeReset;
     }
 
     public int getRoundMinuteValue()
@@ -159,16 +104,6 @@ public class OccupationParameters
     public void setOccupationId(int occupationId)
     {
         _occupationId = occupationId;
-    }
-
-    public void setResetDay(DayOfWeek resetDay)
-    {
-        _resetDay = resetDay;
-    }
-
-    public void setNbDayBeforeReset(int nbDayBeforeReset)
-    {
-        _nbDayBeforeReset = nbDayBeforeReset;
     }
 
     public void setRoundMinuteValue(int roundMinuteValue)
