@@ -19,4 +19,12 @@
         android:text="Apply"
         />
 
+    <Button
+        android:id="@+id/btn_cancel_params"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClickCancelParameters"
+        android:text="Cancel"
+        />
+
 </LinearLayout>
