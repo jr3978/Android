@@ -51,8 +51,8 @@ public class ActivityHistorySetting extends Activity
         if(Occid != 0)
         {
             _history.setOccupationId(Occid);
-
-
+            _history.setDateTimeIn(new Date());
+            _history.setDateTimeOut(new Date());
         }
 
         String name = getIntent().getStringExtra("name");
