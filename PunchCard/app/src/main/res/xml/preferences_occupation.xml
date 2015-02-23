@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/occ_params_cat_other">
+
+        <ListPreference
+            android:key="@string/occ_params_reset_day_key"
+            android:title="@string/occ_params_reset_day"
+            android:dialogTitle="@string/hello_world"
+            android:entries="@array/day_of_week"
+            android:entryValues="@array/reset_day_values"
+            android:defaultValue="@string/reset_day_default_value"
+            />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

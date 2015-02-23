@@ -109,7 +109,7 @@ public class ActivityParameters extends Activity
         }
         else if (value.equals(OccupationParameters.Parameters.ROUND_TYPE.getValue()))
         {
-
+            dialogRoundTimeValue();
         }
     }
 
@@ -147,6 +147,7 @@ public class ActivityParameters extends Activity
 
         numberPicker.setMinValue(0);
         numberPicker.setMaxValue(52);
+        numberPicker.setValue(_parameters.getNbDayBeforeReset());
     }
 
     private void dialogResetDay()
@@ -185,8 +186,8 @@ public class ActivityParameters extends Activity
         });
     }
 
-   private void dialogRoundType()
-   {
+    private void dialogRoundType()
+     {
        Builder builder =  new AlertDialog.Builder(this);
 
        builder.setIcon(R.drawable.ic_launcher);
@@ -220,6 +221,43 @@ public class ActivityParameters extends Activity
            public void onNothingSelected(AdapterView<?> parent){}
        });
    }
+
+    private void dialogRoundTimeValue()
+    {
+        Builder builder =  new AlertDialog.Builder(this);
+
+        builder.setIcon(R.drawable.ic_launcher);
+        builder.setTitle("Round Time to the nearest minute value:");
+        builder.setView(R.layout.custom_dialog_nb_week);
+
+        final AlertDialog alertDialog = builder.create();
+
+
+        alertDialog.show();
+
+        final NumberPicker numberPicker = (NumberPicker)alertDialog.findViewById(R.id.numberPickerWeek);
+        Button ok = (Button)alertDialog.findViewById(R.id.btn_ok_nb_week);
+        Button cancel = (Button)alertDialog.findViewById(R.id.btn_cancel_nb_week);
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _parameters.setRoundMinuteValue(numberPicker.getValue());
+                alertDialog.dismiss();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(60);
+        numberPicker.setValue(_parameters.getRoundMinuteValue());
+    }
 
     public void onClickApplyParameters(View view)
     {

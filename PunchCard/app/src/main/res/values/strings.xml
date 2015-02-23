@@ -7,10 +7,25 @@
     <string name="RightArrow">--&#62;</string>
     <string name="LeftArrow">&#60;--</string>
     <string name="title_activity_history">History</string>
+    <string name="activity_settings_title">Setting test</string>
     <string name="delete_advertise">Do you really what to delete this occupation?</string>
     <string name="ok_button">Ok</string>
     <string name="cancel_button">Cancel</string>
     <string name="occupation_deleted">deleted</string>
+
+    <!--Occupation Parameters -->
+    <string name="occupation_parameters_title">Occupation parameters</string>
+    <!-- start date -->
+    <string name="occ_params_cat_round">Round settings</string>
+    <string name="occ_params_cat_other">Other settings</string>
+    <string name="occ_params_start_date">Starting date</string>
+    <string name="occ_params_reset_day">Reset day</string>
+    <string name="occ_params_reset_day_key">occ_params_reset_day</string>
+    <string name="occ_params_nb_week">Number of weeks before reset</string>
+    <string name="occ_params_round_time_value">Round time value</string>
+    <string name="occ_params_round_type">Round type</string>
+
+
 
 
 </resources>
