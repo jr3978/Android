@@ -470,10 +470,10 @@ public class UpdateService  extends Service
                             break;
                         }
                     }
-
+                    calendar.set(Calendar.SECOND,0);
                     remoteViews.setTextViewText(R.id.txtTime,"00:00");
                     remoteViews.setTextViewText(R.id.buttonStart,"Stop");
-                    calendar.set(Calendar.SECOND,0);
+
                     OccupationHistory Histo = new OccupationHistory();
                     Histo.setOccupationId(lstjob.get(i).getId());
                     Histo.setDateTimeOut(null);

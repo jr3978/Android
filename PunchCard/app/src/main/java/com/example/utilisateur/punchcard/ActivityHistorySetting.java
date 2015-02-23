@@ -110,6 +110,8 @@ public class ActivityHistorySetting extends Activity
         TextView textView = (TextView)view.findViewById(R.id.paramters_item);
         String value = textView.getText().toString();
         String name = getIntent().getStringExtra("name");
+        final OccupationParameters params = db.getParametersByOccupationId(_history.getOccupationId());
+        final OccupationParameters.RoundType rType = params.getRoundType();
 
         if(value.equals("Time In"))
         {
@@ -168,10 +170,36 @@ public class ActivityHistorySetting extends Activity
                     }
                     else
                     {
+                        int minuteparam = params.getRoundMinuteValue();
+                        int unroundedMinutes = cal.get(Calendar.MINUTE);
+                        int mod = unroundedMinutes % minuteparam;
+                        switch (rType)
+                        {
+                            case ROUND_DOWN:
+                            {
+                                cal.add(Calendar.MINUTE, -mod);
+                                break;
+                            }
+                            case ROUND_NORMAL:
+                            {
+                                if(mod <= minuteparam /2)
+                                    cal.add(Calendar.MINUTE,-mod);
+                                else {
+                                    int i2 = minuteparam - mod;
+                                    cal.add(Calendar.MINUTE, i2);
+                                }
+                                break;
+                            }
+                            case ROUND_UP:
+                            {
+                                cal.add(Calendar.MINUTE, mod);
+                                break;
+                            }
+                        }
+                        cal.set(Calendar.SECOND,0);
                         _history.setDateTimeIn(date);
                         alertDialog.dismiss();
                         UpdateTotal();
-
                     }
 
 
@@ -247,6 +275,33 @@ public class ActivityHistorySetting extends Activity
                                 });
                     }
                     else {
+                        int minuteparam = params.getRoundMinuteValue();
+                        int unroundedMinutes = cal.get(Calendar.MINUTE);
+                        int mod = unroundedMinutes % minuteparam;
+                        switch (rType)
+                        {
+                            case ROUND_DOWN:
+                            {
+                                cal.add(Calendar.MINUTE, -mod);
+                                break;
+                            }
+                            case ROUND_NORMAL:
+                            {
+                                if(mod <= minuteparam /2)
+                                    cal.add(Calendar.MINUTE,-mod);
+                                else {
+                                    int i2 = minuteparam - mod;
+                                    cal.add(Calendar.MINUTE, i2);
+                                }
+                                break;
+                            }
+                            case ROUND_UP:
+                            {
+                                cal.add(Calendar.MINUTE, mod);
+                                break;
+                            }
+                        }
+                        cal.set(Calendar.SECOND,0);
                         _history.setDateTimeOut(date);
                         alertDialog.dismiss();
                         UpdateTotal();

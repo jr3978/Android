@@ -27,17 +27,19 @@ public class AdapterOccupation extends BaseAdapter
     private Context _context;
     private Activity _activity;
     private IListViewContainer _iListViewContainer;
+    DataBaseHandler db;
 
     public AdapterOccupation(Activity activity, IListViewContainer iListViewContainer)
     {
         _iListViewContainer = iListViewContainer;
         _activity = activity;
         _context = _activity.getApplicationContext();
-        DataBaseHandler db = new DataBaseHandler(_context);
+        db = new DataBaseHandler(_context);
 
 
 
         _occupations = db.getAllOccupations();
+        db.close();
     }
 
 
@@ -66,7 +68,7 @@ public class AdapterOccupation extends BaseAdapter
     @Override
     public View getView(int position, View convertView, ViewGroup container)
     {
-
+        db = new DataBaseHandler(_context);
         if (convertView == null)
         {
             convertView = _activity.getLayoutInflater().inflate(R.layout.list_item, container, false);
@@ -80,14 +82,28 @@ public class AdapterOccupation extends BaseAdapter
         ((TextView) convertView.findViewById(R.id.act_status))
                 .setText(new Integer(getItem(position).getId()).toString());
 
-       // List<OccupationHistory> _history = db.getOccupationHistoryFromOccId(getItem(position).getId());
-        //long diff = 0;
-       // for(OccupationHistory histo:_history)
-       // {
-            //TODO AFFICHER HEURE ICI
-        //    diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
-       // }
+        List<OccupationHistory> _history = db.getOccupationHistoryFromOccId(getItem(position).getId());
+        long diff = 0;
+        for(OccupationHistory histo:_history)
+       {
+            diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
+        }
+        String timetxt = "";
+        long diffHours = diff / (60 * 60 * 1000);
+        long diffMinutes = diff / (60 * 1000) % 60;
+        timetxt = "";
+        if (diffHours < 10)
+            timetxt += "0";
+        timetxt += Long.toString(diffHours);
+        timetxt += ":";
+        if (diffMinutes < 10)
+            timetxt += "0";
 
+        timetxt += Long.toString(diffMinutes);
+        ((TextView) convertView.findViewById(R.id.time))
+                .setText(timetxt);
+
+        db.close();
         return convertView;
     }
 
