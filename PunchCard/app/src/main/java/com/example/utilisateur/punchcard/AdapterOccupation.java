@@ -33,8 +33,9 @@ public class AdapterOccupation extends BaseAdapter
         _iListViewContainer = iListViewContainer;
         _activity = activity;
         _context = _activity.getApplicationContext();
-
         DataBaseHandler db = new DataBaseHandler(_context);
+
+
 
         _occupations = db.getAllOccupations();
     }
@@ -78,6 +79,14 @@ public class AdapterOccupation extends BaseAdapter
 
         ((TextView) convertView.findViewById(R.id.act_status))
                 .setText(new Integer(getItem(position).getId()).toString());
+
+       // List<OccupationHistory> _history = db.getOccupationHistoryFromOccId(getItem(position).getId());
+        //long diff = 0;
+       // for(OccupationHistory histo:_history)
+       // {
+            //TODO AFFICHER HEURE ICI
+        //    diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
+       // }
 
         return convertView;
     }

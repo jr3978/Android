@@ -226,7 +226,7 @@ public class UpdateService  extends Service
             remoteViews.setTextViewText(R.id.txtTime,"00:00");
         }
 
-
+        db.close();
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
@@ -282,6 +282,7 @@ public class UpdateService  extends Service
             lstjob.get(0).isSelected(true);
             db.updateOccupation(lstjob.get(0));
         }
+        db.close();
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
@@ -340,6 +341,7 @@ public class UpdateService  extends Service
             db.updateOccupation(lstjob.get(0));
             db.getOccupationHistoryFromOccId(lstjob.get(0).getId());
         }
+        db.close();
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
@@ -368,19 +370,43 @@ public class UpdateService  extends Service
                 calendar.setTime(whateverDateYouWant);
                 int unroundedMinutes = calendar.get(Calendar.MINUTE);
                 int mod = unroundedMinutes % minutes;
+                Log.i(LOG, "DATEOUT STOP MOD : " +mod);
+                Log.i(LOG, "DATEOUT STOP MINUTES : " +minutes);
+                Log.i(LOG, "DATEOUT STOP TYPE : " +rType);
+
                 switch (rType)
                 {
+
                     case ROUND_DOWN:
                     {
+                        Log.i(LOG, "DOWN : " );
+
                         calendar.add(Calendar.MINUTE, -mod);
+                        break;
                     }
                     case ROUND_NORMAL:
                     {
-                        calendar.add(Calendar.MINUTE, mod <= minutes/2 ? -mod : (minutes-mod));
+                        Log.i(LOG, "NORMAL : " );
+
+                        if(mod <= minutes /2)
+                            calendar.add(Calendar.MINUTE,-mod);
+                        else {
+                            int i2 = minutes - mod;
+                            Log.i(LOG, "DATEOUT STOP DIF : " + i2);
+                            calendar.add(Calendar.MINUTE, i2);
+                        }
+
+
+                        Log.i(LOG, "DATEOUT STOP RESULT: " + Integer.toString(calendar.get(Calendar.MINUTE)));
+                        break;
+
                     }
                     case ROUND_UP:
                     {
+                        Log.i(LOG, "UP : " );
+
                         calendar.add(Calendar.MINUTE, mod);
+                        break;
                     }
                 }
 
@@ -390,6 +416,7 @@ public class UpdateService  extends Service
                     if(lstHisto.get(i2).getDateTimeOut() == null)
                     {
                         Log.i(LOG, "DATEOUT STOP : " + calendar.getTime());
+                        calendar.set(Calendar.SECOND,0);
                         lstHisto.get(i2).setDateTimeOut(calendar.getTime());
                         db.updateOccupationHistory(lstHisto.get(i2));
                         remoteViews.setTextViewText(R.id.buttonStart,"Start");
@@ -430,19 +457,23 @@ public class UpdateService  extends Service
                         case ROUND_DOWN:
                         {
                             calendar.add(Calendar.MINUTE, -mod);
+                            break;
                         }
                         case ROUND_NORMAL:
                         {
                             calendar.add(Calendar.MINUTE, mod <= minutes/2 ? -mod : (minutes-mod));
+                            break;
                         }
                         case ROUND_UP:
                         {
                             calendar.add(Calendar.MINUTE, mod);
+                            break;
                         }
                     }
 
                     remoteViews.setTextViewText(R.id.txtTime,"00:00");
                     remoteViews.setTextViewText(R.id.buttonStart,"Stop");
+                    calendar.set(Calendar.SECOND,0);
                     OccupationHistory Histo = new OccupationHistory();
                     Histo.setOccupationId(lstjob.get(i).getId());
                     Histo.setDateTimeOut(null);
@@ -458,6 +489,7 @@ public class UpdateService  extends Service
         }
 
         Bundle extras = intent.getExtras();
+        db.close();
         int id = extras.getInt("widgetId");
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
         return;
@@ -508,6 +540,7 @@ public class UpdateService  extends Service
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
+        db.close();
         return;
     }
 
