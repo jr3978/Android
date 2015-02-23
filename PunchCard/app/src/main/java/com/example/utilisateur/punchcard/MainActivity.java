@@ -138,7 +138,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
         alertDialog.show();
 
         // button SAVE
-        final Button btnSetParameters = (Button)alertDialog.findViewById(R.id.btn_add_set_parameters);
+      //  final Button btnSetParameters = (Button)alertDialog.findViewById(R.id.btn_add_set_parameters);
         final Button btnSave = (Button)alertDialog.findViewById(R.id.btn_add_save);
 
 
@@ -154,16 +154,21 @@ public class MainActivity extends ListActivity implements IListViewContainer
                 occupation.isIn(false);
                 occupation.isSelected(false);
 
-                addOccupation(occupation, _tempParam);
+                occupation = addOccupation(occupation, _tempParam);
                 refreshListView();
 
-                btnSetParameters.setVisibility(View.VISIBLE);
-               // alertDialog.dismiss();
+                alertDialog.dismiss();
+
+                Intent intent = new Intent("PunchCard.Parameters");
+
+                intent.putExtra("id",occupation.getId());
+                intent.putExtra("canCancel", false);
+                startActivityForResult(intent, 2);
             }
         });
 
 
-
+/*
         // button SET PARAMETERS
         Button btnParameters = (Button)alertDialog.findViewById(R.id.btn_add_set_parameters);
         btnParameters.setOnClickListener(new View.OnClickListener() {
@@ -190,7 +195,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
                 //startActivity(intent);
             }
         });
-
+*/
 
     }
 
@@ -215,7 +220,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
     }
 
 
-    private void addOccupation(Occupation occupation, OccupationParameters parameters)
+    private Occupation addOccupation(Occupation occupation, OccupationParameters parameters)
     {
         DataBaseHandler db = new DataBaseHandler(this);
         db.addOccupation(occupation);
@@ -224,6 +229,8 @@ public class MainActivity extends ListActivity implements IListViewContainer
         parameters.setOccupationId(occ.getId());
 
         db.addParameters(parameters);
+
+        return occ;
     }
 
 
@@ -236,7 +243,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
             return;
 
        // DataBaseTest.allHistory(this);
-        DataBaseTest.getFirstParameter(this);
+       // DataBaseTest.getFirstParameter(this);
        // DataBaseTest.allOccupation(this);
        // DataBaseTest.clearOccupation(this);
        // DataBaseTest.allHistoryFromOccupation(this);

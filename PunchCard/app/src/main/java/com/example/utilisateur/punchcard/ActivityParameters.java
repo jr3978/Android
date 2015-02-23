@@ -29,9 +29,14 @@ public class ActivityParameters extends Activity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         initParametersFromIntent();
 
         setContentView(R.layout.activity_parameters);
+
+        Button btnCancel = (Button)findViewById(R.id.btn_cancel_params);
+        if (!(getIntent().getBooleanExtra("canCancel", true)))
+            btnCancel.setVisibility(View.GONE);
 
         ListView lv = (ListView)findViewById(R.id.list);
 
@@ -55,6 +60,8 @@ public class ActivityParameters extends Activity
      */
     private void initParametersFromIntent()
     {
+
+
         int id = getIntent()
                 .getIntExtra("id", 0);
 
@@ -112,6 +119,7 @@ public class ActivityParameters extends Activity
             dialogRoundTimeValue();
         }
     }
+
 
     private void dialogNbWeek()
     {
@@ -272,6 +280,14 @@ public class ActivityParameters extends Activity
 
         setResult(RESULT_OK, intent);
 
+        finish();
+    }
+
+
+
+
+    public void onClickCancelParameters(View view)
+    {
         finish();
     }
 }

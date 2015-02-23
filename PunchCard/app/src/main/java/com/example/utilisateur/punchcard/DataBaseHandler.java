@@ -181,6 +181,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
          return cursorToOccupation(cursor);
     }
 
+
     /**
      * Obtient toutes les occupations de la bd
      *
@@ -247,6 +248,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             values.put(COL_SELECTED, 0);
 
         db.insert(TABLE_OCCUPATION, null, values);
+
         db.close();
     }
 
