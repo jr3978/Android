@@ -91,11 +91,11 @@ public class ActivityParameters extends Activity
 
         //TODO ajout des alertdialog pour changer les parametres le l'occupation
 
-        if (value.equals(OccupationParameters.Parameters.ROUND_MINUTE.getValue()))
+        if (value.equals(OccupationParameters.Parameters.ROUND_TYPE.getValue()))
         {
             dialogRoundType();
         }
-        else if (value.equals(OccupationParameters.Parameters.ROUND_TYPE.getValue()))
+        else if (value.equals(OccupationParameters.Parameters.ROUND_MINUTE.getValue()))
         {
             dialogRoundTimeValue();
         }
