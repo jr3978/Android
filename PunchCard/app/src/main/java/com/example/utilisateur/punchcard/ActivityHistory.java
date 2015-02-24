@@ -8,16 +8,26 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 
-public class ActivityHistory extends ListActivity {
+public class ActivityHistory extends Activity {
 
-    private AdapterHistory _adapter;
+    //private AdapterHistory _adapter;
     private int Occid = 0;
-    DataBaseHandler db = new DataBaseHandler(this);
+    //DataBaseHandler db = new DataBaseHandler(this);
+
+
+    private ExpandableListAdapter _listAdapter;
+    private ExpandableListView _expandableListView;
+    private List<OccupationHistory> _listDataHeader;
+    private HashMap<OccupationHistory, List<OccupationHistory>> _listDataChild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +44,117 @@ public class ActivityHistory extends ListActivity {
         //call historique dans bd avec le id de l'occupation
         ////////////////////////////////////////////////////////////////////
 
+        _expandableListView = (ExpandableListView)findViewById(R.id.list_expandable_history);
+
+        setListData(1);
+
+        _listAdapter = new ExpandableListAdapter(this, _listDataHeader, _listDataChild);
+
+        _expandableListView.setAdapter(_listAdapter);
+
+        _expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+            {
+                //feedback toast
+                return false;
+            }
+        });
+
+        _expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener()
+        {
+            @Override
+            public void onGroupExpand(int groupPosition)
+            {
+
+            }
+        });
+
+
+        /*
         _adapter = new AdapterHistory(this, Occid);
 
-        setListAdapter(_adapter);
+        setListAdapter(_adapter);*/
 
 
     }
+
+    private void setListData(int occupationId)
+    {
+        DataBaseHandler db = new DataBaseHandler(this);
+
+        _listDataHeader = new ArrayList<>();
+        _listDataChild = new HashMap<>();
+
+
+
+        OccupationHistory occ = new OccupationHistory(1, new Date(), new Date(2015,03,02));
+        OccupationHistory occ1 = new OccupationHistory(1, new Date(2000,05,05), new Date(2015,03,02));
+        OccupationHistory occ2 = new OccupationHistory(1, new Date(2000,1,05), new Date(2015,03,02));
+        OccupationHistory occ3 = new OccupationHistory(1, new Date(), new Date(2015,03,02));
+        OccupationHistory occ4 = new OccupationHistory(1, new Date(2002,05,05), new Date(2015,03,02));
+        OccupationHistory occ5 = new OccupationHistory(1, new Date(), new Date(2015,03,02));
+        OccupationHistory occ6 = new OccupationHistory(1, new Date(2012,12,1), new Date(2015,03,02));
+        OccupationHistory occ7 = new OccupationHistory(1, new Date(2000,05,05), new Date(2015,03,02));
+        OccupationHistory occ8 = new OccupationHistory(1, new Date(), new Date(2015,03,02));
+        OccupationHistory occ9 = new OccupationHistory(1, new Date(), new Date(2015,03,02));
+        OccupationHistory occ10 = new OccupationHistory(1, new Date(), new Date(2015,03,02));
+
+       // _listDataHeader = db.getAllEndPeriod(true);
+
+        _listDataHeader.add(occ);
+        _listDataHeader.add(occ5);
+        _listDataHeader.add(occ8);
+
+        List<OccupationHistory> child = new ArrayList<>();
+        child.add(occ1);
+        child.add(occ2);
+        child.add(occ3);
+        child.add(occ4);
+
+        List<OccupationHistory> child2 = new ArrayList<>();
+        child2.add(occ6);
+        child2.add(occ7);
+
+
+        List<OccupationHistory> child3 = new ArrayList<>();
+        child3.add(occ9);
+        child3.add(occ10);
+
+        _listDataChild.put(_listDataHeader.get(0), child);
+        _listDataChild.put(_listDataHeader.get(1), child2);
+        _listDataChild.put(_listDataHeader.get(2), child3);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        /*
+        _listAdapter = new AdapterHistory(this, Occid);
+        _adapter.notifyDataSetInvalidated();
+        setListAdapter(_adapter);*/
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_history, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     public void onClickJob(View view)
     {
@@ -71,31 +186,5 @@ public class ActivityHistory extends ListActivity {
         intent.putExtra("name", name);
 
         startActivityForResult(intent,2);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        _adapter = new AdapterHistory(this, Occid);
-        _adapter.notifyDataSetInvalidated();
-        setListAdapter(_adapter);
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_history, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

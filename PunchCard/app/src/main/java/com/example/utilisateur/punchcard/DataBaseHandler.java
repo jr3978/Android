@@ -19,7 +19,10 @@ import java.util.List;
 /**
  * Created by jrsao on 2/17/2015.
  */
-public class DataBaseHandler extends SQLiteOpenHelper {
+public class DataBaseHandler extends SQLiteOpenHelper
+{
+    //region DATABASE CONST
+
     //--------- Database Version ---------
     private static final int DATABASE_VERSION = 1;
 
@@ -48,6 +51,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String COL_DATE_IN = "DateTimeIn";
     private static final String COL_DATE_OUT = "DateTimeOut";
     private static final String COL_IS_PERIOD_END = "IsPeriodEnd";
+
+    //endregion
+
+
+    //region DATABASE BUILDER
 
     //--------- constructor ------------
     public DataBaseHandler(Context context)
@@ -117,9 +125,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         onCreate(db);
     }
+    //endregion
 
 
-    //region ************************** CRUD Occupation********************************
+    //region CRUD OCCUPATION TABLE
 
 
     private Occupation cursorToOccupation(Cursor cursor)
@@ -320,7 +329,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     //endregion
 
-    //region 1************************** CRUD PARAMETERS ********************************
+
+    //region  CRUD PARAMETERS TABLE
 
     public OccupationParameters getParametersByOccupationId(int occupationId)
     {
@@ -413,7 +423,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     // endregion
 
-    //region 2************************** CRUD HISTORY ********************************
+
+    //region CRUD HISTORY TABLE
 
     /**
      * Retourne un object OccupationHistory avec le data du cursor passer en parametre
@@ -502,6 +513,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return executeRawQueryOnHistoryTable(query);
     }
 
+
     public List<OccupationHistory> getAllOccupationHistory()
     {
         String query = "SELECT * FROM " + TABLE_HISTORY;
@@ -510,6 +522,30 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
 
+    public List<OccupationHistory> getAllEndPeriod(boolean isEndPeriod)
+    {
+        String isEnfPeriodStr = isEndPeriod ? "1" : "0";
+
+        String query = "SELECT * FROM " + TABLE_HISTORY +
+                "WHERE " + COL_IS_PERIOD_END + " = " + isEnfPeriodStr;
+
+        return executeRawQueryOnHistoryTable(query);
+    }
+
+
+    public List<OccupationHistory> getAllOccupationInPeriod(Date startPeriodDate, Date endPeriodDate)
+    {
+        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
+
+        String start = (startPeriodDate != null) ? parserSDF.format(startPeriodDate) : "-";
+        String end = (endPeriodDate != null) ? parserSDF.format(endPeriodDate) : "-";
+
+        String query = "SELECT * FROM " + TABLE_HISTORY +
+                "WHERE " + COL_DATE_IN  + " > " + start  +
+                " AND " + COL_DATE_OUT + " < " + end;
+
+        return executeRawQueryOnHistoryTable(query);
+    }
 
     /**
      * Ajoute un historique
@@ -625,7 +661,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     //endregion
 
 
-    //region Helper
+    //region HELPER
     /**
      * Permet de parser une date selon le String format specifique enregistrer dans la BD
      * @param strDate
