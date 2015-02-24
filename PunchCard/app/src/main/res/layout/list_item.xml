@@ -43,17 +43,20 @@
         android:layout_alignBottom="@+id/thumbnail"
         android:visibility="invisible"
         android:layout_toLeftOf="@+id/arrowImage"
+        android:layout_centerVertical="true"
         />
 
     <!-- Description -->
     <TextView
         android:id="@+id/time"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#343434"
-        android:textSize="10dip"
+        android:textSize="20dip"
         android:layout_marginTop="1dip"
         android:layout_below="@+id/thumbnail"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
         android:text="00:00" />
 
 

@@ -193,7 +193,7 @@ public class ActivityHistorySetting extends Activity
                             }
                         }
                         cal.set(Calendar.SECOND,0);
-                        _history.setDateTimeIn(date);
+                        _history.setDateTimeIn(cal.getTime());
                         alertDialog.dismiss();
                         UpdateTotal();
                     }
@@ -299,7 +299,7 @@ public class ActivityHistorySetting extends Activity
                             }
                         }
                         cal.set(Calendar.SECOND,0);
-                        _history.setDateTimeOut(date);
+                        _history.setDateTimeOut(cal.getTime());
                         alertDialog.dismiss();
                         UpdateTotal();
                     }

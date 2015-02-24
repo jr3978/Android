@@ -60,19 +60,19 @@ public class MainActivity extends ListActivity implements IListViewContainer
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+  //. @Override
+  //. public boolean onCreateOptionsMenu(Menu menu)
+  //. {
+  //.     getMenuInflater().inflate(R.menu.menu_main, menu);
+  //.     return true;
+  //. }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        return super.onOptionsItemSelected(item);
-    }
+  //. @Override
+  //. public boolean onOptionsItemSelected(MenuItem item)
+  //. {
+  //.     return super.onOptionsItemSelected(item);
+  //. }
 
 
 

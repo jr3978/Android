@@ -86,6 +86,7 @@ public class AdapterOccupation extends BaseAdapter
         long diff = 0;
         for(OccupationHistory histo:_history)
        {
+           if(histo.getDateTimeOut() != null)
             diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
         }
         String timetxt = "";
