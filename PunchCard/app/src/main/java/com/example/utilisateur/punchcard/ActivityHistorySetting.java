@@ -119,8 +119,8 @@ public class ActivityHistorySetting extends Activity
 
             final AlertDialog alertDialog = builder.create();
             alertDialog.show();
-            Button ok = (Button)alertDialog.findViewById(R.id.btn_Timeinsave);
-            Button cancel = (Button)alertDialog.findViewById(R.id.btn_TimeinCancel);
+            TextView ok = (TextView)alertDialog.findViewById(R.id.btn_Timeinsave);
+            TextView cancel = (TextView)alertDialog.findViewById(R.id.btn_TimeinCancel);
             final DatePicker dp = (DatePicker)alertDialog.findViewById(R.id.datePicker);
             final TimePicker tp = (TimePicker)alertDialog.findViewById(R.id.timePicker);
 
@@ -221,8 +221,8 @@ public class ActivityHistorySetting extends Activity
 
             final AlertDialog alertDialog = builder.create();
             alertDialog.show();
-            Button ok = (Button)alertDialog.findViewById(R.id.btn_Timeinsave);
-            Button cancel = (Button)alertDialog.findViewById(R.id.btn_TimeinCancel);
+            TextView ok = (TextView)alertDialog.findViewById(R.id.btn_Timeinsave);
+            TextView cancel = (TextView)alertDialog.findViewById(R.id.btn_TimeinCancel);
 
             final DatePicker dp = (DatePicker)alertDialog.findViewById(R.id.datePicker);
             final TimePicker tp = (TimePicker)alertDialog.findViewById(R.id.timePicker);

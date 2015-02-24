@@ -116,6 +116,23 @@ public class MainActivity extends ListActivity implements IListViewContainer
             {
                 EditText txtBox = (EditText)alertDialog.findViewById(R.id.edit_name);
 
+
+
+                if(txtBox.getText().toString().length() > 20) {
+                    final AlertDialog.Builder dlgAlert = new AlertDialog.Builder(alertDialog.getContext());
+                    dlgAlert.setMessage("Name too long");
+                    dlgAlert.setTitle("Error");
+                    dlgAlert.setPositiveButton("OK", null);
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                    dlgAlert.setPositiveButton("Ok",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                    return;
+                }
                 Occupation occupation = new Occupation();
                 occupation.setName(txtBox.getText().toString());
                 occupation.isIn(false);
