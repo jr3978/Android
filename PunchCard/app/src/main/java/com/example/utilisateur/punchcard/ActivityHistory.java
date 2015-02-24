@@ -149,24 +149,27 @@ public class ActivityHistory extends Activity
         TreeSet<OccupationHistory> sorted = new TreeSet<>(new ComparatorOccupationHistory());
         sorted.addAll(db.getOccupationHistoryFromOccId(_occupationid));
 
-        _listDataHeader.add("Current period");
 
         List<OccupationHistory> tempList = new ArrayList<>();
 
         for(OccupationHistory history : sorted)
         {
+
+            tempList.add(history);
+
             if (history.isPeriodEnd())
             {
                 Date endPoint = history.getDateTimeIn();
 
+                _listDataHeader.add(Tools.formatDateCanada(endPoint));
                 _listDataChild.put(_listDataHeader.get(_listDataHeader.size() -1), tempList);
                 tempList.clear();
-                _listDataHeader.add(Tools.formatDateCanada(endPoint));
             }
 
-            tempList.add(history);
-
         }
+
+        _listDataHeader.add("Current period");
+        _listDataChild.put(_listDataHeader.get(_listDataHeader.size() -1), tempList);
 
 
 
