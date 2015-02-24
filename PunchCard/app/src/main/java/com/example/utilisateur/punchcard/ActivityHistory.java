@@ -235,6 +235,7 @@ public class ActivityHistory extends Activity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        initExpandableList();
         /*
         _listAdapter = new AdapterHistory(this, Occid);
         _adapter.notifyDataSetInvalidated();
