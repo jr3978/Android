@@ -543,18 +543,23 @@ public class DataBaseHandler extends SQLiteOpenHelper
         String end = (endPeriodDate != null) ? parserSDF.format(endPeriodDate) : "-";
 
         String query = "SELECT * FROM " + TABLE_HISTORY +
-                 " WHERE " +COL_OCC_ID + " = " + occupationId;
+                 " WHERE " +COL_OCC_ID + " = " + occupationId
+                +" AND " + COL_DATE_IN + " BETWEEN '" + end  + "' "+ " AND " +  " '"+ start +"' ";
 
+/*
         if (start != "-")
         {
-            query += " AND " + COL_DATE_IN + " > " + start;
+            query += " AND " + COL_DATE_IN + " > '" + start + "'";
         }
 
         if (end != "-")
         {
-            query += " AND " + COL_DATE_OUT + " < " + end;
+            query += " AND " + COL_DATE_OUT + " <= '" + end + "'";
         }
+*/
+        query += " ORDER BY " + COL_DATE_IN + " ASC ";
 
+        Log.d("QUERY", query);
         return executeRawQueryOnHistoryTable(query);
     }
 

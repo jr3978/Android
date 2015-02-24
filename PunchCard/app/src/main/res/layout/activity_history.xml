@@ -10,24 +10,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity"
     android:background="#ff58b3ff"
-
     >
-
-    <!--
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:scrollbarStyle="outsideOverlay"
-        android:choiceMode="multipleChoice" />
--->
-    <ExpandableListView
-        android:id="@+id/list_expandable_history"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:cacheColorHint="#00000000"/>
-
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -42,5 +25,14 @@
             android:onClick="onClickAdd"
             android:backgroundTint="#fffff0da" />
     </RelativeLayout>
+
+    <ExpandableListView
+        android:id="@+id/list_expandable_history"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:cacheColorHint="#00000000"/>
+
+
+
 
 </LinearLayout>

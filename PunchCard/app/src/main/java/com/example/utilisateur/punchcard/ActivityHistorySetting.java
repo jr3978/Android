@@ -57,6 +57,9 @@ public class ActivityHistorySetting extends Activity
         }
 
         String name = getIntent().getStringExtra("name");
+        if (name == null){
+            name = "-";
+        }
         setTitle(name);
 
         UpdateTotal();
@@ -76,8 +79,9 @@ public class ActivityHistorySetting extends Activity
             TotalHour = ToShortDateString(dif);
         }
 
-        Timein= timein.toString();
-        TimeOut = timeout.toString();
+
+        Timein = Tools.formatCustomDateTime(timein);
+        TimeOut = Tools.formatCustomDateTime(timeout);
 
         ListView lv = (ListView)findViewById(R.id.lstHistorySet);
         String[] values = new String[]

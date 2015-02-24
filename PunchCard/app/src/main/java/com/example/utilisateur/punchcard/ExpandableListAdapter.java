@@ -22,10 +22,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
     private Context _context;
 
     // header titles
-    private List<OccupationHistory> _listDataheaders;
+    private List<String> _listDataheaders;
 
     // header titles, childs data
-    private HashMap<OccupationHistory, List<OccupationHistory>> _listDataChilds;
+    private HashMap<String, List<OccupationHistory>> _listDataChilds;
 
 
     //Constructor
@@ -35,8 +35,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
      * @param listDataHeaders data de tous les headers
      * @param listDataChilds data de tous les childs des groups
      */
-    public ExpandableListAdapter(Context context, List<OccupationHistory> listDataHeaders,
-                  HashMap<OccupationHistory, List<OccupationHistory>> listDataChilds)
+    public ExpandableListAdapter(Context context, List<String> listDataHeaders,
+                  HashMap<String, List<OccupationHistory>> listDataChilds)
     {
         _context = context;
         _listDataChilds = listDataChilds;
@@ -65,6 +65,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
     @Override
     public int getChildrenCount(int groupPosition)
     {
+        int test = groupPosition;
+        String te = _listDataheaders.get(groupPosition);
+
         return _listDataChilds.get(_listDataheaders.get(groupPosition)).size();
     }
 
@@ -75,7 +78,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
      * @return object parent (occupationHistory)
      */
     @Override
-    public OccupationHistory getGroup(int groupPosition)
+    public String getGroup(int groupPosition)
     {
         return _listDataheaders.get(groupPosition);
     }
@@ -90,7 +93,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
     @Override
     public OccupationHistory getChild(int groupPosition, int childPosition)
     {
-        return _listDataChilds.get(_listDataheaders.get(groupPosition))
+        return _listDataChilds.get(getGroup(groupPosition))
                 .get(childPosition);
     }
 
@@ -103,7 +106,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
     @Override
     public long getGroupId(int groupPosition)
     {
-        return getGroup(groupPosition).getId();
+        return groupPosition;
     }
 
 
@@ -141,7 +144,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
     {
-        String headerTitle = formatDate(getGroup(groupPosition).getDateTimeIn());
+        String headerTitle = getGroup(groupPosition);
 
         // list_group_history comme parent si pas preciser
         if (convertView == null)
@@ -172,7 +175,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent)
     {
-        String childText = formatDate(getChild(groupPosition, childPosition).getDateTimeIn());
+        String childText = Tools.formatDateCanada(
+                getChild(groupPosition, childPosition).getDateTimeIn()
+        );
 
         if (convertView == null)
         {
@@ -203,22 +208,5 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 
     //endregion
 
-    /**
-     * Formatte une date en format long Canada francais
-     * @param date
-     * @return String dateFormatter
-     */
-    private String formatDate(Date date)
-    {
-        if (date == null)
-        {
-            return "Current Period";
-        }
 
-        String result = DateFormat
-                .getDateInstance(DateFormat.LONG, Locale.CANADA_FRENCH)
-                .format(date);
-
-        return result;
-    }
 }
