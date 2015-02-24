@@ -210,6 +210,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
      */
     private String formatDate(Date date)
     {
+        if (date == null)
+        {
+            return "Current Period";
+        }
+
         String result = DateFormat
                 .getDateInstance(DateFormat.LONG, Locale.CANADA_FRENCH)
                 .format(date);

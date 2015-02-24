@@ -522,18 +522,20 @@ public class DataBaseHandler extends SQLiteOpenHelper
     }
 
 
-    public List<OccupationHistory> getAllEndPeriod(boolean isEndPeriod)
+    public List<OccupationHistory> getAllEndPeriod(boolean isEndPeriod, int occupationId)
     {
         String isEnfPeriodStr = isEndPeriod ? "1" : "0";
 
         String query = "SELECT * FROM " + TABLE_HISTORY +
-                "WHERE " + COL_IS_PERIOD_END + " = " + isEnfPeriodStr;
+                " WHERE " + COL_IS_PERIOD_END + " = " + isEnfPeriodStr +
+                " AND " + COL_OCC_ID + " = " + occupationId;
 
         return executeRawQueryOnHistoryTable(query);
     }
 
 
-    public List<OccupationHistory> getAllOccupationInPeriod(Date startPeriodDate, Date endPeriodDate)
+    public List<OccupationHistory> getAllOccupationInPeriod(
+            Date startPeriodDate, Date endPeriodDate, int occupationId)
     {
         SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
 
@@ -541,8 +543,17 @@ public class DataBaseHandler extends SQLiteOpenHelper
         String end = (endPeriodDate != null) ? parserSDF.format(endPeriodDate) : "-";
 
         String query = "SELECT * FROM " + TABLE_HISTORY +
-                "WHERE " + COL_DATE_IN  + " > " + start  +
-                " AND " + COL_DATE_OUT + " < " + end;
+                 " WHERE " +COL_OCC_ID + " = " + occupationId;
+
+        if (start != "-")
+        {
+            query += " AND " + COL_DATE_IN + " > " + start;
+        }
+
+        if (end != "-")
+        {
+            query += " AND " + COL_DATE_OUT + " < " + end;
+        }
 
         return executeRawQueryOnHistoryTable(query);
     }

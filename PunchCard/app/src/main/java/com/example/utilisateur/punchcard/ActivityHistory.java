@@ -17,13 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class ActivityHistory extends Activity {
-
-    //private AdapterHistory _adapter;
-    private int Occid = 0;
-    //DataBaseHandler db = new DataBaseHandler(this);
-
-
+public class ActivityHistory extends Activity
+{
+    private int _occupationid = 0;
     private ExpandableListAdapter _listAdapter;
     private ExpandableListView _expandableListView;
     private List<OccupationHistory> _listDataHeader;
@@ -36,7 +32,7 @@ public class ActivityHistory extends Activity {
 
 
         ////// data from MainActivity nom et id de celle cliquer dans la liste
-        Occid = getIntent().getIntExtra("id", 0);
+        _occupationid = getIntent().getIntExtra("id", 0);
         String name = getIntent().getStringExtra("name");
 
         setTitle(name);
@@ -46,7 +42,7 @@ public class ActivityHistory extends Activity {
 
         _expandableListView = (ExpandableListView)findViewById(R.id.list_expandable_history);
 
-        setListData(1);
+        setListData();
 
         _listAdapter = new ExpandableListAdapter(this, _listDataHeader, _listDataChild);
 
@@ -80,14 +76,44 @@ public class ActivityHistory extends Activity {
 
     }
 
-    private void setListData(int occupationId)
+    private void setListData()
     {
         DataBaseHandler db = new DataBaseHandler(this);
 
+        // ajoute les parents
         _listDataHeader = new ArrayList<>();
+        _listDataHeader.add(new OccupationHistory(_occupationid, null, null));
+        _listDataHeader.addAll(db.getAllEndPeriod(true, _occupationid));
+
         _listDataChild = new HashMap<>();
 
+        OccupationHistory lastParent = null;
+        int index = 0;
 
+        // ajoute les enfants aux parents
+        if (_listDataHeader != null)
+        {
+            for (OccupationHistory parent : _listDataHeader)
+            {
+                Date start = (lastParent != null) ? lastParent.getDateTimeIn() : null;
+                Date end = (parent != null) ? parent.getDateTimeIn() : null;
+
+                List<OccupationHistory> children = db.getAllOccupationInPeriod(
+                        start, end, _occupationid);
+
+                if (children != null)
+                {
+                    _listDataChild.put(_listDataHeader.get(index), children);
+                }
+
+                index++;
+                lastParent = parent;
+            }
+        }
+
+
+        /*
+        TEST POUR VOIR DE QUOI LA LISTE A L'AIR
 
         OccupationHistory occ = new OccupationHistory(1, new Date(), new Date(2015,03,02));
         OccupationHistory occ1 = new OccupationHistory(1, new Date(2000,05,05), new Date(2015,03,02));
@@ -125,6 +151,7 @@ public class ActivityHistory extends Activity {
         _listDataChild.put(_listDataHeader.get(0), child);
         _listDataChild.put(_listDataHeader.get(1), child2);
         _listDataChild.put(_listDataHeader.get(2), child3);
+        */
     }
 
 
@@ -181,7 +208,7 @@ public class ActivityHistory extends Activity {
         String name = "New History";
 
 
-        intent.putExtra("Occid", Occid);
+        intent.putExtra("Occid", _occupationid);
         intent.putExtra("id", 0);
         intent.putExtra("name", name);
 
