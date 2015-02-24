@@ -124,6 +124,7 @@ public class ActivityHistory extends Activity
                         // TODO rafraichir la liste apres un set
                         OccupationHistory occupationHistory = _db.getOccupationHistory(historyId);
                         occupationHistory.isPeriodEnd(true);
+                        initExpandableList();
                         _db.updateOccupationHistory(occupationHistory);
                         return true;
                 }
@@ -151,7 +152,7 @@ public class ActivityHistory extends Activity
 
 
         List<OccupationHistory> tempList = new ArrayList<>();
-
+        _listDataHeader.add("Current period");
         for(OccupationHistory history : sorted)
         {
 
@@ -163,14 +164,14 @@ public class ActivityHistory extends Activity
                 _listDataHeader.add(Tools.formatDateCanada(endPoint));
                 ArrayList<OccupationHistory> lst = new ArrayList<OccupationHistory>();
                 lst.addAll(tempList);
-                _listDataChild.put(_listDataHeader.get(_listDataHeader.size() -1),lst);
+                _listDataChild.put(_listDataHeader.get(_listDataHeader.size()-1),lst);
                 tempList.clear();
             }
 
         }
 
-        _listDataHeader.add("Current period");
-        _listDataChild.put(_listDataHeader.get(_listDataHeader.size() -1), tempList);
+
+        _listDataChild.put(_listDataHeader.get(0), tempList);
 
 
 
