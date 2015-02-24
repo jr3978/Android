@@ -4,12 +4,12 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
+    android:padding="10dp"
     android:minHeight="?android:listPreferredItemHeight"
     android:gravity="center_vertical"
     android:onClick="onClickJob"
     android:id="@+id/list_item_job"
+    android:background="@drawable/title_bg"
     >
 
 
@@ -17,19 +17,19 @@
     <LinearLayout android:id="@+id/thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="3dip"
+        android:paddingTop="20dp"
+        android:paddingBottom="10dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginRight="5dip">
-
-
+        android:layout_marginRight="5dip"
+        >
     <!-- Nom de l'activite -->
-    <TextView android:id="@+id/act_name"
+        <TextView android:id="@+id/act_name"
         android:duplicateParentState="true"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:textAppearance="?android:textAppearanceLarge"
-        />
+        android:textColor="#000000" />
 
     </LinearLayout>
 

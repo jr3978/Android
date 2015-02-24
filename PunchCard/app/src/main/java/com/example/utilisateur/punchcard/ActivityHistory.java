@@ -119,6 +119,7 @@ public class ActivityHistory extends Activity
                         return true;
 
                     case R.id.popup_history_item_set:
+                        // TODO rafraichir la liste apres un set
                         OccupationHistory occupationHistory = _db.getOccupationHistory(historyId);
                         occupationHistory.isPeriodEnd(true);
                         _db.updateOccupationHistory(occupationHistory);
@@ -150,7 +151,7 @@ public class ActivityHistory extends Activity
         headers.add(currentPeriod);
 
 
-
+        // TODO alogrithme qui fonctionne comme il faut avec la requete getAllOccupationInPeriod
 
         OccupationHistory lastParent = null;
         int index = 0;
