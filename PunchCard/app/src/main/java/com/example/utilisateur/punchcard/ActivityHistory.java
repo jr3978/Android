@@ -14,10 +14,12 @@ import android.widget.ExpandableListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * Created by jrsao on 2/23/2015.
@@ -138,9 +140,39 @@ public class ActivityHistory extends Activity
      */
     private void setListData()
     {
+        _listDataChild = new HashMap<>();
+        _listDataHeader = new ArrayList<>();
+
         DataBaseHandler db = new DataBaseHandler(this);
 
-        List<OccupationHistory> occss = db.getAllOccupationHistory();
+        List<OccupationHistory> occss = db.getOccupationHistoryFromOccId(_occupationid);
+        TreeSet<OccupationHistory> sorted = new TreeSet<>(new ComparatorOccupationHistory());
+        sorted.addAll(db.getOccupationHistoryFromOccId(_occupationid));
+
+        _listDataHeader.add("Current period");
+
+        List<OccupationHistory> tempList = new ArrayList<>();
+
+        for(OccupationHistory history : sorted)
+        {
+            if (history.isPeriodEnd())
+            {
+                Date endPoint = history.getDateTimeIn();
+
+                _listDataChild.put(_listDataHeader.get(_listDataHeader.size() -1), tempList);
+                tempList.clear();
+                _listDataHeader.add(Tools.formatDateCanada(endPoint));
+            }
+
+            tempList.add(history);
+
+        }
+
+
+
+
+/*
+
 
         _listDataHeader = new ArrayList<>();
         _listDataChild = new HashMap<>();
@@ -192,6 +224,7 @@ public class ActivityHistory extends Activity
                 lastParent = parent;
             }
         }
+        */
     }
 
 
