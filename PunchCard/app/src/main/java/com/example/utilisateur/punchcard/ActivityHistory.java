@@ -160,9 +160,10 @@ public class ActivityHistory extends Activity
             if (history.isPeriodEnd())
             {
                 Date endPoint = history.getDateTimeIn();
-
                 _listDataHeader.add(Tools.formatDateCanada(endPoint));
-                _listDataChild.put(_listDataHeader.get(_listDataHeader.size() -1), tempList);
+                ArrayList<OccupationHistory> lst = new ArrayList<OccupationHistory>();
+                lst.addAll(tempList);
+                _listDataChild.put(_listDataHeader.get(_listDataHeader.size() -1),lst);
                 tempList.clear();
             }
 
