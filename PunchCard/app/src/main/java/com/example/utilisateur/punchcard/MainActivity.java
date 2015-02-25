@@ -142,12 +142,6 @@ public class MainActivity extends ListActivity implements IListViewContainer
                 refreshListView();
 
                 alertDialog.dismiss();
-
-                Intent intent = new Intent("PunchCard.Parameters");
-
-                intent.putExtra("id",occupation.getId());
-                intent.putExtra("canCancel", false);
-                startActivityForResult(intent, 2);
             }
         });
     }
