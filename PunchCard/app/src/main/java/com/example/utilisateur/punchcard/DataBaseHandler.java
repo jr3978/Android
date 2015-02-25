@@ -5,8 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.hardware.Camera;
-import android.util.Log;
+
+
 
 import java.lang.reflect.ParameterizedType;
 import java.text.DateFormat;
@@ -320,7 +320,7 @@ public class DataBaseHandler extends SQLiteOpenHelper
         else{
             values.put(COL_SELECTED, 0);
         }
-        Log.d("updateOccupation", occ.isSelected().toString());
+
 
 
         db.update(TABLE_OCCUPATION, values, COL_ID + " = " + id, null);
@@ -448,7 +448,7 @@ public class DataBaseHandler extends SQLiteOpenHelper
         }
         catch (Exception e)
         {
-            Log.d("ERROR IN getHistory", e.getMessage());
+
         }
 
         return history;
@@ -559,7 +559,7 @@ public class DataBaseHandler extends SQLiteOpenHelper
 */
         query += " ORDER BY " + COL_DATE_IN + " ASC ";
 
-        Log.d("QUERY", query);
+
         return executeRawQueryOnHistoryTable(query);
     }
 
