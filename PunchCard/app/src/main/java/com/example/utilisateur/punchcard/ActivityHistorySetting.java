@@ -70,13 +70,16 @@ public class ActivityHistorySetting extends Activity
     {
         Date timein = _history.getDateTimeIn();
         Date timeout = _history.getDateTimeOut();
+        //default
         if(timein == null || timeout == null)
         {
             TotalHour ="00:00";
         }
-        else {
+        else
+        {
+            //get dif
             long dif = (timeout.getTime() - timein.getTime());
-            TotalHour = ToShortDateString(dif);
+            TotalHour = Tools.formatDifftoString(dif);
         }
 
 
@@ -97,23 +100,19 @@ public class ActivityHistorySetting extends Activity
 
     }
 
-    public static int safeLongToInt(long l) {
-        return (int) Math.max(Math.min(Integer.MAX_VALUE, l), Integer.MIN_VALUE);
-    }
-
     public void onClickItemParameter(View view)
     {
         TextView textView = (TextView)view.findViewById(R.id.paramters_item);
         String value = textView.getText().toString();
-        String name = getIntent().getStringExtra("name");
         final OccupationParameters params = db.getParametersByOccupationId(_history.getOccupationId());
         final OccupationParameters.RoundType rType = params.getRoundType();
 
+        //pop time in set dialog and round it with params
         if(value.equals("Time In:        " + Timein))
         {
             AlertDialog.Builder builder =  new AlertDialog.Builder(this);
 
-            builder.setIcon(R.drawable.ic_launcher);
+            builder.setIcon(R.drawable.ic_logo);
             builder.setTitle("Set Time in");
             builder.setView(R.layout.dialog_timein);
 
@@ -124,6 +123,7 @@ public class ActivityHistorySetting extends Activity
             final DatePicker dp = (DatePicker)alertDialog.findViewById(R.id.datePicker);
             final TimePicker tp = (TimePicker)alertDialog.findViewById(R.id.timePicker);
 
+            //set picker time
             Date date = _history.getDateTimeIn();
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
@@ -140,6 +140,7 @@ public class ActivityHistorySetting extends Activity
             ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //set time in time with picker value
                     Date date = new Date();
                     Calendar cal = Calendar.getInstance();
                     cal.set(Calendar.DAY_OF_MONTH, dp.getDayOfMonth());
@@ -151,6 +152,7 @@ public class ActivityHistorySetting extends Activity
 
                     if(date.getTime() > new Date().getTime())
                     {
+                        //if value if in the future, pop alert dialog
                         final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(alertDialog.getContext() );
                         dlgAlert.setMessage("You cannot Time in in the future");
                         dlgAlert.setTitle("Error");
@@ -166,6 +168,7 @@ public class ActivityHistorySetting extends Activity
                     }
                     else
                     {
+                        //round with setting value
                         int minuteparam = params.getRoundMinuteValue();
                         int unroundedMinutes = cal.get(Calendar.MINUTE);
                         int mod = unroundedMinutes % minuteparam;
@@ -195,6 +198,7 @@ public class ActivityHistorySetting extends Activity
                         cal.set(Calendar.SECOND,0);
                         _history.setDateTimeIn(cal.getTime());
                         alertDialog.dismiss();
+                        //new total
                         UpdateTotal();
                     }
 
@@ -208,14 +212,14 @@ public class ActivityHistorySetting extends Activity
                     alertDialog.dismiss();
                 }
             });
-
         }
 
+        //time out dialog
         if(value.equals("Time out:      " + TimeOut))
         {
             AlertDialog.Builder builder =  new AlertDialog.Builder(this);
 
-            builder.setIcon(R.drawable.ic_launcher);
+            builder.setIcon(R.drawable.ic_logo);
             builder.setTitle("Set Time Out");
             builder.setView(R.layout.dialog_timein);
 
@@ -227,6 +231,7 @@ public class ActivityHistorySetting extends Activity
             final DatePicker dp = (DatePicker)alertDialog.findViewById(R.id.datePicker);
             final TimePicker tp = (TimePicker)alertDialog.findViewById(R.id.timePicker);
 
+            //set pickers value
             Date date = _history.getDateTimeOut();
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
@@ -247,6 +252,7 @@ public class ActivityHistorySetting extends Activity
                 @Override
                 public void onClick(View v) {
 
+                    //set date value with picker value
                     Date date = new Date();
                     Calendar cal = Calendar.getInstance();
                     cal.set(Calendar.DAY_OF_MONTH, dp.getDayOfMonth());
@@ -256,6 +262,7 @@ public class ActivityHistorySetting extends Activity
                     cal.set(Calendar.MINUTE, tp.getCurrentMinute());
                     date.setTime(cal.getTimeInMillis());
 
+                    //cannot time out before time in
                     if(_history.getDateTimeIn().getTime() > date.getTime())
                     {
                         final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(alertDialog.getContext() );
@@ -272,6 +279,7 @@ public class ActivityHistorySetting extends Activity
                                 });
                     }
                     else {
+                        //rounding
                         int minuteparam = params.getRoundMinuteValue();
                         int unroundedMinutes = cal.get(Calendar.MINUTE);
                         int mod = unroundedMinutes % minuteparam;
@@ -305,61 +313,37 @@ public class ActivityHistorySetting extends Activity
                     }
                 }
             });
-
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     alertDialog.dismiss();
                 }
             });
-
-
-
             }
-
-
         }
 
+    //Ok click
     public void onClickOk(View view)
     {
+        //add
         if(Occid != 0) {
             db.addOccupationHistory(_history);
         }
-        else
+        else //modify
         {
             db.updateOccupationHistory(_history);
         }
-
-
-
+        //close activity
         this.finish();
     }
 
     public void onClickCancel(View view)
     {
-        if(Occid != 0)
+        if(Occid != 0)//if add, delete it
         {
             db.deleteOccupationHistory(_history);
         }
-
+        //else just dont update
        this.finish();
-    }
-
-    private String ToShortDateString(long milli)
-    {
-        String ToString;
-
-        long diffHours = milli / (60 * 60 * 1000);
-        long diffMinutes = milli / (60 * 1000) % 60;
-        ToString = "";
-        if (diffHours < 10)
-            ToString += "0";
-        ToString += Long.toString(diffHours);
-        ToString += ":";
-        if (diffMinutes < 10)
-            ToString += "0";
-
-        ToString += Long.toString(diffMinutes);
-        return ToString;
     }
 }

@@ -44,38 +44,6 @@ public class MainActivity extends ListActivity implements IListViewContainer
     }
 
 
-    private void initListView()
-    {
-        View v = findViewById(R.id.list_item_job);
-
-        if (v == null)
-        {
-            int stoip = 0;
-        }
-        v.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return false;
-            }
-        });
-    }
-
-  //. @Override
-  //. public boolean onCreateOptionsMenu(Menu menu)
-  //. {
-  //.     getMenuInflater().inflate(R.menu.menu_main, menu);
-  //.     return true;
-  //. }
-
-
-  //. @Override
-  //. public boolean onOptionsItemSelected(MenuItem item)
-  //. {
-  //.     return super.onOptionsItemSelected(item);
-  //. }
-
-
-
     // event click sur une job de la liste
     public void onClickJob(View view)
     {
@@ -94,7 +62,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
     }
 
 
-    // event click sur une job
+    // event click sur button add
     public void onClickAdd(View view)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -117,7 +85,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
                 EditText txtBox = (EditText)alertDialog.findViewById(R.id.edit_name);
 
 
-
+                //empeche text trop long
                 if(txtBox.getText().toString().length() > 20) {
                     final AlertDialog.Builder dlgAlert = new AlertDialog.Builder(alertDialog.getContext());
                     dlgAlert.setMessage("Name too long");
@@ -133,6 +101,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
                             });
                     return;
                 }
+                //create and add new occupation
                 Occupation occupation = new Occupation();
                 occupation.setName(txtBox.getText().toString());
                 occupation.isIn(false);
@@ -147,6 +116,7 @@ public class MainActivity extends ListActivity implements IListViewContainer
     }
 
 
+    //add new occupation
     private Occupation addOccupation(Occupation occupation, OccupationParameters parameters)
     {
         DataBaseHandler db = new DataBaseHandler(this);

@@ -124,7 +124,7 @@ public class ActivityHistory extends Activity
                     {
                         //Confirm dialog
                         final AlertDialog.Builder builder = new AlertDialog.Builder(asd);
-                        builder.setIcon(R.drawable.ic_launcher);
+                        builder.setIcon(R.drawable.ic_logo);
                         builder.setTitle(R.string.delete_advertisehisto);
                         //button ok, delete and refresh
                         builder.setPositiveButton(R.string.ok_button,
