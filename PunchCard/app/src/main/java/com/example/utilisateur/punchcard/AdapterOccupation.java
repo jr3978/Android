@@ -156,7 +156,7 @@ public class AdapterOccupation extends BaseAdapter
 
                     case R.id.item_set_parameters:
                     {
-                        Intent intent = new Intent("PunchCard.Parameters");
+                        Intent intent = new Intent("PunchCard.SettingsActivity");
 
                         intent.putExtra("id",occupation.getId());
                         _activity.startActivityForResult(intent, 2);

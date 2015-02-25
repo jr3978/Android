@@ -2,17 +2,25 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="@string/occ_params_cat_other">
+        android:title="@string/occ_params_cat_round">
 
         <ListPreference
-            android:key="@string/occ_params_reset_day_key"
-            android:title="@string/occ_params_reset_day"
-            android:dialogTitle="@string/hello_world"
-            android:entries="@array/day_of_week"
-            android:entryValues="@array/reset_day_values"
-            android:defaultValue="@string/reset_day_default_value"
+            android:key="pref_round_type"
+            android:title="@string/occ_params_round_type_title"
+            android:dialogTitle="@string/occ_params_round_type_dialod"
+            android:entries="@array/round_type"
+            android:entryValues="@array/roung_type_values"
+            android:defaultValue="@string/round_type_default"
             />
 
+        <ListPreference
+            android:key="pref_round_time_value"
+            android:title="@string/occ_params_round_time_value_title"
+            android:dialogTitle="@string/occ_params_round_time_value_dialog"
+            android:entries="@array/rounding_time"
+            android:entryValues="@array/rounding_time_value"
+            android:defaultValue="@string/rounding_time_default"
+            />
 
     </PreferenceCategory>
 

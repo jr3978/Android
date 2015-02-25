@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="reset_day_values" translatable="false">
-        <item>com.example.utilisateur.punchcard.Action$Sunday</item>
-        <item>com.example.utilisateur.punchcard.Action$Monday</item>
-        <item>com.example.utilisateur.punchcard.Action$Tuesday</item>
-        <item>com.example.utilisateur.punchcard.Action$Wednesday</item>
-        <item>com.example.utilisateur.punchcard.Action$Thursday</item>
-        <item>com.example.utilisateur.punchcard.Action$Friday</item>
-        <item>com.example.utilisateur.punchcard.Action$Saturday</item>
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
     </string-array>
 
     <string name="reset_day_default_value" translatable="false"></string>

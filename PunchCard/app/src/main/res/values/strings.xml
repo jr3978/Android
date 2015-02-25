@@ -13,17 +13,18 @@
     <string name="cancel_button">Cancel</string>
     <string name="occupation_deleted">deleted</string>
 
-    <!--Occupation Parameters -->
+
     <string name="occupation_parameters_title">Occupation parameters</string>
-    <!-- start date -->
-    <string name="occ_params_cat_round">Round settings</string>
+    <string name="occ_params_cat_round">Rounding settings</string>
     <string name="occ_params_cat_other">Other settings</string>
-    <string name="occ_params_start_date">Starting date</string>
-    <string name="occ_params_reset_day">Reset day</string>
-    <string name="occ_params_reset_day_key">occ_params_reset_day</string>
-    <string name="occ_params_nb_week">Number of weeks before reset</string>
-    <string name="occ_params_round_time_value">Round time value</string>
-    <string name="occ_params_round_type">Round type</string>
+
+    <string name="occ_params_round_time_value_title">Rounding time value</string>
+    <string name="occ_params_round_time_value_dialog">Set rounding time value</string>
+
+
+    <string name="occ_params_round_type_title">Rounding type</string>
+    <string name="occ_params_round_type_dialod">Set rounding type</string>
+
 
 
 
