@@ -17,7 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by utilisateur on 2015-02-20.
+ * Created by Mathew on 2015-02-20.
  */
 public class ActivityHistorySetting extends Activity
 {
@@ -26,7 +26,6 @@ public class ActivityHistorySetting extends Activity
     String TotalHour;
     String Timein;
     String TimeOut;
-    DatePicker datepick;
     int Occid;
 
     @Override
@@ -35,20 +34,20 @@ public class ActivityHistorySetting extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historysettings);
 
-
-
         //id 0 si add
         //Occid 0 si modify
         int id = getIntent().getIntExtra("id", 0);
         Occid = getIntent().getIntExtra("Occid", 0);
 
+        //Modify
         if(id != 0)
         {
             _history = db.getOccupationHistory(id);
         }
-        else
+        else //add
         _history = new OccupationHistory();
 
+        //Add
         if(Occid != 0)
         {
             _history.setOccupationId(Occid);
@@ -62,10 +61,11 @@ public class ActivityHistorySetting extends Activity
         }
         setTitle(name);
 
+        //Update total time
         UpdateTotal();
-
     }
 
+    //Update Total time
     private void UpdateTotal()
     {
         Date timein = _history.getDateTimeIn();
