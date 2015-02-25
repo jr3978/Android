@@ -151,7 +151,9 @@ public class AdapterOccupation extends BaseAdapter
                         emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
                         emailIntent.putExtra(Intent.EXTRA_CC, cc);
                         emailIntent.putExtra(Intent.EXTRA_SUBJECT, _activity.getResources().getString(R.string.email_subject));
-                        emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+                        String name = getItem(position).getName();
+                        HtmlMailBuilder mb = new HtmlMailBuilder(_context,id,name);
+                        emailIntent.putExtra(Intent.EXTRA_TEXT, mb.get_text());
                         emailIntent.setType("message/rfc822");
                         _activity.startActivity(Intent.createChooser(emailIntent, "Email"));
                     }
