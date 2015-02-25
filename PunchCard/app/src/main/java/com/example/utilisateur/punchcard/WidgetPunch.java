@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 
 /**
- * Created by utilisateur on 2015-02-13.
+ * Created by Mathew on 2015-02-13.
  */
 public class WidgetPunch  extends AppWidgetProvider
 {
@@ -23,12 +23,10 @@ public class WidgetPunch  extends AppWidgetProvider
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds)
     {
-        Log.d("OnUpdateAAa", "In the onResume() event");
-        // Get all ids
+        // Get all widget ids
         ComponentName thisWidget = new ComponentName(context,
                 WidgetPunch.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-
         // Build the intent to call the service
         Intent intent = new Intent(context.getApplicationContext(),
                 UpdateService.class);
@@ -37,7 +35,6 @@ public class WidgetPunch  extends AppWidgetProvider
         // Update the widgets via the service
         context.startService(intent);
     }
-
 
 }
 
