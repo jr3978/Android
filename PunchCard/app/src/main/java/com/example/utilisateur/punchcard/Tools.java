@@ -8,17 +8,15 @@ import java.util.Locale;
 /**
  * Created by jrsao on 2/23/2015.
  */
-public class Tools
-{
+public class Tools {
     /**
      * Formatte une date en format long Canada francais
+     *
      * @param date date a formatter
      * @return String dateFormatter
      */
-    public static String formatDateCanada(Date date)
-    {
-        if (date == null)
-        {
+    public static String formatDateCanada(Date date) {
+        if (date == null) {
             return "Current Period";
         }
 
@@ -31,19 +29,19 @@ public class Tools
 
     /**
      * Formatte diff en long de temps vers string hh:mm
-     * @param  diff a formatter
+     *
+     * @param diff a formatter
      * @return string du temps
      */
-    public static String formatDifftoString(long diff)
-    {
+    public static String formatDifftoString(long diff) {
         long diffHours = diff / (60 * 60 * 1000);
         long diffMinutes = diff / (60 * 1000) % 60;
         String txtheure = new String();
-        if(diffHours < 10)
+        if (diffHours < 10)
             txtheure += "0";
         txtheure += Long.toString(diffHours);
         txtheure += ":";
-        if(diffMinutes < 10)
+        if (diffMinutes < 10)
             txtheure += "0";
         txtheure += Long.toString(diffMinutes);
 
@@ -53,13 +51,12 @@ public class Tools
 
     /**
      * Formatte le temps d'une date en format 12:08 PM
+     *
      * @param date date a formatter
      * @return string du temps
      */
-    public static String formatCustomDateTime(Date date)
-    {
-        if (date == null)
-        {
+    public static String formatCustomDateTime(Date date) {
+        if (date == null) {
             return "-";
         }
 
