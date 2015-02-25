@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -142,7 +143,18 @@ public class AdapterOccupation extends BaseAdapter
                     return true;
 
                     case R.id.item_send_mail:
-
+                    {
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                        emailIntent.setData(Uri.parse("mailto:"));
+                        String[] to = new String[]{""};
+                        String[] cc = new String[]{""};
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
+                        emailIntent.putExtra(Intent.EXTRA_CC, cc);
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, _activity.getResources().getString(R.string.email_subject));
+                        emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+                        emailIntent.setType("message/rfc822");
+                        _activity.startActivity(Intent.createChooser(emailIntent, "Email"));
+                    }
                         return true;
 
 
