@@ -22,11 +22,10 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by utilisateur on 2015-02-18.
+ * Created by Mathew on 2015-02-18.
  */
 public class UpdateService  extends Service
 {
-    private static final String LOG = "utilisateur.android.widget.example";
     private static final String BUTTON_LEFT_CLICKED = "punchapp.BUTTON_LEFT_CLICKED";
     private static final String BUTTON_RIGHT_CLICKED = "punchapp.BUTTON_RIGHT_CLICKED";
     private static final String BUTTON_START_CLICKED = "punchapp.BUTTON_START_CLICKED";
@@ -42,17 +41,16 @@ public class UpdateService  extends Service
     public int onStartCommand(Intent intent,int flag, int startId)
     {
         appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
+        //Widget view
         remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widgetpunch);
 
+        //all activity
         lstjob = db.getAllOccupations();
-        Log.i(LOG, "Called");
 
+        //return if no intent
         if(intent == null)
             return 1;
 
-
-
-        //region ButtonLeft
         if(BUTTON_LEFT_CLICKED.equals(intent.getAction()))
         {
            LeftButtonClick(intent);
@@ -64,7 +62,6 @@ public class UpdateService  extends Service
             RightButtonClick(intent);
             return 1;
         }
-
 
         if(BUTTON_START_CLICKED.equals(intent.getAction()))
         {
@@ -86,20 +83,18 @@ public class UpdateService  extends Service
 
 
 
+        //Default code when service startedd ( no button click)
 
         int[] allWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-        Log.d("ONSERVICE",String.valueOf(allWidgetIds[0]));
         ComponentName thisWidget = new ComponentName(getApplicationContext(), WidgetPunch.class);
-        int[] allWidgetIds2 = appWidgetManager.getAppWidgetIds(thisWidget);
-        //  Log.w(LOG, "From Intent" + String.valueOf(allWidgetIds.length));
-        //  Log.w(LOG, "Direct" + String.valueOf(allWidgetIds2.length));
-
+        //update every widget
         for (int widgetId : allWidgetIds)
         {
             int jobcount = lstjob.size();
             boolean bfound = false;
             for(int i = 0; i < jobcount ; i++)
             {
+                //Default text at selected activity (if widget deleted of service restart)
                 if (lstjob.get(i).isSelected())
                 {
                     remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(i).getName());
@@ -107,16 +102,19 @@ public class UpdateService  extends Service
                     break;
                 }
             }
+            //If none if found, pick a default one
             if(!bfound && jobcount != 0)
             {
                 remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
                 lstjob.get(0).isSelected(true);
                 db.updateOccupation(lstjob.get(0));
             }
+            //Update
             InitialUpdate(intent);
 
             Context context = getApplicationContext();
 
+            //Create button and alarm intent
             Intent buttonOneIntent = new Intent(context, UpdateService.class);
             Intent buttonTwoIntent = new Intent(context, UpdateService.class);
             Intent buttonThreeIntent = new Intent(context, UpdateService.class);
@@ -153,32 +151,31 @@ public class UpdateService  extends Service
 
 
 
-            // register onClickListeners to your buttons
+            // register onClickListeners to  buttons
             remoteViews.setOnClickPendingIntent(R.id.buttonLeft, buttonOnePendingIntent);
             remoteViews.setOnClickPendingIntent(R.id.buttonRight, buttonTwoPendingIntent);
             remoteViews.setOnClickPendingIntent(R.id.buttonStart, buttonThreePendingIntent);
             remoteViews.setOnClickPendingIntent(R.id.layoutWidget, buttonFourPendingIntent);
 
-
+            //update widget
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
+            //set alarm
             alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
             alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                    AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                     AlarmManager.INTERVAL_FIFTEEN_MINUTES, alarmIntent);
         }
+        //stop service
         stopSelf();
 
         super.onStartCommand(intent, flag,startId);
         return 0;
     }
 
-
+    //Set time textview when alarm tick (every 15min or so)
     private void AlarmTick(Intent intent)
     {
-        Log.d("ONSERVICE","ALARMTICK");
-
-        Log.i(LOG, "BUTTON Start");
         int jobcount = lstjob.size();
         List<OccupationHistory> lstHisto = new ArrayList<>();
         boolean OccIn = false;
@@ -195,32 +192,18 @@ public class UpdateService  extends Service
                     if (lstHisto.get(i2).getDateTimeOut() == null)
                     {
                         OccIn = true;
+                        //find time diff between now and punch in
                         Date current = new Date();
-                        Log.i(LOG, "DATE TICK : " + current);
                         Date datein = lstHisto.get(i2).getDateTimeIn();
-                        Log.i(LOG, "DATEIN TICK : " + datein);
                         long dif = (current.getTime() - datein.getTime());
-                        Log.i(LOG, "DIFF TICK : " + dif);
-                        long diffHours = dif / (60 * 60 * 1000);
-                        long diffMinutes = dif / (60 * 1000) % 60;
-                        String txtheure = new String();
-                        if(diffHours < 10)
-                            txtheure += "0";
-                        txtheure += Long.toString(diffHours);
-                        txtheure += ":";
-                        if(diffMinutes < 10)
-                            txtheure += "0";
-                        txtheure += Long.toString(diffMinutes);
+                        String txtheure = Tools.formatDifftoString(dif);
                         remoteViews.setTextViewText(R.id.txtTime,txtheure);
-
-                        Log.i(LOG, "ALARM TICK " + txtheure);
-
                     }
                 }
-
             }
         }
 
+        //If no activity in, default time value
         if(!OccIn)
         {
             remoteViews.setTextViewText(R.id.txtTime,"00:00");
@@ -229,31 +212,32 @@ public class UpdateService  extends Service
         db.close();
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
+        //update only textview
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
     }
 
     private void LeftButtonClick(Intent intent)
     {
-        Log.i(LOG, "BUTTON LEFT");
         int jobcount = lstjob.size();
         boolean bfound = false;
-
         for(int i = 0 ; i < jobcount ; i++)
         {
+            //wont change if an activity is punched in
             if(lstjob.get(i).isIn())
                 return;
         }
 
         for(int i = 0; i < jobcount ; i++)
         {
+            //check wich one is selected
             if(lstjob.get(i).isSelected())
             {
                 bfound = true;
+                //set to false and change selected value
                 lstjob.get(i).isSelected(false);
                 db.updateOccupation(lstjob.get(i));
                 if(i != 0)
                 {
-                    Log.i(LOG, lstjob.get(i-1).getName());
                     remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(i - 1).getName());
                     lstjob.get(i-1).isSelected(true);
                     db.updateOccupation(lstjob.get(i-1));
@@ -262,7 +246,6 @@ public class UpdateService  extends Service
                 }
                 else
                 {
-                    Log.i(LOG, lstjob.get(jobcount -1).getName());
                     remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(jobcount - 1).getName());
                     lstjob.get(jobcount -1).isSelected(true);
                     db.updateOccupation(lstjob.get(jobcount -1));
@@ -270,12 +253,9 @@ public class UpdateService  extends Service
                     break;
 
                 }
-
-
             }
-
-
         }
+        //if none if found, set default value
         if(!bfound && jobcount != 0)
         {
             remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
@@ -285,23 +265,24 @@ public class UpdateService  extends Service
         db.close();
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
+        //update only textview
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
     }
 
     private void RightButtonClick(Intent intent)
     {
-        Log.i(LOG, "BUTTON RIGHT");
         int jobcount = lstjob.size();
         boolean bfound = false;
-
         for(int i = 0 ; i < jobcount ; i++)
         {
+            //wont change value is an activity is punched in
             if(lstjob.get(i).isIn())
                 return;
         }
 
         for(int i = 0; i < jobcount ; i++)
         {
+            //Find selected one and change value
             if(lstjob.get(i).isSelected())
             {
                 bfound = true;
@@ -309,7 +290,6 @@ public class UpdateService  extends Service
                 db.updateOccupation(lstjob.get(i));
                 if(i != (jobcount-1))
                 {
-                    Log.i(LOG, lstjob.get(i+1).getName());
                     remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(i + 1).getName());
                     lstjob.get(i+1).isSelected(true);
                     db.updateOccupation(lstjob.get(i+1));
@@ -319,7 +299,6 @@ public class UpdateService  extends Service
                 }
                 else
                 {
-                    Log.i(LOG, lstjob.get(0).getName());
                     remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
                     lstjob.get(0).isSelected(true);
                     db.updateOccupation(lstjob.get(0));
@@ -334,6 +313,7 @@ public class UpdateService  extends Service
 
 
         }
+        //default
         if(!bfound && jobcount != 0)
         {
             remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
@@ -349,82 +329,61 @@ public class UpdateService  extends Service
 
     private void ButtonStartClick(List<Occupation> lstjob, Intent intent)
     {
-        Log.i(LOG, "BUTTON Start");
         int jobcount = lstjob.size();
         boolean OccIn = false;
         List<OccupationHistory> lstHisto = new ArrayList<>();
         for(int i = 0 ; i < jobcount ; i++)
         {
             //Find a activity already in
+            //punch out
             if(lstjob.get(i).isIn())
             {
-                Log.i(LOG, "BUTTON Start ISIN");
                 lstHisto = db.getOccupationHistoryFromOccId(lstjob.get(i).getId());
                 int HistoCount = lstHisto.size();
                 OccupationParameters params = db.getParametersByOccupationId(lstjob.get(i).getId());
                 OccupationParameters.RoundType rType = params.getRoundType();
                 int minutes = params.getRoundMinuteValue();
 
-                Date whateverDateYouWant = new Date();
+                //round time value with settings
+                Date d = new Date();
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(whateverDateYouWant);
+                calendar.setTime(d);
                 int unroundedMinutes = calendar.get(Calendar.MINUTE);
                 int mod = unroundedMinutes % minutes;
-                Log.i(LOG, "DATEOUT STOP MOD : " +mod);
-                Log.i(LOG, "DATEOUT STOP MINUTES : " +minutes);
-                Log.i(LOG, "DATEOUT STOP TYPE : " +rType);
-
                 switch (rType)
                 {
-
                     case ROUND_DOWN:
                     {
-                        Log.i(LOG, "DOWN : " );
-
                         calendar.add(Calendar.MINUTE, -mod);
                         break;
                     }
                     case ROUND_NORMAL:
                     {
-                        Log.i(LOG, "NORMAL : " );
-
                         if(mod <= minutes /2)
                             calendar.add(Calendar.MINUTE,-mod);
                         else {
                             int i2 = minutes - mod;
-                            Log.i(LOG, "DATEOUT STOP DIF : " + i2);
                             calendar.add(Calendar.MINUTE, i2);
                         }
-
-
-                        Log.i(LOG, "DATEOUT STOP RESULT: " + Integer.toString(calendar.get(Calendar.MINUTE)));
                         break;
-
                     }
                     case ROUND_UP:
                     {
-                        Log.i(LOG, "UP : " );
-
                         calendar.add(Calendar.MINUTE, mod);
                         break;
                     }
                 }
-
-
                 for(int i2 = 0; i2 < HistoCount ; i2++)
                 {
+                    //set time out and change text to start
                     if(lstHisto.get(i2).getDateTimeOut() == null)
                     {
-                        Log.i(LOG, "DATEOUT STOP : " + calendar.getTime());
                         calendar.set(Calendar.SECOND,0);
                         lstHisto.get(i2).setDateTimeOut(calendar.getTime());
                         db.updateOccupationHistory(lstHisto.get(i2));
                         remoteViews.setTextViewText(R.id.buttonStart,"Start");
                         remoteViews.setTextViewText(R.id.txtTime,"00:00");
-
-
                         OccIn = true;
-
                         lstjob.get(i).isIn(false);
                         db.updateOccupation(lstjob.get(i));
                         db.close();
@@ -434,9 +393,9 @@ public class UpdateService  extends Service
             }
         }
 
+        //punch in
         if(!OccIn)
         {
-            Log.i(LOG, "BUTTON Start NOT IN");
             for(int i = 0 ; i < jobcount ; i++)
             {
                 if(lstjob.get(i).isSelected())
@@ -444,8 +403,6 @@ public class UpdateService  extends Service
                     OccupationParameters params = db.getParametersByOccupationId(lstjob.get(i).getId());
                     OccupationParameters.RoundType rType = params.getRoundType();
                     int minutes = params.getRoundMinuteValue();
-
-
                     //Round date with params
                     Date whateverDateYouWant = new Date();
                     Calendar calendar = Calendar.getInstance();
@@ -471,13 +428,14 @@ public class UpdateService  extends Service
                         }
                     }
                     calendar.set(Calendar.SECOND,0);
+                    //change to stop
                     remoteViews.setTextViewText(R.id.txtTime,"00:00");
                     remoteViews.setTextViewText(R.id.buttonStart,"Stop");
 
+                    //create new histo and punch in
                     OccupationHistory Histo = new OccupationHistory();
                     Histo.setOccupationId(lstjob.get(i).getId());
                     Histo.setDateTimeOut(null);
-                        Log.i(LOG, "DATEIN START : " + calendar.getTime());
                     Histo.setDateTimeIn(calendar.getTime());
                     db.addOccupationHistory(Histo);
                     lstjob.get(i).isIn(true);
@@ -487,7 +445,6 @@ public class UpdateService  extends Service
                 }
             }
         }
-
         Bundle extras = intent.getExtras();
         db.close();
         int id = extras.getInt("widgetId");
@@ -495,9 +452,10 @@ public class UpdateService  extends Service
         return;
     }
 
+    //Click on the widget view
+    //start activity
     private void WidgetClick()
     {
-        Log.d("ONSERVICE","VIEWCLICKED");
         Intent i = new Intent();
         i.setClass(this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -506,7 +464,6 @@ public class UpdateService  extends Service
 
     private void InitialUpdate(Intent intent)
     {
-        Log.i(LOG, "InitialUpdate");
         int jobcount = lstjob.size();
         boolean OccIn = false;
         for(int i = 0 ; i < jobcount ; i++)
@@ -514,13 +471,10 @@ public class UpdateService  extends Service
             //Find a activity already in
             if(lstjob.get(i).isIn())
             {
-
                         remoteViews.setTextViewText(R.id.buttonStart,"Stop");
                         remoteViews.setTextViewText(R.id.stackWidgetView,lstjob.get(i).getName());
                         OccIn = true;
                         break;
-
-
             }
         }
 
@@ -536,20 +490,11 @@ public class UpdateService  extends Service
                 }
             }
         }
-
         Bundle extras = intent.getExtras();
         int id = extras.getInt("widgetId");
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
         db.close();
         return;
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
-
-        Log.i(LOG, "OnConfig change");
-        Log.i(LOG, Integer.toString(newConfig.orientation));
     }
 
     @Override
