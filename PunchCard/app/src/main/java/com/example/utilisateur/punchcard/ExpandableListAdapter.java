@@ -9,6 +9,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -176,8 +177,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent)
     {
         String childText = Tools.formatDateCanada(
-                getChild(groupPosition, childPosition).getDateTimeIn()
-        );
+                getChild(groupPosition, childPosition).getDateTimeIn());
+
+        childText += "   Total Time : ";
+        long diff = getChild(groupPosition,childPosition).getDateTimeOut().getTime() - getChild(groupPosition,childPosition).getDateTimeIn().getTime();
+        childText += Tools.formatDifftoString(diff);
+
+
 
         if (convertView == null)
         {

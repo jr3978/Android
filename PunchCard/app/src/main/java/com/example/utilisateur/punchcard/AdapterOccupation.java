@@ -87,20 +87,12 @@ public class AdapterOccupation extends BaseAdapter
         for(OccupationHistory histo:_history)
        {
            if(histo.getDateTimeOut() != null)
+               if(histo.isPeriodEnd())
+                   break;
+           else
             diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
         }
-        String timetxt = "";
-        long diffHours = diff / (60 * 60 * 1000);
-        long diffMinutes = diff / (60 * 1000) % 60;
-        timetxt = "";
-        if (diffHours < 10)
-            timetxt += "0";
-        timetxt += Long.toString(diffHours);
-        timetxt += ":";
-        if (diffMinutes < 10)
-            timetxt += "0";
-
-        timetxt += Long.toString(diffMinutes);
+        String timetxt = Tools.formatDifftoString(diff);
         ((TextView) convertView.findViewById(R.id.time))
                 .setText(timetxt);
 

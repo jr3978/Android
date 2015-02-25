@@ -2,7 +2,9 @@ package com.example.utilisateur.punchcard;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -13,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -41,14 +44,12 @@ public class ActivityHistory extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-
         _db = new DataBaseHandler(this);
         _occupationid = getIntent().getIntExtra("id", 0);
-
         String name = getIntent().getStringExtra("name");
-
         setTitle(name);
 
+        //refresh liste
         initExpandableList();
     }
 
@@ -59,26 +60,21 @@ public class ActivityHistory extends Activity
     private void initExpandableList()
     {
         _expandableListView = (ExpandableListView)findViewById(R.id.list_expandable_history);
-
         setListData();
-
         _listAdapter = new ExpandableListAdapter(this, _listDataHeader, _listDataChild);
-
         _expandableListView.setAdapter(_listAdapter);
-
         _expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
             {
-                //  String name = ((TextView)v.findViewById(R.id.act_name)).getText().toString();
 
                 Intent intent = new Intent("PunchCard.ActivityHistorySetting");
-
                 int extraId = (int)id;
+                //0 == modify
                 intent.putExtra("Occid", 0);
+                // id to modify
                 intent.putExtra("id", extraId);
                 //   intent.putExtra("name", name);
-
                 startActivityForResult(intent, 1);
                 return true;
             }
@@ -105,11 +101,18 @@ public class ActivityHistory extends Activity
             }
         });}
 
+    //Show poppup menu on a long click
     private void showPopupMenu(final View convertView, final int historyId, final boolean set)
     {
-
-        PopupMenu popupMenu = new PopupMenu(this, convertView);
+        final Activity asd = this;
+        final PopupMenu popupMenu = new PopupMenu(this, convertView);
         popupMenu.inflate(R.menu.popup_menu_history);
+        OccupationHistory histo = _db.getOccupationHistory(historyId);
+        //Change popup menu text depending of history bool isPeriodEnd
+        if(histo.isPeriodEnd())
+        {
+            popupMenu.getMenu().getItem(0).setTitle("Unset Period ending");
+        }
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
         {
             @Override
@@ -118,21 +121,46 @@ public class ActivityHistory extends Activity
                 switch (item.getItemId())
                 {
                     case R.id.popup_history_item_delete:
+                    {
+                        //Confirm dialog
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(asd);
+                        builder.setIcon(R.drawable.ic_launcher);
+                        builder.setTitle(R.string.delete_advertisehisto);
+                        //button ok, delete and refresh
+                        builder.setPositiveButton(R.string.ok_button,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton)
+                                    {
+                                        OccupationHistory occupationHistory = _db.getOccupationHistory(historyId);
+                                        _db.deleteOccupationHistory(occupationHistory);
+                                        initExpandableList();
+                                    }
+                                }
+                        );
+                        //button cancel, dismiss dialog
+                        builder.setNegativeButton(R.string.cancel_button,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                    }
+                                }
+                        );
+                        final AlertDialog al = builder.create();
+                        al.show();
                         return true;
-
+                    }
                     case R.id.popup_history_item_set:
-                        // TODO rafraichir la liste apres un set
+
                         OccupationHistory occupationHistory = _db.getOccupationHistory(historyId);
-                        occupationHistory.isPeriodEnd(true);
+                        //reverse isPeriodEnd
+                        occupationHistory.isPeriodEnd(!occupationHistory.isPeriodEnd());
+                       _db.updateOccupationHistory(occupationHistory);
+                        //refresh list
                         initExpandableList();
-                        _db.updateOccupationHistory(occupationHistory);
                         return true;
                 }
-
                 return false;
             }
         });
-
         popupMenu.show();
     }
 
@@ -143,136 +171,82 @@ public class ActivityHistory extends Activity
     {
         _listDataChild = new HashMap<>();
         _listDataHeader = new ArrayList<>();
-
         DataBaseHandler db = new DataBaseHandler(this);
-
-        List<OccupationHistory> occss = db.getOccupationHistoryFromOccId(_occupationid);
+        //sorted history
         TreeSet<OccupationHistory> sorted = new TreeSet<>(new ComparatorOccupationHistory());
         sorted.addAll(db.getOccupationHistoryFromOccId(_occupationid));
-
-
-        List<OccupationHistory> tempList = new ArrayList<>();
-        _listDataHeader.add("Current period");
+        //sorted history for diff calculation
+        List<OccupationHistory> tempListTotal = new ArrayList<>();
+        //list of total time
+        List<Long> lstDiff = new ArrayList<>();
+        int inc = 0;
+        long diff = 0;
+        //Get all the total times for each period
         for(OccupationHistory history : sorted)
         {
-
-            tempList.add(history);
+            tempListTotal.add(history);
 
             if (history.isPeriodEnd())
             {
+                tempListTotal.remove(history);
+                for(OccupationHistory histo:tempListTotal)
+                {
+                    if(histo.getDateTimeOut() != null)
+                        diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
+                }
+                lstDiff.add(inc,diff);
+                diff = 0;
+                tempListTotal.clear();
+                tempListTotal.add(history);
+                inc++;
+            }
+       }
+        //Total time for current period
+        for(OccupationHistory histo:tempListTotal)
+        {
+            if(histo.getDateTimeOut() != null)
+                diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
+        }
+        lstDiff.add(inc,diff);
+
+        //Set the header and child items for the expendable list
+        List<OccupationHistory> tempList = new ArrayList<>();
+        _listDataHeader.add("Current period" + "  Total Time: " + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
+        for(OccupationHistory history : sorted)
+        {
+            tempList.add(history);
+            if (history.isPeriodEnd())
+            {
+                tempList.remove(history);
                 Date endPoint = history.getDateTimeIn();
-                _listDataHeader.add(Tools.formatDateCanada(endPoint));
                 ArrayList<OccupationHistory> lst = new ArrayList<OccupationHistory>();
                 lst.addAll(tempList);
                 _listDataChild.put(_listDataHeader.get(_listDataHeader.size()-1),lst);
+                _listDataHeader.add(Tools.formatDateCanada(endPoint) + " Total Time: " + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
                 tempList.clear();
-            }
-
-        }
-
-
-        _listDataChild.put(_listDataHeader.get(0), tempList);
-
-
-
-
-/*
-
-
-        _listDataHeader = new ArrayList<>();
-        _listDataChild = new HashMap<>();
-        List<OccupationHistory> headers = new ArrayList<>();
-
-        headers.addAll(db.getAllEndPeriod(true, _occupationid));
-        OccupationHistory currentPeriod = new OccupationHistory(0, null, null);
-        headers.add(currentPeriod);
-
-
-        // TODO alogrithme qui fonctionne comme il faut avec la requete getAllOccupationInPeriod
-
-        OccupationHistory lastParent = null;
-        int index = 0;
-
-        // ajoute les enfants aux parents
-        if (headers != null)
-        {
-            for (OccupationHistory parent : headers)
-            {
-                Date periodStart = (lastParent != null) ? lastParent.getDateTimeIn() : null;
-                Date periodEnd = (parent != null) ? parent.getDateTimeIn() : null;
-
-                Date parentStart = parent.getDateTimeIn();
-                String startStr = (parentStart != null) ? Tools.formatDateCanada(parentStart): "-";
-                String header = "Period " + startStr;
-
-                _listDataHeader.add(header);
-
-                List<OccupationHistory> children = db.getAllOccupationInPeriod(
-                        periodStart, periodEnd, _occupationid);
-
-                if (children != null)
-                {
-                    String item = _listDataHeader.get(index);
-                    if (item == null)
-                    {
-                        int st = 0;
-                    }
-                    _listDataChild.put(_listDataHeader.get(index), children);
-                }
-                else
-                {
-                    children = new ArrayList<>();
-                    _listDataChild.put(header, children);
-                }
-
-                index++;
-                lastParent = parent;
+                tempList.add(history);
             }
         }
-        */
+        _listDataChild.put(_listDataHeader.get(_listDataHeader.size()-1),tempList);
     }
 
 
+    //Refresh when a activity returns
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         initExpandableList();
-        /*
-        _listAdapter = new AdapterHistory(this, Occid);
-        _adapter.notifyDataSetInvalidated();
-        setListAdapter(_adapter);*/
-
     }
 
-  // @Override
-  // public boolean onCreateOptionsMenu(Menu menu) {
-  //     getMenuInflater().inflate(R.menu.menu_history, menu);
-  //     return true;
-  // }
 
-  // @Override
-  // public boolean onOptionsItemSelected(MenuItem item) {
-  //     int id = item.getItemId();
-
-  //     if (id == R.id.action_settings) {
-  //         return true;
-  //     }
-
-  //     return super.onOptionsItemSelected(item);
-  // }
-
+    //Call activity to add new history with occid of current occupation
     public void onClickAdd(View view)
     {
         Intent intent = new Intent("PunchCard.ActivityHistorySetting");
-
-
         String name = "New History";
-
-
         intent.putExtra("Occid", _occupationid);
         intent.putExtra("id", 0);
         intent.putExtra("name", name);
-
         startActivityForResult(intent,2);
     }
 }

@@ -29,6 +29,22 @@ public class Tools
         return result;
     }
 
+    public static String formatDifftoString(long diff)
+    {
+        long diffHours = diff / (60 * 60 * 1000);
+        long diffMinutes = diff / (60 * 1000) % 60;
+        String txtheure = new String();
+        if(diffHours < 10)
+            txtheure += "0";
+        txtheure += Long.toString(diffHours);
+        txtheure += ":";
+        if(diffMinutes < 10)
+            txtheure += "0";
+        txtheure += Long.toString(diffMinutes);
+
+        return txtheure;
+    }
+
 
     /**
      * Formatte le temps d'une date en format 12:08 PM

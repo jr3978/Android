@@ -9,6 +9,7 @@
     <string name="title_activity_history">History</string>
     <string name="activity_settings_title">Setting test</string>
     <string name="delete_advertise">Do you really want to delete this occupation?</string>
+    <string name="delete_advertisehisto">Do you really want to delete this history?</string>
     <string name="ok_button">Ok</string>
     <string name="cancel_button">Cancel</string>
     <string name="occupation_deleted">deleted</string>
