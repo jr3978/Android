@@ -29,6 +29,11 @@ public class Tools
         return result;
     }
 
+    /**
+     * Formatte diff en long de temps vers string hh:mm
+     * @param  diff a formatter
+     * @return string du temps
+     */
     public static String formatDifftoString(long diff)
     {
         long diffHours = diff / (60 * 60 * 1000);

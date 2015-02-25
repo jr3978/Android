@@ -22,15 +22,6 @@ public class OccupationHistory
 
     }
 
-    public OccupationHistory(int occupationId, Date dateTimeIn, Date dateTimeOut)
-    {
-        _occupationId = occupationId;
-        _dateTimeIn = dateTimeIn;
-        _dateTimeOut = dateTimeOut;
-        _isPeriodEnd = false;
-    }
-
-
     //------ getter --------
     public int getId()
     {

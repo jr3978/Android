@@ -185,7 +185,7 @@ public class AdapterOccupation extends BaseAdapter
         final DataBaseHandler db = new DataBaseHandler(_context);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(_activity);
-        builder.setIcon(R.drawable.ic_launcher);
+        builder.setIcon(R.drawable.ic_logo);
         builder.setTitle(R.string.delete_advertise);
 
 

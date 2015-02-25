@@ -57,7 +57,7 @@
             android:label="@string/activity_settings_title">
         </activity>
         <receiver
-            android:icon="@drawable/ic_launcher"
+            android:icon="@drawable/ic_logo"
             android:label="PunchCard"
             android:name="WidgetPunch" >
             <intent-filter >
