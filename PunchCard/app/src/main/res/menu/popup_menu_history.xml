@@ -3,13 +3,15 @@
     <item
         android:id="@+id/popup_history_item_set"
         android:showAsAction="ifRoom|withText"
-        android:title="Set"
+        android:title="Set as Period ending"
         android:visible="true"
         />
+
+
     <item
         android:id="@+id/popup_history_item_delete"
         android:showAsAction="ifRoom|withText"
-        android:title="delete"
+        android:title="Delete"
         android:visible="true"
         />
 

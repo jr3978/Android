@@ -9,6 +9,6 @@ public class ComparatorOccupationHistory implements Comparator<OccupationHistory
 {
     @Override
     public int compare(OccupationHistory lhs, OccupationHistory rhs) {
-        return lhs.getDateTimeIn().compareTo(rhs.getDateTimeIn());
+        return rhs.getDateTimeIn().compareTo(lhs.getDateTimeIn());
     }
 }

@@ -2,7 +2,9 @@ package com.example.utilisateur.punchcard;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -13,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -107,9 +110,15 @@ public class ActivityHistory extends Activity
 
     private void showPopupMenu(final View convertView, final int historyId, final boolean set)
     {
-
-        PopupMenu popupMenu = new PopupMenu(this, convertView);
+        final Activity asd = this;
+        final PopupMenu popupMenu = new PopupMenu(this, convertView);
         popupMenu.inflate(R.menu.popup_menu_history);
+        OccupationHistory histo = _db.getOccupationHistory(historyId);
+        if(histo.isPeriodEnd()) {
+
+            popupMenu.getMenu().getItem(0).setTitle("Unset Period ending");
+
+        }
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
         {
             @Override
@@ -118,14 +127,48 @@ public class ActivityHistory extends Activity
                 switch (item.getItemId())
                 {
                     case R.id.popup_history_item_delete:
+                    {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(asd);
+                        builder.setIcon(R.drawable.ic_launcher);
+                        builder.setTitle(R.string.delete_advertisehisto);
+
+
+                        //button ok
+                        builder.setPositiveButton(R.string.ok_button,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton)
+                                    {
+                                        OccupationHistory occupationHistory = _db.getOccupationHistory(historyId);
+                                        _db.deleteOccupationHistory(occupationHistory);
+                                        initExpandableList();
+
+
+                                    }
+                                }
+                        );
+
+                        //button cancel
+                        builder.setNegativeButton(R.string.cancel_button,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                    }
+                                }
+                        );
+
+
+                        final AlertDialog al = builder.create();
+                        al.show();
+
                         return true;
+                    }
 
                     case R.id.popup_history_item_set:
-                        // TODO rafraichir la liste apres un set
+
                         OccupationHistory occupationHistory = _db.getOccupationHistory(historyId);
-                        occupationHistory.isPeriodEnd(true);
+                        occupationHistory.isPeriodEnd(!occupationHistory.isPeriodEnd());
+                       _db.updateOccupationHistory(occupationHistory);
                         initExpandableList();
-                        _db.updateOccupationHistory(occupationHistory);
                         return true;
                 }
 
@@ -135,6 +178,8 @@ public class ActivityHistory extends Activity
 
         popupMenu.show();
     }
+
+
 
     /**
      * Ajoute les tous les historiques relier a l'occupation a la liste extensible
@@ -146,13 +191,43 @@ public class ActivityHistory extends Activity
 
         DataBaseHandler db = new DataBaseHandler(this);
 
-        List<OccupationHistory> occss = db.getOccupationHistoryFromOccId(_occupationid);
         TreeSet<OccupationHistory> sorted = new TreeSet<>(new ComparatorOccupationHistory());
         sorted.addAll(db.getOccupationHistoryFromOccId(_occupationid));
 
 
+        List<OccupationHistory> tempListTotal = new ArrayList<>();
+        List<Long> lstDiff = new ArrayList<>();
+        int inc = 0;
+        long diff = 0;
+        for(OccupationHistory history : sorted)
+        {
+            tempListTotal.add(history);
+
+            if (history.isPeriodEnd())
+            {
+                tempListTotal.remove(history);
+                for(OccupationHistory histo:tempListTotal)
+                {
+                    if(histo.getDateTimeOut() != null)
+                        diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
+                }
+                lstDiff.add(inc,diff);
+                diff = 0;
+                tempListTotal.clear();
+                tempListTotal.add(history);
+                inc++;
+            }
+       }
+        for(OccupationHistory histo:tempListTotal)
+        {
+            if(histo.getDateTimeOut() != null)
+                diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
+        }
+        lstDiff.add(inc,diff);
+
+
         List<OccupationHistory> tempList = new ArrayList<>();
-        _listDataHeader.add("Current period");
+        _listDataHeader.add("Current period" + "  Total Time: " + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
         for(OccupationHistory history : sorted)
         {
 
@@ -160,18 +235,23 @@ public class ActivityHistory extends Activity
 
             if (history.isPeriodEnd())
             {
+                tempList.remove(history);
                 Date endPoint = history.getDateTimeIn();
-                _listDataHeader.add(Tools.formatDateCanada(endPoint));
                 ArrayList<OccupationHistory> lst = new ArrayList<OccupationHistory>();
                 lst.addAll(tempList);
                 _listDataChild.put(_listDataHeader.get(_listDataHeader.size()-1),lst);
+
+                _listDataHeader.add(Tools.formatDateCanada(endPoint) + " Total Time: " + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
+
                 tempList.clear();
+                tempList.add(history);
+
             }
 
         }
 
 
-        _listDataChild.put(_listDataHeader.get(0), tempList);
+        _listDataChild.put(_listDataHeader.get(_listDataHeader.size()-1),tempList);
 
 
 
