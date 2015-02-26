@@ -176,7 +176,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         String childText = Tools.formatDateCanada(
-                getChild(groupPosition, childPosition).getDateTimeIn());
+                getChild(groupPosition, childPosition).getDateTimeIn(), _context);
 
         childText += ("   " + _context.getString(R.string.exp_list_childText));
         Date out;

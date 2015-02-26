@@ -274,7 +274,7 @@ public class ActivityHistory extends Activity
                 ArrayList<OccupationHistory> lst = new ArrayList<OccupationHistory>();
                 lst.addAll(tempList);
                 _listDataChild.put(_listDataHeader.get(_listDataHeader.size()-1),lst);
-                _listDataHeader.add(Tools.formatDateCanada(endPoint) + " " +
+                _listDataHeader.add(Tools.formatDateCanada(endPoint, this) + " " +
                         getResources().getString(R.string.total_time)
                         + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
                 tempList.clear();
