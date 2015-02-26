@@ -43,6 +43,17 @@ public class MainActivity extends ListActivity
         initListView();
     }
 
+    @Override
+    protected  void onPause()
+    {
+        Intent intent = new Intent(this,
+                UpdateService.class);
+
+        intent.setAction("UPDATE");
+        this.startService(intent);
+        super.onPause();
+    }
+
 
     /**
      * Initialise la ListView et ses listeners
@@ -235,7 +246,7 @@ public class MainActivity extends ListActivity
 
 
                 //empeche text trop long
-                if(txtBox.getText().toString().length() > 20) {
+                if(txtBox.getText().toString().length() > 14) {
                     final AlertDialog.Builder dlgAlert = new AlertDialog.Builder(alertDialog.getContext());
                     dlgAlert.setMessage("Name too long");
                     dlgAlert.setTitle("Error");

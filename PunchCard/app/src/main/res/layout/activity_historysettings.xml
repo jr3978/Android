@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#ff58b3ff"
-    >
+    android:weightSum="1">
 
     <TextView
         android:layout_width="fill_parent"
@@ -14,7 +14,8 @@
         android:text="Time in"
         android:id="@+id/txtTimein"
         android:layout_gravity="left"
-        android:onClick="TimeinClick"/>
+        android:onClick="TimeinClick"
+        android:layout_weight="0.06" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,7 +33,8 @@
         android:text="Time out"
         android:id="@+id/txtTimeout"
         android:layout_gravity="left"
-        android:onClick="TimeoutClick"/>
+        android:onClick="TimeoutClick"
+        android:layout_weight="0.05" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,7 +49,7 @@
         android:layout_height="119dp">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
             android:onClick="onClickOk"
             android:text="Ok"
@@ -55,7 +57,7 @@
             android:layout_column="18" />
 
         <Button
-            android:layout_width="116dp"
+            android:layout_width="125dp"
             android:layout_height="wrap_content"
             android:onClick="onClickCancel"
             android:text="Cancel"
