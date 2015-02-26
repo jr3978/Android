@@ -5,32 +5,192 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
-
-
+/**
+ * Created by jrsao on 2/17/2015.
+ * Activity au launch de l'application
+ */
 public class MainActivity extends ListActivity implements IListViewContainer
 {
     private AdapterOccupation _adapter;
     private OccupationParameters _tempParam = new OccupationParameters();
 
+    /**
+     * Initialise la view selon l'état
+     * @param savedInstanceState bundle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        _adapter = new AdapterOccupation(this, this);
+        _adapter = new AdapterOccupation(this);
 
         setListAdapter(_adapter);
+
+        initListView();
     }
 
 
-    // event click sur une job de la liste
+    /**
+     * Initialise la ListView et ses listeners
+     */
+    private void initListView()
+    {
+        ListView lv = getListView();
+
+        // click
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                onClickJob(view);
+            }
+        });
+
+        // longClick
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                showPopupMenu(view, position);
+                return true;
+            }
+        });
+    }
+
+
+    /**
+     * Affiche un popup menu au longClick
+     * @param convertView ancre
+     * @param position position de l'item dans la liste
+     */
+    private void showPopupMenu(final View convertView, final int position)
+    {
+        PopupMenu popupMenu = new PopupMenu(this, convertView);
+        popupMenu.inflate(R.menu.popup_menu_occupation);
+
+        //item click
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+        {
+            @Override
+            public boolean onMenuItemClick(MenuItem item)
+            {
+
+                final DataBaseHandler db = new DataBaseHandler(MainActivity.this);
+                final int id = MainActivity.this._adapter.getItem(position).getId();
+                final Occupation occupation = db.getOccupation(id);
+
+                switch (item.getItemId()) {
+                    //delete
+                    case R.id.item_delete_occupation:
+                    {
+                        showDeleteAlertDialog(occupation);
+                    }
+                    return true;
+
+                    //send email
+                    case R.id.item_send_mail:
+                    {
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                        emailIntent.setData(Uri.parse("mailto:"));
+                        String[] to = new String[]{""};
+                        String[] cc = new String[]{""};
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
+                        emailIntent.putExtra(Intent.EXTRA_CC, cc);
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, MainActivity.this.getResources().getString(R.string.email_subject));
+                        String name = MainActivity.this._adapter.getItem(position).getName();
+                        HtmlMailBuilder mb = new HtmlMailBuilder(MainActivity.this,id,name);
+                        emailIntent.putExtra(Intent.EXTRA_TEXT, mb.get_text());
+                        emailIntent.setType("message/rfc822");
+                        MainActivity.this.startActivity(Intent.createChooser(emailIntent, "Email"));
+                    }
+                    return true;
+
+                    //occupation parameters
+                    case R.id.item_set_parameters:
+                    {
+                        Intent intent = new Intent("PunchCard.SettingsActivity");
+
+                        intent.putExtra("id",occupation.getId());
+                        MainActivity.this.startActivityForResult(intent, 2);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        popupMenu.show();
+    }
+
+
+    /**
+     * Affiche une alerte pour le delete
+     * @param occupation a deleter
+     */
+    private void showDeleteAlertDialog(final Occupation occupation)
+    {
+        final DataBaseHandler db = new DataBaseHandler(this);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setIcon(R.drawable.ic_logo);
+        builder.setTitle(R.string.delete_advertise);
+
+
+        //button ok
+        builder.setPositiveButton(R.string.ok_button,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton)
+                    {
+                        String message = occupation.getName() +  " " +
+                                MainActivity.this.getString(R.string.occupation_deleted);
+
+                        db.deleteOccupation(occupation);
+
+                        MainActivity.this.refreshListView();
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                message,
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+        );
+
+        //button cancel
+        builder.setNegativeButton(R.string.cancel_button,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                    }
+                }
+        );
+
+
+        final AlertDialog al = builder.create();
+        al.show();
+    }
+
+
+    /**
+     * Click sur un item de la liste
+     * @param view
+     */
     public void onClickJob(View view)
     {
         Intent intent = new Intent("PunchCard.ActivityHistory");
@@ -48,7 +208,10 @@ public class MainActivity extends ListActivity implements IListViewContainer
     }
 
 
-    // event click sur button add
+    /**
+     * Clieck sur le bouton Ajout ( + )
+     * @param view
+     */
     public void onClickAdd(View view)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -102,7 +265,12 @@ public class MainActivity extends ListActivity implements IListViewContainer
     }
 
 
-    //add new occupation
+    /**
+     * Ajoute une occupation dans la BD par le DataBaseHanlder
+     * @param occupation
+     * @param parameters
+     * @return
+     */
     private Occupation addOccupation(Occupation occupation, OccupationParameters parameters)
     {
         DataBaseHandler db = new DataBaseHandler(this);
@@ -116,10 +284,13 @@ public class MainActivity extends ListActivity implements IListViewContainer
         return occ;
     }
 
-    @Override
+
+    /**
+     * Rafraichie la ListView
+     */
     public void refreshListView()
     {
-        _adapter = new AdapterOccupation(this, this);
+        _adapter = new AdapterOccupation(this);
 
         _adapter.notifyDataSetInvalidated();
         setListAdapter(_adapter);

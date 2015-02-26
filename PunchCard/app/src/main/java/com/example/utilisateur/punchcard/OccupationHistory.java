@@ -4,6 +4,7 @@ import java.util.Date;
 
 /**
  * Created by jrsao on 2/17/2015.
+ *
  */
 public class OccupationHistory
 {
@@ -21,7 +22,7 @@ public class OccupationHistory
     {
 
     }
-g
+
     //------ getter --------
     public int getId()
     {
