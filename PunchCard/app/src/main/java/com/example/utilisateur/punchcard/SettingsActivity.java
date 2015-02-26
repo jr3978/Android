@@ -9,9 +9,16 @@ import android.preference.PreferenceActivity;
  */
 public class SettingsActivity extends PreferenceActivity {
 
+    // Key du PreferenceList RoundType
     public static final String KEY_ROUND_TYPE = "pref_round_type";
+    // Key du PreferenceList RoundTime Value
     public static final String KEY_ROUND_TIME = "pref_round_time_value";
 
+
+    /**
+     * initialise l'activité à la création
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +34,11 @@ public class SettingsActivity extends PreferenceActivity {
                 .commit();
     }
 
+    /**
+     * Vérifie si la key est une key d'un listPreference
+     * @param key
+     * @return
+     */
     public static boolean isListPreference(String key) {
         String h = key;
         return KEY_ROUND_TYPE.equals(key) ||

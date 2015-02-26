@@ -1,5 +1,8 @@
 package com.example.utilisateur.punchcard;
 
+import android.app.Activity;
+import android.content.Context;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,9 +18,10 @@ public class Tools {
      * @param date date a formatter
      * @return String dateFormatter
      */
-    public static String formatDateCanada(Date date) {
+    public static String formatDateCanada(Date date, Context context)
+    {
         if (date == null) {
-            return "Current Period";
+            return context.getString(R.string.current_period);
         }
 
         String result = DateFormat

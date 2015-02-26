@@ -10,7 +10,10 @@ import java.util.PriorityQueue;
 public class OccupationParameters
 {
 
-    // Round Type
+    /**
+     * Type d'arrondissement
+     * à la baisse, normal, à la hausse
+     */
     public enum RoundType
     {
         ROUND_DOWN (0),
@@ -33,7 +36,7 @@ public class OccupationParameters
 
 
     //----- private field -----
-    private int _id;
+    // primary key
     private int _occupationId;
     private int _roundMinuteValue;
     private RoundType _roundType;
@@ -48,21 +51,31 @@ public class OccupationParameters
 
 
     //-------- getter --------------
-    public int getId()
-    {
-        return _id;
-    }
 
+    /**
+     * id de l'occupation
+     * @return
+     */
     public int getOccupationId()
     {
         return _occupationId;
     }
 
+
+    /**
+     * Valeur d'arrondissement en minute
+     * @return
+     */
     public int getRoundMinuteValue()
     {
         return _roundMinuteValue;
     }
 
+
+    /**
+     * type d'arrondissement
+     * @return
+     */
     public RoundType getRoundType()
     {
         return _roundType;
@@ -70,21 +83,31 @@ public class OccupationParameters
 
 
     //------ setter ----------
-    public void setId(int id)
-    {
-        _id = id;
-    }
 
+    /**
+     * Id de l'occupation
+     * @param occupationId
+     */
     public void setOccupationId(int occupationId)
     {
         _occupationId = occupationId;
     }
 
+
+    /**
+     * Valeur d'arrondissement en minute
+     * @param roundMinuteValue
+     */
     public void setRoundMinuteValue(int roundMinuteValue)
     {
         _roundMinuteValue = roundMinuteValue;
     }
 
+
+    /**
+     * type d'arrondissement
+     * @param roundType
+     */
     public void setRoundType(RoundType roundType)
     {
         _roundType = roundType;
