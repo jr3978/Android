@@ -21,7 +21,7 @@ public class OccupationHistory
     {
 
     }
-g
+
     //------ getter --------
     public int getId()
     {
