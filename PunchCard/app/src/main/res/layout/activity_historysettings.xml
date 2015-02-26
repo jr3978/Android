@@ -44,6 +44,23 @@
         android:id="@+id/txtTimeoutvalue"
         android:layout_gravity="left" />
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Total Time"
+        android:id="@+id/txtTotalTime"
+        android:layout_gravity="left" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Total Time"
+        android:id="@+id/txtTotalTimevalue"
+        android:layout_gravity="left"
+        android:layout_weight="0.08" />
+
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="119dp">

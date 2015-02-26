@@ -26,6 +26,7 @@ public class ActivityHistorySetting extends Activity
     String TotalHour;
     String Timein;
     String TimeOut;
+    Occupation occ;
     int Occid;
 
     @Override
@@ -33,6 +34,7 @@ public class ActivityHistorySetting extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historysettings);
+
 
         //id 0 si add
         //Occid 0 si modify
@@ -46,7 +48,7 @@ public class ActivityHistorySetting extends Activity
         }
         else //add
         _history = new OccupationHistory();
-
+        _history.setDateTimeIn(new Date()) ;
         //Add
         if(Occid != 0)
         {
@@ -58,7 +60,7 @@ public class ActivityHistorySetting extends Activity
             name = "-";
         }
         setTitle(name);
-
+        occ = db.getOccupation(_history.getOccupationId());
         //Update total time
         UpdateTotal();
     }
@@ -70,16 +72,19 @@ public class ActivityHistorySetting extends Activity
     {
         Date timein = _history.getDateTimeIn();
         Date timeout = _history.getDateTimeOut();
+        Date out = new Date();
         //default
-        if(timein == null || timeout == null)
+        if(timein == null)
         {
             TotalHour ="00:00";
         }
         else
         {
+            if(timeout != null)
+                out = timeout;
             //get dif
-            long dif = (timeout.getTime() - timein.getTime());
-            TotalHour = Tools.formatDifftoString(dif);
+            long dif = (out.getTime() - timein.getTime());
+            TotalHour = Tools.formatDifftoStringSec(dif);
         }
 
 
@@ -91,6 +96,9 @@ public class ActivityHistorySetting extends Activity
 
        TextView txtout = (TextView)findViewById(R.id.txtTimeoutvalue);
         txtout.setText(TimeOut);
+
+        TextView txtTotal = (TextView)findViewById(R.id.txtTotalTimevalue);
+        txtTotal.setText(TotalHour);
 
     }
 
@@ -119,6 +127,10 @@ public class ActivityHistorySetting extends Activity
 
         //set pickers value
         Date date = _history.getDateTimeOut();
+        if(date == null)
+        {
+            date = new Date();
+        }
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int year = cal.get(Calendar.YEAR);
@@ -194,6 +206,8 @@ public class ActivityHistorySetting extends Activity
                         }
                         cal.set(Calendar.SECOND,0);
                         _history.setDateTimeOut(cal.getTime());
+
+                        occ.isIn(false);
                         alertDialog.dismiss();
                         UpdateTotal();
                     }
@@ -233,6 +247,10 @@ public class ActivityHistorySetting extends Activity
             //set picker time
             Date date = _history.getDateTimeIn();
             Calendar cal = Calendar.getInstance();
+            if(date == null)
+            {
+                date = new Date();
+            }
             cal.setTime(date);
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH);
@@ -335,7 +353,12 @@ public class ActivityHistorySetting extends Activity
         }
         else //modify
         {
+            if(_history.getDateTimeOut() == null || _history.getDateTimeIn() == null) {
+                this.finish();
+            }
+
             db.updateOccupationHistory(_history);
+            db.updateOccupation(occ);
         }
         //close activity
         this.finish();

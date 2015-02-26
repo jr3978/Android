@@ -54,6 +54,12 @@ public class MainActivity extends ListActivity
         super.onPause();
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        refreshListView();
+    }
 
     /**
      * Initialise la ListView et ses listeners

@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by jrsao on 2/17/2015.
@@ -555,6 +556,23 @@ public class DataBaseHandler extends SQLiteOpenHelper
         return executeRawQueryOnHistoryTable(query);
     }
 
+
+    /**
+     * Valide si le nouvel historique peut être ajouté (ne peut pas si 2x le même timeIn)
+     * @param history
+     * @return
+     */
+    private boolean validateNewOccupationHistory(OccupationHistory history) {
+        ComparatorOccupationHistory comparatorOccupationHistory = new ComparatorOccupationHistory();
+        List<OccupationHistory> lsthito = getOccupationHistoryFromOccId(history.getOccupationId());
+        for (OccupationHistory histo : lsthito) {
+            if (comparatorOccupationHistory.compare(histo, history) == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Ajoute un historique à la BD
      * @param history
@@ -564,7 +582,14 @@ public class DataBaseHandler extends SQLiteOpenHelper
         if (history == null) {
             return;
         }
-        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
+
+        if (!validateNewOccupationHistory(history))
+        {
+            return;
+        }
+
+
+        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy", Locale.CANADA);
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -631,7 +656,7 @@ public class DataBaseHandler extends SQLiteOpenHelper
         String id = new Integer(history.getId()).toString();
 
         SQLiteDatabase db = this.getWritableDatabase();
-        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
+        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy",Locale.CANADA);
 
         ContentValues values = new ContentValues();
         values.put(COL_DATE_IN, parserSDF.format(history.getDateTimeIn()));
@@ -689,7 +714,8 @@ public class DataBaseHandler extends SQLiteOpenHelper
     {
         if(strDate.equals("-"))
             return null;
-        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
+        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy", Locale.CANADA);
+
         Date date = null;
         try
         {

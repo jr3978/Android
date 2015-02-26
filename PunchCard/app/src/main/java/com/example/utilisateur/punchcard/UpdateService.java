@@ -401,7 +401,7 @@ public class UpdateService  extends Service
                     //set time out and change text to start
                     if(lstHisto.get(i2).getDateTimeOut() == null)
                     {
-                        calendar.set(Calendar.SECOND,0);
+                     //   calendar.set(Calendar.SECOND,0);
                         lstHisto.get(i2).setDateTimeOut(calendar.getTime());
                         db.updateOccupationHistory(lstHisto.get(i2));
                         remoteViews.setTextViewText(R.id.buttonStart,"Start");
@@ -450,7 +450,7 @@ public class UpdateService  extends Service
                             break;
                         }
                     }
-                    calendar.set(Calendar.SECOND,0);
+                 //   calendar.set(Calendar.SECOND,0);
                     //change to stop
                     remoteViews.setTextViewText(R.id.txtTime,"00:00");
                     remoteViews.setTextViewText(R.id.buttonStart,"Stop");

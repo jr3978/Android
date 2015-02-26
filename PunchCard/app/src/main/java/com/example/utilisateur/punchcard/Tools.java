@@ -50,6 +50,34 @@ public class Tools {
 
 
     /**
+     * Formatte diff en long de temps vers string hh:mm:ss
+     *
+     * @param diff a formatter
+     * @return string du temps
+     */
+    public static String formatDifftoStringSec(long diff) {
+        long diffHours = diff / (60 * 60 * 1000);
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffSecond =  diff / 1000 % 60;
+        String txtheure = new String();
+        if (diffHours < 10)
+            txtheure += "0";
+        txtheure += Long.toString(diffHours);
+        txtheure += ":";
+        if (diffMinutes < 10)
+            txtheure += "0";
+        txtheure += Long.toString(diffMinutes);
+        txtheure += ":";
+        if(diffSecond < 10)
+            txtheure += "0";
+
+        txtheure += diffSecond;
+
+
+        return txtheure;
+    }
+
+    /**
      * Formatte le temps d'une date en format 12:08 PM
      *
      * @param date date a formatter

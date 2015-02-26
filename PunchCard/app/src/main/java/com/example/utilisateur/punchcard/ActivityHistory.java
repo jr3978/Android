@@ -35,6 +35,7 @@ public class ActivityHistory extends Activity
     private ExpandableListAdapter _listAdapter;
     private ExpandableListView _expandableListView;
     private List<String> _listDataHeader;
+    private Occupation occ;
     private HashMap<String, List<OccupationHistory>> _listDataChild;
     private DataBaseHandler _db;
 
@@ -118,6 +119,16 @@ public class ActivityHistory extends Activity
             }
         });}
 
+    @Override
+    protected  void onPause()
+    {
+        Intent intent = new Intent(this,
+                UpdateService.class);
+
+        intent.setAction("UPDATE");
+        this.startService(intent);
+        super.onPause();
+    }
 
     /**
      * Affiche un menu popup
@@ -148,6 +159,7 @@ public class ActivityHistory extends Activity
                 {
                     case R.id.popup_history_item_delete:
                     {
+                        _db = new DataBaseHandler(ActivityHistory.this);
                         //Confirm dialog
                         final AlertDialog.Builder builder = new AlertDialog.Builder(ActivityHistory.this);
                         builder.setIcon(R.drawable.ic_logo);
@@ -158,6 +170,9 @@ public class ActivityHistory extends Activity
                                     public void onClick(DialogInterface dialog, int whichButton)
                                     {
                                         OccupationHistory occupationHistory = _db.getOccupationHistory(historyId);
+                                        occ = _db.getOccupation(occupationHistory.getOccupationId());
+                                        occ.isIn(false);
+                                        _db.updateOccupation(occ);
                                         _db.deleteOccupationHistory(occupationHistory);
                                         initExpandableList();
                                     }
