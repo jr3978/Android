@@ -51,6 +51,13 @@ public class UpdateService  extends Service
         if(intent == null)
             return 1;
 
+        String s = intent.getAction();
+        if("UPDATE".equals(intent.getAction()))
+        {
+            InitialUpdate(intent);
+            return 1;
+        }
+
         if(BUTTON_LEFT_CLICKED.equals(intent.getAction()))
         {
            LeftButtonClick(intent);
@@ -173,7 +180,10 @@ public class UpdateService  extends Service
         return 0;
     }
 
-    //Set time textview when alarm tick (every 15min or so)
+    /**
+     * Change le text du temps lors du tick de l'alarm
+     * @param intent
+     */
     private void AlarmTick(Intent intent)
     {
         int jobcount = lstjob.size();
@@ -216,6 +226,10 @@ public class UpdateService  extends Service
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
     }
 
+    /**
+     * Change l'activity selectionner lors d'un click sur fleche gauche
+     * @param intent
+     */
     private void LeftButtonClick(Intent intent)
     {
         int jobcount = lstjob.size();
@@ -269,6 +283,10 @@ public class UpdateService  extends Service
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
     }
 
+    /**
+     * Change l'activity selectionné lors d'un click sur fleche droite
+     * @param intent
+     */
     private void RightButtonClick(Intent intent)
     {
         int jobcount = lstjob.size();
@@ -327,6 +345,11 @@ public class UpdateService  extends Service
         appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
     }
 
+    /**
+     * Punch in ou punch out selon l'état, lors d'un click sur bouton start/stop
+     * @param lstjob
+     * @param intent
+     */
     private void ButtonStartClick(List<Occupation> lstjob, Intent intent)
     {
         int jobcount = lstjob.size();
@@ -452,8 +475,9 @@ public class UpdateService  extends Service
         return;
     }
 
-    //Click on the widget view
-    //start activity
+    /**
+     * Click sur le widget ,lance l'activité
+     */
     private void WidgetClick()
     {
         Intent i = new Intent();
@@ -462,18 +486,25 @@ public class UpdateService  extends Service
         startActivity(i);
     }
 
+    /**
+     * Update le widget pour lui donné le bon état
+     * @param intent
+     */
     private void InitialUpdate(Intent intent)
     {
         int jobcount = lstjob.size();
         boolean OccIn = false;
+        boolean isselec = false;
         for(int i = 0 ; i < jobcount ; i++)
         {
             //Find a activity already in
             if(lstjob.get(i).isIn())
             {
+                Log.d("INITITAL UPDATE","IS IN");
                         remoteViews.setTextViewText(R.id.buttonStart,"Stop");
                         remoteViews.setTextViewText(R.id.stackWidgetView,lstjob.get(i).getName());
                         OccIn = true;
+                        isselec = true;
                         break;
             }
         }
@@ -484,15 +515,32 @@ public class UpdateService  extends Service
             {
                 if(lstjob.get(i).isSelected())
                 {
+                    isselec = true;
                     remoteViews.setTextViewText(R.id.buttonStart,"Start");
                     remoteViews.setTextViewText(R.id.stackWidgetView,lstjob.get(i).getName());
                     break;
                 }
             }
         }
-        Bundle extras = intent.getExtras();
-        int id = extras.getInt("widgetId");
-        appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
+
+        if(!isselec)
+        {
+            remoteViews.setTextViewText(R.id.buttonStart,"Start");
+            if(lstjob.size() > 0) {
+                remoteViews.setTextViewText(R.id.stackWidgetView, lstjob.get(0).getName());
+            }
+            else {
+                remoteViews.setTextViewText(R.id.stackWidgetView, "No Activity");
+            }
+
+
+        }
+
+        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), WidgetPunch.class));
+        for(int id:ids)
+        {
+            appWidgetManager.partiallyUpdateAppWidget(id, remoteViews);
+        }
         db.close();
         return;
     }

@@ -65,7 +65,9 @@ public class ActivityHistorySetting extends Activity
         UpdateTotal();
     }
 
-    //Update Total time
+    /**
+     * Update le temps total affiché
+     */
     private void UpdateTotal()
     {
         Date timein = _history.getDateTimeIn();
@@ -94,7 +96,10 @@ public class ActivityHistorySetting extends Activity
 
     }
 
-    //click button timein
+    /**
+     * Pop dialog pour changer le time out
+     * @param view
+     */
     public void TimeoutClick(View view)
     {
         //time out dialog
@@ -205,7 +210,10 @@ public class ActivityHistorySetting extends Activity
 
     }
 
-    //click button timeout
+    /**
+     * Pop Dialog pour change le time in
+     * @param view
+     */
     public void TimeinClick(View view)
     {
         final OccupationParameters params = db.getParametersByOccupationId(_history.getOccupationId());
@@ -317,7 +325,10 @@ public class ActivityHistorySetting extends Activity
     }
 
 
-    //Ok click
+    /**
+     * Enregistre au click du bouton ok
+     * @param view
+     */
     public void onClickOk(View view)
     {
         //add
@@ -332,6 +343,10 @@ public class ActivityHistorySetting extends Activity
         this.finish();
     }
 
+    /**
+     * Ferme au click de cancel
+     * @param view
+     */
     public void onClickCancel(View view)
     {
         if(Occid != 0)//if add, delete it
