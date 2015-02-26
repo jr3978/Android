@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * Created by jrsao on 2/17/2015.
+ * Classe effectuant des requetes sur la base de donnée
  */
 public class DataBaseHandler extends SQLiteOpenHelper
 {
@@ -130,7 +131,11 @@ public class DataBaseHandler extends SQLiteOpenHelper
 
     //region CRUD OCCUPATION TABLE
 
-
+    /**
+     * prend les données du cursor et crée un Occupation
+     * @param cursor
+     * @return
+     */
     private Occupation cursorToOccupation(Cursor cursor)
     {
         Occupation occupation = new Occupation();
@@ -149,6 +154,8 @@ public class DataBaseHandler extends SQLiteOpenHelper
 
         return occupation;
     }
+
+
     /**
      * Obtient l'occupation avec le ID specifique
       * @param id
@@ -332,6 +339,11 @@ public class DataBaseHandler extends SQLiteOpenHelper
 
     //region  CRUD PARAMETERS TABLE
 
+    /**
+     * Obtient les paramètres d'une occupation sous forme d'object OccupationParameters
+     * @param occupationId id de l'occupation
+     * @return
+     */
     public OccupationParameters getParametersByOccupationId(int occupationId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -514,6 +526,10 @@ public class DataBaseHandler extends SQLiteOpenHelper
     }
 
 
+    /**
+     * Obtient tous les historiques de la bd
+     * @return
+     */
     public List<OccupationHistory> getAllOccupationHistory()
     {
         String query = "SELECT * FROM " + TABLE_HISTORY;
@@ -522,6 +538,12 @@ public class DataBaseHandler extends SQLiteOpenHelper
     }
 
 
+    /**
+     * Obtient tous les historiques fin de periodes ou non
+     * @param isEndPeriod true si retourne tous les fins de periods
+     * @param occupationId id de l'occupation
+     * @return list d'historiques
+     */
     public List<OccupationHistory> getAllEndPeriod(boolean isEndPeriod, int occupationId)
     {
         String isEnfPeriodStr = isEndPeriod ? "1" : "0";
@@ -533,38 +555,8 @@ public class DataBaseHandler extends SQLiteOpenHelper
         return executeRawQueryOnHistoryTable(query);
     }
 
-
-    public List<OccupationHistory> getAllOccupationInPeriod(
-            Date startPeriodDate, Date endPeriodDate, int occupationId)
-    {
-        SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy");
-
-        String start = (startPeriodDate != null) ? parserSDF.format(startPeriodDate) : "-";
-        String end = (endPeriodDate != null) ? parserSDF.format(endPeriodDate) : "-";
-
-        String query = "SELECT * FROM " + TABLE_HISTORY +
-                 " WHERE " +COL_OCC_ID + " = " + occupationId
-                +" AND " + COL_DATE_IN + " BETWEEN '" + end  + "' "+ " AND " +  " '"+ start +"' ";
-
-/*
-        if (start != "-")
-        {
-            query += " AND " + COL_DATE_IN + " > '" + start + "'";
-        }
-
-        if (end != "-")
-        {
-            query += " AND " + COL_DATE_OUT + " <= '" + end + "'";
-        }
-*/
-        query += " ORDER BY " + COL_DATE_IN + " ASC ";
-
-
-        return executeRawQueryOnHistoryTable(query);
-    }
-
     /**
-     * Ajoute un historique
+     * Ajoute un historique à la BD
      * @param history
      */
     public void addOccupationHistory(OccupationHistory history)
@@ -583,6 +575,8 @@ public class DataBaseHandler extends SQLiteOpenHelper
 
 
         values.put(COL_OCC_ID, history.getOccupationId());
+
+        // ajoute la date OUT si elle n'est pas null.
         if (history.getDateTimeOut() != null) {
             out = parserSDF.format(history.getDateTimeOut());
             values.put(COL_DATE_OUT, out);
@@ -592,14 +586,12 @@ public class DataBaseHandler extends SQLiteOpenHelper
             values.put(COL_DATE_OUT, "-");
         }
 
+        // ajoute la date IN si elle n'est pas null.
         if (in != null) {
             values.put(COL_DATE_IN, in);
         }
 
-        if(history.isPeriodEnd())
-            values.put(COL_IS_PERIOD_END,true);
-        else
-            values.put(COL_IS_PERIOD_END,false);
+        values.put(COL_IS_PERIOD_END,history.isPeriodEnd());
 
         db.insert(TABLE_HISTORY, null, values);
         db.close();
@@ -625,6 +617,11 @@ public class DataBaseHandler extends SQLiteOpenHelper
         db.close();
     }
 
+
+    /**
+     * Update l'historique dans la BD
+     * @param history historique à updater
+     */
     public void updateOccupationHistory(OccupationHistory history)
     {
         if (history == null) {
@@ -653,6 +650,7 @@ public class DataBaseHandler extends SQLiteOpenHelper
         db.close();
     }
 
+
     /**
      * Supprime toutes les historiques
      */
@@ -666,6 +664,10 @@ public class DataBaseHandler extends SQLiteOpenHelper
     }
 
 
+    /**
+     * Delete tous les historiques d'une occupation
+     * @param occupationId id de l'occupation
+     */
     public void deleteHistoryFromOccId(int occupationId)
     {
         SQLiteDatabase db = this.getWritableDatabase();

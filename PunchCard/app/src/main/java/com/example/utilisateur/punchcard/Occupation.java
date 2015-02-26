@@ -15,51 +15,82 @@ public class Occupation
     //------ constructor -----
     public Occupation()
     {
-
     }
-
-    public Occupation(String name, boolean isIn)
-    {
-        _name = name;
-        _isIn = isIn;
-        _isSelected = false;
-    }
-
 
     //---- getter -------
+
+    /**
+     * id de l'occupation
+     * @return
+     */
     public int getId()
     {
         return _id;
     }
 
+
+    /**
+     * nom de l'occupation
+     * @return
+     */
     public String getName()
     {
         return _name;
     }
 
+
+    /**
+     * est puncher in
+     * @return
+     */
     public Boolean isIn()
     {
         return _isIn;
     }
 
+
+    /**
+     * est affiché sur le widget
+     * @return
+     */
     public Boolean isSelected() {return _isSelected;}
 
     //-------- setter -----
+
+
+    /**
+     * id de l'occupation
+     * @param id
+     */
     public void setId(int id)
     {
         _id = id;
     }
 
+    /**
+     * nom de l'occupation
+     * @param name
+     */
     public void setName(String name)
     {
         _name = name;
     }
 
+
+    /**
+     * est puncher In
+     * @param isIn
+     */
     public void isIn(boolean isIn)
     {
         _isIn = isIn;
     }
 
+
+    /**
+     * est sélectionner par le widget
+     * @param isSelected
+     */
     public void isSelected(boolean isSelected)
     {
         _isSelected = isSelected;

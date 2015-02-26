@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 /**
  * Created by jrsao on 2/24/2015.
+ * Comparateur de OccupationHistory, compare le DateTimeIn (Date)
  */
 public class ComparatorOccupationHistory implements Comparator<OccupationHistory>
 {

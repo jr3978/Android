@@ -174,26 +174,31 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
      * @return view enfant
      */
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent)
-    {
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         String childText = Tools.formatDateCanada(
                 getChild(groupPosition, childPosition).getDateTimeIn());
 
-        childText += "   Total Time : ";
-        long diff = getChild(groupPosition,childPosition).getDateTimeOut().getTime() - getChild(groupPosition,childPosition).getDateTimeIn().getTime();
+        childText += ("   " + _context.getString(R.string.exp_list_childText));
+        Date out;
+
+        if (getChild(groupPosition, childPosition).getDateTimeOut() == null) {
+            out = new Date();
+        } else {
+            out = getChild(groupPosition, childPosition).getDateTimeOut();
+        }
+
+        long diff = out.getTime() - getChild(groupPosition, childPosition).getDateTimeIn().getTime();
         childText += Tools.formatDifftoString(diff);
 
 
-
-        if (convertView == null)
-        {
-            LayoutInflater layoutInflater = (LayoutInflater)_context.getSystemService(
+        if (convertView == null) {
+            LayoutInflater layoutInflater = (LayoutInflater) _context.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
 
             convertView = layoutInflater.inflate(R.layout.list_item_history, null);
         }
 
-        TextView textView = (TextView)convertView.findViewById(R.id.list_group_history_item);
+        TextView textView = (TextView) convertView.findViewById(R.id.list_group_history_item);
         textView.setText(childText);
 
         return convertView;

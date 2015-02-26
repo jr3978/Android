@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -76,6 +77,7 @@ public class AdapterOccupation extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup container) {
 
+
         if (convertView == null) {
             convertView = _activity.getLayoutInflater().inflate(R.layout.list_item, container, false);
         }
@@ -86,14 +88,23 @@ public class AdapterOccupation extends BaseAdapter {
         long diff = 0;
 
         for (OccupationHistory history : historyTreeSet) {
-            if (history.getDateTimeOut() != null) {
                 if (history.isPeriodEnd()) {
                     break;
                 }
                 else {
-                    diff += history.getDateTimeOut().getTime() - history.getDateTimeIn().getTime();
+                    Date out;
+
+                    if(history.getDateTimeOut() == null)
+                    {
+                        out = new Date();
+                    }
+                    else
+                    {
+                        out =  history.getDateTimeOut();
+                    }
+
+                    diff += out.getTime() - history.getDateTimeIn().getTime();
                 }
-            }
         }
 
         String timeTxt = Tools.formatDifftoString(diff);

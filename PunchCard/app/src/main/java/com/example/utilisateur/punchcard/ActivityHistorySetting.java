@@ -51,8 +51,6 @@ public class ActivityHistorySetting extends Activity
         if(Occid != 0)
         {
             _history.setOccupationId(Occid);
-            _history.setDateTimeIn(new Date());
-            _history.setDateTimeOut(new Date());
         }
 
         String name = getIntent().getStringExtra("name");
@@ -83,8 +81,8 @@ public class ActivityHistorySetting extends Activity
         }
 
 
-        Timein = Tools.formatCustomDateTime(timein);
-        TimeOut = Tools.formatCustomDateTime(timeout);
+        Timein = (timein != null) ? Tools.formatCustomDateTime(timein) : "-";
+        TimeOut = (timeout != null) ? Tools.formatCustomDateTime(timeout) : "-";
 
        TextView txtin = (TextView)findViewById(R.id.txtTimeinvalue);
         txtin.setText(Timein);

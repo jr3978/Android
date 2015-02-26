@@ -21,7 +21,7 @@ import android.widget.Toast;
  * Created by jrsao on 2/17/2015.
  * Activity au launch de l'application
  */
-public class MainActivity extends ListActivity implements IListViewContainer
+public class MainActivity extends ListActivity
 {
     private AdapterOccupation _adapter;
     private OccupationParameters _tempParam = new OccupationParameters();

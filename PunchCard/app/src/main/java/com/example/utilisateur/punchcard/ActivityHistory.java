@@ -31,7 +31,7 @@ import java.util.TreeSet;
  */
 public class ActivityHistory extends Activity
 {
-    private int _occupationid = 0;
+    private int _occupationId = 0;
     private ExpandableListAdapter _listAdapter;
     private ExpandableListView _expandableListView;
     private List<String> _listDataHeader;
@@ -39,17 +39,34 @@ public class ActivityHistory extends Activity
     private DataBaseHandler _db;
 
 
+    /**
+     * initialise l'activity quand elle est creer
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         _db = new DataBaseHandler(this);
-        _occupationid = getIntent().getIntExtra("id", 0);
+        _occupationId = getIntent().getIntExtra("id", 0);
         String name = getIntent().getStringExtra("name");
         setTitle(name);
 
         //refresh liste
+        initExpandableList();
+    }
+
+
+    /**
+     * Refresh when a activity returns
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         initExpandableList();
     }
 
@@ -101,18 +118,27 @@ public class ActivityHistory extends Activity
             }
         });}
 
-    //Show poppup menu on a long click
+
+    /**
+     * Affiche un menu popup
+     * @param convertView ancre
+     * @param historyId id de l'historique cliquer
+     * @param set true si n'est pas un endPeriod
+     */
     private void showPopupMenu(final View convertView, final int historyId, final boolean set)
     {
-        final Activity asd = this;
         final PopupMenu popupMenu = new PopupMenu(this, convertView);
         popupMenu.inflate(R.menu.popup_menu_history);
+
         OccupationHistory histo = _db.getOccupationHistory(historyId);
+
         //Change popup menu text depending of history bool isPeriodEnd
         if(histo.isPeriodEnd())
         {
-            popupMenu.getMenu().getItem(0).setTitle("Unset Period ending");
+            popupMenu.getMenu().getItem(0).setTitle(getResources().getString(R.string.popup_menu_unset_title));
         }
+
+        //click on item
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
         {
             @Override
@@ -123,7 +149,7 @@ public class ActivityHistory extends Activity
                     case R.id.popup_history_item_delete:
                     {
                         //Confirm dialog
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(asd);
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(ActivityHistory.this);
                         builder.setIcon(R.drawable.ic_logo);
                         builder.setTitle(R.string.delete_advertisehisto);
                         //button ok, delete and refresh
@@ -164,6 +190,7 @@ public class ActivityHistory extends Activity
         popupMenu.show();
     }
 
+
     /**
      * Ajoute les tous les historiques relier a l'occupation a la liste extensible
      */
@@ -171,16 +198,19 @@ public class ActivityHistory extends Activity
     {
         _listDataChild = new HashMap<>();
         _listDataHeader = new ArrayList<>();
-        DataBaseHandler db = new DataBaseHandler(this);
+
         //sorted history
         TreeSet<OccupationHistory> sorted = new TreeSet<>(new ComparatorOccupationHistory());
-        sorted.addAll(db.getOccupationHistoryFromOccId(_occupationid));
+        sorted.addAll(_db.getOccupationHistoryFromOccId(_occupationId));
+
         //sorted history for diff calculation
         List<OccupationHistory> tempListTotal = new ArrayList<>();
+
         //list of total time
         List<Long> lstDiff = new ArrayList<>();
         int inc = 0;
         long diff = 0;
+
         //Get all the total times for each period
         for(OccupationHistory history : sorted)
         {
@@ -191,8 +221,17 @@ public class ActivityHistory extends Activity
                 tempListTotal.remove(history);
                 for(OccupationHistory histo:tempListTotal)
                 {
-                    if(histo.getDateTimeOut() != null)
-                        diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
+                    Date out;
+
+                    if(histo.getDateTimeOut() == null)
+                    {
+                        out = new Date();
+                    }
+                    else
+                    {
+                        out =  histo.getDateTimeOut();
+                    }
+                        diff += out.getTime() - histo.getDateTimeIn().getTime();
                 }
                 lstDiff.add(inc,diff);
                 diff = 0;
@@ -204,14 +243,27 @@ public class ActivityHistory extends Activity
         //Total time for current period
         for(OccupationHistory histo:tempListTotal)
         {
-            if(histo.getDateTimeOut() != null)
-                diff += histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime();
+            Date out;
+
+            if(histo.getDateTimeOut() == null)
+            {
+                out = new Date();
+            }
+            else
+            {
+                out =  histo.getDateTimeOut();
+            }
+
+            diff += out.getTime() - histo.getDateTimeIn().getTime();
         }
         lstDiff.add(inc,diff);
 
         //Set the header and child items for the expendable list
         List<OccupationHistory> tempList = new ArrayList<>();
-        _listDataHeader.add("Current period" + "  Total Time: " + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
+        _listDataHeader.add(getResources().getString(R.string.current_period) + "  " +
+                getResources().getString(R.string.total_time) + " "
+                + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
+
         for(OccupationHistory history : sorted)
         {
             tempList.add(history);
@@ -222,7 +274,9 @@ public class ActivityHistory extends Activity
                 ArrayList<OccupationHistory> lst = new ArrayList<OccupationHistory>();
                 lst.addAll(tempList);
                 _listDataChild.put(_listDataHeader.get(_listDataHeader.size()-1),lst);
-                _listDataHeader.add(Tools.formatDateCanada(endPoint) + " Total Time: " + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
+                _listDataHeader.add(Tools.formatDateCanada(endPoint) + " " +
+                        getResources().getString(R.string.total_time)
+                        + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
                 tempList.clear();
                 tempList.add(history);
             }
@@ -231,20 +285,15 @@ public class ActivityHistory extends Activity
     }
 
 
-    //Refresh when a activity returns
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        initExpandableList();
-    }
-
-
-    //Call activity to add new history with occid of current occupation
+    /**
+     * Call activity to add new history with occid of current occupation
+     * @param view ancre
+     */
     public void onClickAdd(View view)
     {
         Intent intent = new Intent("PunchCard.ActivityHistorySetting");
-        String name = "New History";
-        intent.putExtra("Occid", _occupationid);
+        String name = getResources().getString(R.string.new_history);
+        intent.putExtra("Occid", _occupationId);
         intent.putExtra("id", 0);
         intent.putExtra("name", name);
         startActivityForResult(intent,2);
