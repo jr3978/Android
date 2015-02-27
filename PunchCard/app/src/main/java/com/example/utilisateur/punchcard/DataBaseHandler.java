@@ -659,8 +659,12 @@ public class DataBaseHandler extends SQLiteOpenHelper
         SimpleDateFormat parserSDF = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy",Locale.CANADA);
 
         ContentValues values = new ContentValues();
-        values.put(COL_DATE_IN, parserSDF.format(history.getDateTimeIn()));
-        values.put(COL_DATE_OUT, parserSDF.format(history.getDateTimeOut()));
+        if (history.getDateTimeIn() != null) {
+            values.put(COL_DATE_IN, parserSDF.format(history.getDateTimeIn()));
+        }
+        if (history.getDateTimeOut() != null) {
+            values.put(COL_DATE_OUT, parserSDF.format(history.getDateTimeOut()));
+        }
 
         values.put(COL_OCC_ID, history.getOccupationId());
         values.put(COL_ID, history.getId());

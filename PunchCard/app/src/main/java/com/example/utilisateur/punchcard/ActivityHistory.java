@@ -276,7 +276,7 @@ public class ActivityHistory extends Activity
         //Set the header and child items for the expendable list
         List<OccupationHistory> tempList = new ArrayList<>();
         _listDataHeader.add(getResources().getString(R.string.current_period) + "  " +
-                getResources().getString(R.string.total_time) + " "
+                getResources().getString(R.string.total_time) + "   "
                 + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
 
         for(OccupationHistory history : sorted)
@@ -290,7 +290,7 @@ public class ActivityHistory extends Activity
                 lst.addAll(tempList);
                 _listDataChild.put(_listDataHeader.get(_listDataHeader.size()-1),lst);
                 _listDataHeader.add(Tools.formatDateCanada(endPoint, this) + " " +
-                        getResources().getString(R.string.total_time)
+                        getResources().getString(R.string.total_time) + "   "
                         + Tools.formatDifftoString(lstDiff.get(_listDataHeader.size())));
                 tempList.clear();
                 tempList.add(history);

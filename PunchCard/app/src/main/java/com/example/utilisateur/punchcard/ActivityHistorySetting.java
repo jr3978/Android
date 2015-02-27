@@ -62,13 +62,13 @@ public class ActivityHistorySetting extends Activity
         setTitle(name);
         occ = db.getOccupation(_history.getOccupationId());
         //Update total time
-        UpdateTotal();
+        updateTotal();
     }
 
     /**
      * Update le temps total affiché
      */
-    private void UpdateTotal()
+    private void updateTotal()
     {
         Date timein = _history.getDateTimeIn();
         Date timeout = _history.getDateTimeOut();
@@ -209,7 +209,7 @@ public class ActivityHistorySetting extends Activity
 
                         occ.isIn(false);
                         alertDialog.dismiss();
-                        UpdateTotal();
+                        updateTotal();
                     }
                 }
             });
@@ -226,7 +226,7 @@ public class ActivityHistorySetting extends Activity
      * Pop Dialog pour change le time in
      * @param view
      */
-    public void TimeinClick(View view)
+    public void timeinClick(View view)
     {
         final OccupationParameters params = db.getParametersByOccupationId(_history.getOccupationId());
         final OccupationParameters.RoundType rType = params.getRoundType();
@@ -324,7 +324,7 @@ public class ActivityHistorySetting extends Activity
                         _history.setDateTimeIn(cal.getTime());
                         alertDialog.dismiss();
                         //new total
-                        UpdateTotal();
+                        updateTotal();
                     }
 
 

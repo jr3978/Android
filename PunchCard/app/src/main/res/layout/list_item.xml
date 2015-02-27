@@ -8,7 +8,7 @@
     android:minHeight="?android:listPreferredItemHeight"
     android:gravity="center_vertical"
     android:id="@+id/list_item_job"
-    android:background="@drawable/title_bg"
+    android:background="@drawable/background"
     >
 
 
@@ -28,7 +28,7 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:textAppearance="?android:textAppearanceLarge"
-        android:textColor="#000000" />
+        android:textColor="#FFFFFF" />
 
     </LinearLayout>
 
@@ -50,7 +50,7 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#343434"
+        android:textColor="#E6E6E6"
         android:textSize="20dip"
         android:layout_marginTop="1dip"
         android:layout_below="@+id/thumbnail"

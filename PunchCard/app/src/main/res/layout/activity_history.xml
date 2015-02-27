@@ -18,19 +18,27 @@
 
         <ImageButton
             android:id="@+id/btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_new"
-            android:layout_alignParentRight="true"
+            android:layout_width="@dimen/diameter"
+            android:layout_height="@dimen/diameter"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="@dimen/add_button_margin"
+            android:layout_marginEnd="@dimen/add_button_margin"
+            android:src="@android:drawable/ic_input_add"
             android:onClick="onClickAdd"
-            android:backgroundTint="#fffff0da" />
+            android:tint="@android:color/white"
+            android:background="@drawable/oval_ripple"
+            android:elevation="@dimen/elevation_low"
+            android:stateListAnimator="@anim/button_elevation"
+            android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
     <ExpandableListView
         android:id="@+id/list_expandable_history"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:cacheColorHint="#00000000"/>
+        android:groupIndicator="@drawable/group_indicator"
+        android:cacheColorHint="#00000000"
+        android:dividerHeight="10dp"/>
 
 
 

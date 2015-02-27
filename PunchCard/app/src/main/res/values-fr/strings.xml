@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Carte de temps</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="RightArrow">--&#62;</string>
+    <string name="LeftArrow">&#60;--</string>
+    <string name="title_activity_history">Historique</string>
+    <string name="activity_settings_title">Setting test</string>
+    <string name="delete_advertise">Voulez-vous supprimer cette activité?</string>
+    <string name="ok_button">Ok</string>
+    <string name="cancel_button">Annuler</string>
+    <string name="occupation_deleted">supprimée</string>
+
+
+    <string name="occupation_parameters_title">paramètre de l\'activité</string>
+    <string name="occ_params_cat_round">Paramètres d\'arrondissement</string>
+    <string name="occ_params_cat_other">Autres paramètre</string>
+
+    <string name="occ_params_round_time_value_title">Arrondir à cette valeur</string>
+    <string name="occ_params_round_time_value_dialog">Arrondir à cette valeur</string>
+
+
+    <string name="occ_params_round_type_title">Type d\'arrondissement</string>
+    <string name="occ_params_round_type_dialod">Arrondir de cette manière</string>
+
+
+
+
+
+</resources>
