@@ -13,7 +13,7 @@
         <item>2</item>
     </string-array>
 
-    <string name="round_type_default" translatable="false">1</string>
+    <string name="round_type_default" >1</string>
 
     <!-- Round Time Value -->
     <string-array name="rounding_time">
@@ -34,6 +34,6 @@
         <item>60</item>
     </string-array>
 
-    <string name="rounding_time_default" translatable="false">1</string>
+    <string name="rounding_time_default" >1</string>
 
 </resources>

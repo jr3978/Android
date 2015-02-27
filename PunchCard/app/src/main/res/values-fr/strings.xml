@@ -9,10 +9,14 @@
     <string name="title_activity_history">Historique</string>
     <string name="activity_settings_title">Setting test</string>
     <string name="delete_advertise">Voulez-vous supprimer cette activité?</string>
+    <string name="delete_advertisehisto">Voulez-vous supprimer cette historique??</string>
     <string name="ok_button">Ok</string>
     <string name="cancel_button">Annuler</string>
     <string name="occupation_deleted">supprimée</string>
-
+    <string name="email_subject">Envoyer de votre application PunchApp</string>
+    <string name="total_time">Temps Total</string>
+    <string name="PeriodEnding">Fin de periode</string>
+    <string name="Deletepopup">Supprimer</string>
 
     <string name="occupation_parameters_title">paramètre de l\'activité</string>
     <string name="occ_params_cat_round">Paramètres d\'arrondissement</string>
@@ -26,7 +30,18 @@
     <string name="occ_params_round_type_dialod">Arrondir de cette manière</string>
 
 
+    <string name="current_period">Période Courante</string>
 
+    <!-- expandableListView -->
+    <string name="exp_list_childText">Temps total :</string>
+
+    <!-- popupMenu history-->
+    <string name="popup_menu_unset_title">N\'est plus une fin de période</string>
+
+    <string name="new_history">Nouvel Historique</string>
+
+    <string name="poppupEmail">Envoyer par courriel</string>
+    <string name="popupapram">Paramètres</string>
 
 
 </resources>

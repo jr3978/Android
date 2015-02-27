@@ -26,6 +26,10 @@
     <string name="occ_params_round_type_title">Rounding type</string>
     <string name="occ_params_round_type_dialod">Set rounding type</string>
 
+    <string name="PeriodEnding">Set Period ending</string>
+    <string name="Deletepopup">Delete</string>
+
+
     <string name="email_subject">Sent from your punchCard app.</string>
     <string name="total_time">Total time</string>
     <string name="current_period">Current period</string>
@@ -37,4 +41,9 @@
     <string name="popup_menu_unset_title">Unset Period ending</string>
 
     <string name="new_history">New History</string>
+
+
+
+    <string name="poppupEmail">Send by mail</string>
+    <string name="popupapram">Occupation parameters</string>
 </resources>

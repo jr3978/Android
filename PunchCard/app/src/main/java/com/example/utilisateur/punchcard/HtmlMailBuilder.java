@@ -2,6 +2,7 @@ package com.example.utilisateur.punchcard;
 
 import android.content.Context;
 
+import java.util.Date;
 import java.util.TreeSet;
 
 /**
@@ -25,8 +26,16 @@ public class HtmlMailBuilder {
         for(OccupationHistory histo:sorted)
         {
             _text += "\n\nTime in: \t" + Tools.formatCustomDateTime(histo.getDateTimeIn()) + "\nTime out: \t" +
-                    Tools.formatCustomDateTime(histo.getDateTimeOut()) + "\nTotal Time: \t" +
-                    Tools.formatDifftoString(histo.getDateTimeOut().getTime() - histo.getDateTimeIn().getTime()) + "\n";
+                    Tools.formatCustomDateTime(histo.getDateTimeOut()) + "\nTotal Time: \t";
+            Date out = new Date();
+            Date in = new Date();
+            if(histo.getDateTimeIn() != null)
+                in= histo.getDateTimeIn();
+
+            if(histo.getDateTimeOut() != null)
+                out = histo.getDateTimeOut();
+
+              _text +=      Tools.formatDifftoString(out.getTime() - in.getTime()) + "\n";
         }
 
     }

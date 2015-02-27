@@ -3,19 +3,19 @@
     <item
         android:id="@+id/item_send_mail"
         android:showAsAction="ifRoom|withText"
-        android:title="Send by mail"
+        android:title="@string/poppupEmail"
         android:visible="true"
         />
     <item
         android:id="@+id/item_set_parameters"
         android:showAsAction="ifRoom|withText"
-        android:title="Occupation parameters"
+        android:title="@string/popupapram"
         android:visible="true"
         />
     <item
         android:id="@+id/item_delete_occupation"
         android:showAsAction="ifRoom|withText"
-        android:title="Delete"
+        android:title="@string/Deletepopup"
         android:visible="true"
 
         />

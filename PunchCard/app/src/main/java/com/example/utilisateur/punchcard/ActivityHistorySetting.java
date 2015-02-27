@@ -226,7 +226,7 @@ public class ActivityHistorySetting extends Activity
      * Pop Dialog pour change le time in
      * @param view
      */
-    public void timeinClick(View view)
+    public void TimeinClick(View view)
     {
         final OccupationParameters params = db.getParametersByOccupationId(_history.getOccupationId());
         final OccupationParameters.RoundType rType = params.getRoundType();

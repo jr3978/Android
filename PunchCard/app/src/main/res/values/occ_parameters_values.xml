@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="reset_day_values" translatable="false">
+    <string-array name="reset_day_values" >
         <item>Sunday</item>
         <item>Monday</item>
         <item>Tuesday</item>
@@ -10,5 +10,5 @@
         <item>Saturday</item>
     </string-array>
 
-    <string name="reset_day_default_value" translatable="false"></string>
+    <string name="reset_day_default_value" ></string>
 </resources>
